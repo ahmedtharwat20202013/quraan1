@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: "Amiri", serif;
+  --font-arabic-sans: "Noto Sans Arabic", sans-serif;
+  
+  --color-islamic-dark: #002210;
+  --color-islamic-green: #004420;
+  --color-gold-accent: #D4AF37;
+  --color-gold-bright: #E5C76B;
+  --color-text-beige: #F5F5F0;
+}
+
+@layer base {
+  body {
+    @apply bg-islamic-dark text-text-beige font-sans antialiased selection:bg-gold-accent selection:text-islamic-dark;
+    overflow-x: hidden;
+  }
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-lg transition-all duration-300;
+}
+
+.glass-card-accent {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-[2rem] shadow-xl;
+}
+
+.btn-gold {
+  @apply bg-gradient-to-br from-gold-bright to-gold-accent text-islamic-dark font-bold py-4 rounded-3xl shadow-lg active:scale-95 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2;
+}
+
+.arabic-text {
+  font-family: var(--font-arabic);
+}
+
+.arabic-text-sans {
+  font-family: var(--font-arabic-sans);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Maintain Absolute Color Integrity for PDF Canvas rendering */
+.pdf-page-wrapper {
+  color-scheme: light !important;
+}
+
+.pdf-page-wrapper canvas {
+  color-scheme: light !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  forced-color-adjust: none !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gold-accent/40;
+}

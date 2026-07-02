@@ -1,0 +1,26 @@
+{
+  "short_name": "حقيبة المسلم",
+  "name": "حقيبة المسلم - التطبيق الإسلامي المتكامل",
+  "description": "تطبيق إسلامي متكامل ومصمم للهواتف للعمل بالكامل بدون إنترنت لقراءة القرآن الكريم بالألوان والأذكار وقصص الأنبياء والتسبيح",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/000000/mosque.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/000000/mosque.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar"
+}

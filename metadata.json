@@ -1,0 +1,10 @@
+{
+  "name": "حقيبة المسلم - تطبيق الإسلامية المتكامل",
+  "description": "حقيبة المسلم - تطبيق إسلامي متكامل يعمل بالكامل بدون إنترنت لقراءة القرآن الكريم بالألوان والأذكار وقصص الأنبياء والتسبيح والتثبيت وتجربة هاتف نقال متكاملة.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
