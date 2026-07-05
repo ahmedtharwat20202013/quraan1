@@ -193,9 +193,9 @@ export default function SurahReader({
     
     const swipeThreshold = 50;
     if (deltaX > swipeThreshold) {
-      goToPrevPage(); // Swipe right pulls previous page
+      goToNextPage(); // Swipe right pulls next page (RTL)
     } else if (deltaX < -swipeThreshold) {
-      goToNextPage(); // Swipe left pulls next page
+      goToPrevPage(); // Swipe left pulls previous page (RTL)
     }
     touchStartX.current = null;
   };
@@ -347,16 +347,16 @@ export default function SurahReader({
           {/* Large Tap targets for next/prev pages (very comfy for phone thumbs) */}
           {!isLocked && !isZoomedIn && (
             <>
-              {/* Right target - Swipe forward (RTL next page) */}
+              {/* Left target - RTL next page (Page increases) */}
               <div 
                 onClick={(e) => { e.stopPropagation(); goToNextPage(); resetControlsTimeout(); }}
-                className="absolute right-0 top-0 bottom-0 w-[15%] z-30 cursor-pointer pointer-events-auto"
+                className="absolute left-0 top-0 bottom-0 w-[15%] z-30 cursor-pointer pointer-events-auto"
                 title="الصفحة التالية"
               />
-              {/* Left target - Swipe backward (RTL previous page) */}
+              {/* Right target - RTL previous page (Page decreases) */}
               <div 
                 onClick={(e) => { e.stopPropagation(); goToPrevPage(); resetControlsTimeout(); }}
-                className="absolute left-0 top-0 bottom-0 w-[15%] z-30 cursor-pointer pointer-events-auto"
+                className="absolute right-0 top-0 bottom-0 w-[15%] z-30 cursor-pointer pointer-events-auto"
                 title="الصفحة السابقة"
               />
             </>

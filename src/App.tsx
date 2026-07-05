@@ -566,7 +566,7 @@ export default function App() {
               <SurahReader 
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-                onBack={() => setCurrentScreen(previousScreen)}
+                onBack={() => setCurrentScreen('quran')}
                 fontSize={state.fontSize}
                 bookmarks={state.bookmarks}
                 onToggleBookmark={handleToggleBookmark}
