@@ -90,6 +90,34 @@ const POPULAR_RECITERS: Reciter[] = [
   }
 ];
 
+function compressReciters(reciters: Reciter[]): any[] {
+  return reciters.map(r => [
+    r.id,
+    r.name,
+    r.letter,
+    r.moshaf.map(m => [
+      m.id,
+      m.name,
+      m.server,
+      m.surah_list
+    ])
+  ]);
+}
+
+function decompressReciters(data: any[]): Reciter[] {
+  return data.map(item => ({
+    id: item[0],
+    name: item[1],
+    letter: item[2],
+    moshaf: item[3].map((m: any) => ({
+      id: m[0],
+      name: m[1],
+      server: m[2],
+      surah_list: m[3]
+    }))
+  }));
+}
+
 // Safely gets cache with try-catch & validation
 function safeGetCache<T>(key: string): { data: T; timestamp: number } | null {
   try {
@@ -98,13 +126,18 @@ function safeGetCache<T>(key: string): { data: T; timestamp: number } | null {
     const parsed = JSON.parse(cached);
     
     // Check structure
-    if (!parsed || !parsed.data || !Array.isArray(parsed.data)) {
+    if (!parsed || !parsed.data) {
       return null;
     }
     
     // Check expiry
     if (Date.now() - parsed.timestamp > CACHE_EXPIRY_MS) {
       return null;
+    }
+    
+    // Decompress if needed
+    if (key === RECITERS_CACHE_KEY && Array.isArray(parsed.data) && parsed.data.length > 0 && Array.isArray(parsed.data[0])) {
+      parsed.data = decompressReciters(parsed.data);
     }
     
     return parsed;
@@ -126,7 +159,11 @@ export class QuranApiService {
       try {
         const fallback = localStorage.getItem(RECITERS_CACHE_KEY);
         if (fallback) {
-          return JSON.parse(fallback).data;
+          const parsed = JSON.parse(fallback);
+          if (Array.isArray(parsed.data) && parsed.data.length > 0 && Array.isArray(parsed.data[0])) {
+            return decompressReciters(parsed.data);
+          }
+          return parsed.data;
         }
       } catch {}
       return POPULAR_RECITERS;
@@ -152,17 +189,30 @@ export class QuranApiService {
       const parsed = RecitersResponseSchema.parse(rawData);
       const reciters: Reciter[] = parsed.reciters as unknown as Reciter[];
       
-      // Save valid data to cache
+      // Filter out unused payload properties to save memory and RAM
+      const cleanedReciters: Reciter[] = reciters.map(r => ({
+        id: r.id,
+        name: r.name,
+        letter: r.letter,
+        moshaf: r.moshaf.map(m => ({
+          id: m.id,
+          name: m.name,
+          server: m.server,
+          surah_list: m.surah_list
+        }))
+      }));
+
+      // Save valid compressed data to cache
       try {
         localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({
-          data: reciters,
+          data: compressReciters(cleanedReciters),
           timestamp: Date.now()
         }));
       } catch (e) {
         console.warn('Error saving reciters to cache', e);
       }
 
-      return reciters;
+      return cleanedReciters;
     } catch (error: any) {
       if (error.name === 'AbortError') {
         throw error;
@@ -173,7 +223,11 @@ export class QuranApiService {
       try {
         const fallback = localStorage.getItem(RECITERS_CACHE_KEY);
         if (fallback) {
-          return JSON.parse(fallback).data;
+          const parsed = JSON.parse(fallback);
+          if (Array.isArray(parsed.data) && parsed.data.length > 0 && Array.isArray(parsed.data[0])) {
+            return decompressReciters(parsed.data);
+          }
+          return parsed.data;
         }
       } catch {}
       return POPULAR_RECITERS;
