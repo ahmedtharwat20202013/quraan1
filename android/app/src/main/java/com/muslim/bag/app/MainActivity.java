@@ -18,6 +18,12 @@ public class MainActivity extends BridgeActivity {
     private String pendingGeolocationOrigin = null;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        com.capacitorjs.plugins.localnotifications.AzanAudioPlayer.stop();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
