@@ -481,10 +481,9 @@ export default function SurahReader({
                           pageNumber={currentPage} 
                           renderTextLayer={false} 
                           renderAnnotationLayer={false}
-                          devicePixelRatio={3} // High resolution rendering
-                          width={getPageDimensions().width}
-                          scale={getPageDimensions().scale}
-                          className="max-w-full object-contain mx-auto select-none pointer-events-none pdf-page-wrapper"
+                          devicePixelRatio={Math.max(window.devicePixelRatio || 1, 3.5)} // Dynamic high-density scaling
+                          width={getPageDimensions().width * 1.6} // 1.6x super-resolution render
+                          className="w-full h-full object-contain mx-auto select-none pointer-events-none pdf-page-wrapper"
                           loading={
                             <div className="flex flex-col items-center justify-center p-24 gap-3 bg-white w-full h-full min-h-[300px]">
                               <div className="w-10 h-10 border-4 border-gold-accent border-t-transparent rounded-full animate-spin" />
