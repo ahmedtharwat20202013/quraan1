@@ -168,7 +168,7 @@ export const scheduleWeeklyAzans = async () => {
               title: p.name,
               body: 'حان الآن موعد الصلاة.',
               id: idCounter++,
-              schedule: { at: p.time },
+              schedule: { at: p.time, allowWhileIdle: true },
               sound: p.sound,
               channelId: p.channel,
               smallIcon: 'ic_stat_icon_default',

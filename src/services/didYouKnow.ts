@@ -107,7 +107,7 @@ export const scheduleWeeklyDidYouKnow = async () => {
           body: fact.text,
           largeBody: fact.text, // Expandable big text style so it shows fully without truncation
           id: 2000 + i,
-          schedule: { at: scheduleTime },
+          schedule: { at: scheduleTime, allowWhileIdle: true },
           sound: 'default',
           channelId: 'did_you_know_channel',
           smallIcon: 'ic_stat_icon_default', // Status bar white silhouette
