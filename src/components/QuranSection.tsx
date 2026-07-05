@@ -9,9 +9,17 @@ interface QuranSectionProps {
   onPageClick: (pageNumber: number) => void;
   bookmarks: Bookmark[];
   onRemoveBookmark: (pageNumber: number) => void;
+  downloadProgress: number | null;
+  isDownloaded: boolean;
 }
 
-export default function QuranSection({ onPageClick, bookmarks, onRemoveBookmark }: QuranSectionProps) {
+export default function QuranSection({ 
+  onPageClick, 
+  bookmarks, 
+  onRemoveBookmark,
+  downloadProgress,
+  isDownloaded
+}: QuranSectionProps) {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<'index' | 'bookmarks'>('index');
 
@@ -43,6 +51,21 @@ export default function QuranSection({ onPageClick, bookmarks, onRemoveBookmark 
           <h2 className="text-4xl font-black tracking-tight mb-2">القرآن الكريم</h2>
           <p className="text-white/40 text-xs font-bold">تصفح المصحف الشريف بالصفحات مطابق لمصحف المدينة المنورة</p>
         </div>
+
+        {downloadProgress !== null && !isDownloaded && (
+          <div className="p-4 rounded-[1.5rem] bg-gold-accent/10 border border-gold-accent/15 flex flex-col gap-2 no-toggle">
+            <div className="flex justify-between items-center text-[10px] font-black">
+              <span className="text-gold-accent">جاري تحميل صفحات المصحف الشريف للأوفلاين...</span>
+              <span className="text-gold-accent">{downloadProgress}%</span>
+            </div>
+            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gold-accent transition-all duration-300"
+                style={{ width: `${downloadProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Tab Buttons */}
         <div className="flex gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-2xl">

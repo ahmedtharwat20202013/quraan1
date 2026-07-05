@@ -66,6 +66,69 @@ export default function App() {
   const [didYouKnowFact, setDidYouKnowFact] = useState<string>( '');
   const lastBackPressTime = useRef<number>(0);
   const [showExitToast, setShowExitToast] = useState<boolean>(false);
+  const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
+  const [isDownloaded, setIsDownloaded] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && (window as any).Capacitor?.isNativePlatform()) {
+      return true;
+    }
+    return localStorage.getItem('quran_pdf_downloaded') === 'true';
+  });
+
+  // Background pre-loader for quran.pdf to support immediate offline reading
+  useEffect(() => {
+    const startPreload = async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core');
+        if (Capacitor.isNativePlatform()) {
+          setIsDownloaded(true);
+          return;
+        }
+
+        if (localStorage.getItem('quran_pdf_downloaded') === 'true') {
+          setIsDownloaded(true);
+          return;
+        }
+
+        setDownloadProgress(0);
+        const response = await fetch('/quran.pdf');
+        if (!response.ok) throw new Error('Failed to fetch pdf');
+
+        const contentLength = response.headers.get('content-length');
+        const total = contentLength ? parseInt(contentLength, 10) : 0;
+
+        if (total === 0) {
+          setDownloadProgress(100);
+          setIsDownloaded(true);
+          localStorage.setItem('quran_pdf_downloaded', 'true');
+          return;
+        }
+
+        const reader = response.body?.getReader();
+        if (!reader) {
+          setDownloadProgress(100);
+          setIsDownloaded(true);
+          localStorage.setItem('quran_pdf_downloaded', 'true');
+          return;
+        }
+
+        let loaded = 0;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          loaded += value.byteLength;
+          setDownloadProgress(Math.round((loaded / total) * 100));
+        }
+
+        setIsDownloaded(true);
+        localStorage.setItem('quran_pdf_downloaded', 'true');
+      } catch (err) {
+        console.warn('Background PDF prefetch failed:', err);
+        setDownloadProgress(null);
+      }
+    };
+
+    startPreload();
+  }, []);
 
   // Sequentially request both notification and location permissions on startup (both native and web)
   useEffect(() => {
@@ -432,6 +495,8 @@ export default function App() {
                 state={state} 
                 onNavigate={(scr) => handleNavigation(scr as Screen)} 
                 onPageClick={handlePageClick}
+                downloadProgress={downloadProgress}
+                isDownloaded={isDownloaded}
               />
             </motion.div>
           )}
@@ -459,6 +524,8 @@ export default function App() {
                 onPageClick={handlePageClick} 
                 bookmarks={state.bookmarks}
                 onRemoveBookmark={handleToggleBookmark}
+                downloadProgress={downloadProgress}
+                isDownloaded={isDownloaded}
               />
             </motion.div>
           )}

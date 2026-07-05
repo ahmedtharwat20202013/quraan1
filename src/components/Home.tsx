@@ -27,9 +27,11 @@ interface HomeProps {
   state: AppState;
   onNavigate: (screen: any) => void;
   onPageClick: (pageNumber: number) => void;
+  downloadProgress: number | null;
+  isDownloaded: boolean;
 }
 
-export default function Home({ state, onNavigate, onPageClick }: HomeProps) {
+export default function Home({ state, onNavigate, onPageClick, downloadProgress, isDownloaded }: HomeProps) {
   const savedPage = state.lastRead ? state.lastRead.pageNumber : 1;
   const lastReadSurah = surahsData.find(s => savedPage >= s.startPage && savedPage <= s.endPage) || null;
 
@@ -281,6 +283,21 @@ export default function Home({ state, onNavigate, onPageClick }: HomeProps) {
             <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
           </div>
         </div>
+
+        {downloadProgress !== null && !isDownloaded && (
+          <div className="mt-4 pt-3 border-t border-white/5 space-y-2">
+            <div className="flex justify-between items-center text-[10px] font-bold">
+              <span className="text-white/60">جاري تحميل ملف المصحف الشريف للأوفلاين...</span>
+              <span className="text-gold-accent">{downloadProgress}%</span>
+            </div>
+            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gold-accent transition-all duration-300"
+                style={{ width: `${downloadProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* Verse of the Day Card */}
