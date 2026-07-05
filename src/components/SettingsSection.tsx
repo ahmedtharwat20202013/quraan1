@@ -276,7 +276,7 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
               <button 
                 onClick={handleAzanToggle}
                 className={cn(
-                  "w-14 h-8 rounded-full relative transition-all duration-300 p-1 shrink-0",
+                  "w-14 h-8 rounded-full relative transition-all duration-300 p-1 shrink-0 cursor-pointer",
                   azanEnabled ? "bg-emerald-500/20" : "bg-white/10"
                 )}
               >
@@ -288,6 +288,36 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
                   )}
                 />
               </button>
+            </div>
+
+            {/* Background Performance Guide (Xiaomi/Huawei/Oppo/Realme etc.) */}
+            <div className="p-6 bg-white/[0.01] border-t border-white/5 space-y-4 no-toggle">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+                  <Info size={16} />
+                </div>
+                <div className="space-y-1 text-right">
+                  <h4 className="font-bold text-sm text-white">تحسين تشغيل الأذان بالخلفية (هام جداً)</h4>
+                  <p className="text-[10px] text-white/50 leading-relaxed">
+                    تقوم بعض هواتف أندرويد (مثل شاومي، هواوي، أوبو، ريلمي، فيفو) بإغلاق التطبيقات النشطة بالخلفية لتوفير طاقة البطارية. لضمان وصول الأذان والرسائل في موعدها بالثانية، يرجى ضبط الخيارات التالية بهاتفك:
+                  </p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-2 pt-2 border-t border-white/5 text-[10px] text-right">
+                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
+                  <span className="font-bold text-gold-accent block">🚀 1. التشغيل التلقائي (Autostart)</span>
+                  <p className="text-white/60">انتقل لإعدادات الهاتف &gt; التطبيقات &gt; إدارة التطبيقات &gt; حقيبة المسلم &gt; قم بتفعيل خيار **التشغيل التلقائي**.</p>
+                </div>
+                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
+                  <span className="font-bold text-gold-accent block">🔋 2. تحسين البطارية (Battery Saver)</span>
+                  <p className="text-white/60">داخل نفس صفحة إعدادات التطبيق &gt; موفر البطارية &gt; حدد خيار **لا توجد قيود (No restrictions)**.</p>
+                </div>
+                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
+                  <span className="font-bold text-gold-accent block">🔒 3. قفل التطبيق بالخلفية (App Lock)</span>
+                  <p className="text-white/60">افتح قائمة التطبيقات النشطة مؤخراً &gt; اضغط مطولاً على نافذة \"حقيبة المسلم\" &gt; اضغط على **أيقونة القفل** لضمان بقائه حياً.</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
