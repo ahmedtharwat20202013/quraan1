@@ -20,8 +20,11 @@ import { Bookmark as BookmarkType } from '../types';
 import { cn } from '../lib/utils';
 import surahsData from '../data/surahs.json';
 
-// Configure PDFJS worker
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Configure PDFJS worker locally to prevent cross-origin/CORS blocks and support offline operation
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 const PDF_OPTIONS = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
