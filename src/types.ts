@@ -19,8 +19,8 @@ export interface Dua {
 }
 
 export interface Bookmark {
-  surahNumber: number;
   pageNumber: number;
+  surahName: string;
   timestamp: number;
 }
 

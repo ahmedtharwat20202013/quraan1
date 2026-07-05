@@ -22,8 +22,9 @@ import {
   Compass
 } from 'lucide-react';
 import { cn } from './lib/utils';
-import { SURAHS } from './constants';
-import { Surah, AppState } from './types';
+import { AppState } from './types';
+import surahsData from './data/surahs.json';
+import { findCurrentSurah } from './components/SurahReader';
 
 // Components
 import Home from './components/Home';
@@ -47,7 +48,16 @@ type Screen = 'home' | 'prayer' | 'quran' | 'listen' | 'duas' | 'tasbeeh' | 'set
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [previousScreen, setPreviousScreen] = useState<Screen>('home');
-  const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(() => {
+    const saved = localStorage.getItem('quran_light_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.lastRead && parsed.lastRead.pageNumber) {
+        return parsed.lastRead.pageNumber;
+      }
+    }
+    return 1;
+  });
   
   // Sheet state for FAB launcher
   const [isOpenServicesSheet, setIsOpenServicesSheet] = useState<boolean>(false);
@@ -271,7 +281,6 @@ export default function App() {
           }
         } else if (currentScreen === 'reader') {
           setCurrentScreen('quran');
-          setSelectedSurah(null);
         } else if (currentScreen === 'azan') {
           import('./components/AzanSection').then(({ stopAzanAudio }) => {
             stopAzanAudio();
@@ -334,32 +343,52 @@ export default function App() {
     };
   }, [currentScreen]);
 
-  const handleSurahClick = useCallback((surah: Surah) => {
-    setSelectedSurah(surah);
+  // Sync page changes to state.lastRead
+  useEffect(() => {
+    if (currentPage) {
+      setState(prev => {
+        if (prev.lastRead?.pageNumber === currentPage) return prev;
+        const currentSurah = findCurrentSurah(currentPage);
+        const name = currentSurah ? currentSurah.name : 'القرآن الكريم';
+        return {
+          ...prev,
+          lastRead: {
+            pageNumber: currentPage,
+            surahName: name,
+            timestamp: Date.now()
+          }
+        };
+      });
+    }
+  }, [currentPage]);
+
+  const handlePageClick = useCallback((pageNumber: number) => {
+    setCurrentPage(pageNumber);
     setPreviousScreen(currentScreen);
     setCurrentScreen('reader');
-    setState(prev => ({
-      ...prev,
-      lastRead: {
-        surahNumber: surah.number,
-        pageNumber: surah.startPage || 1,
-        timestamp: Date.now()
-      }
-    }));
   }, [currentScreen]);
 
-  const handleProgressUpdate = useCallback((surahNumber: number, pageNumber: number) => {
+  const handleToggleBookmark = useCallback((pageNumber: number) => {
     setState(prev => {
-      if (prev.lastRead?.surahNumber === surahNumber && prev.lastRead?.pageNumber === pageNumber) {
-        return prev;
+      const exists = prev.bookmarks.some(b => b.pageNumber === pageNumber);
+      let updatedBookmarks;
+      if (exists) {
+        updatedBookmarks = prev.bookmarks.filter(b => b.pageNumber !== pageNumber);
+      } else {
+        const surah = findCurrentSurah(pageNumber);
+        const name = surah ? surah.name : 'القرآن الكريم';
+        updatedBookmarks = [
+          ...prev.bookmarks,
+          {
+            pageNumber,
+            surahName: name,
+            timestamp: Date.now()
+          }
+        ];
       }
       return {
         ...prev,
-        lastRead: {
-          surahNumber,
-          pageNumber,
-          timestamp: Date.now()
-        }
+        bookmarks: updatedBookmarks
       };
     });
   }, []);
@@ -402,7 +431,7 @@ export default function App() {
               <Home 
                 state={state} 
                 onNavigate={(scr) => handleNavigation(scr as Screen)} 
-                onSurahClick={handleSurahClick}
+                onPageClick={handlePageClick}
               />
             </motion.div>
           )}
@@ -426,7 +455,11 @@ export default function App() {
               exit={{ opacity: 0, x: 20 }}
               className="p-6"
             >
-              <QuranSection onSurahClick={handleSurahClick} />
+              <QuranSection 
+                onPageClick={handlePageClick} 
+                bookmarks={state.bookmarks}
+                onRemoveBookmark={handleToggleBookmark}
+              />
             </motion.div>
           )}
 
@@ -442,7 +475,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentScreen === 'reader' && selectedSurah && (
+          {currentScreen === 'reader' && (
             <motion.div
               key="reader"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -451,11 +484,12 @@ export default function App() {
               className="fixed inset-0 z-50 bg-black"
             >
               <SurahReader 
-                surah={selectedSurah} 
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
                 onBack={() => setCurrentScreen(previousScreen)}
-                onProgressUpdate={handleProgressUpdate}
                 fontSize={state.fontSize}
-                initialPage={state.lastRead?.surahNumber === selectedSurah.number ? state.lastRead.pageNumber : undefined}
+                bookmarks={state.bookmarks}
+                onToggleBookmark={handleToggleBookmark}
               />
             </motion.div>
           )}

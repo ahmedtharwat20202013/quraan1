@@ -1,0 +1,686 @@
+[
+  {
+    "id": 1,
+    "name": "الفاتحة",
+    "startPage": 1,
+    "endPage": 1
+  },
+  {
+    "id": 2,
+    "name": "البقرة",
+    "startPage": 2,
+    "endPage": 49
+  },
+  {
+    "id": 3,
+    "name": "آل عمران",
+    "startPage": 50,
+    "endPage": 76
+  },
+  {
+    "id": 4,
+    "name": "النساء",
+    "startPage": 77,
+    "endPage": 106
+  },
+  {
+    "id": 5,
+    "name": "المائدة",
+    "startPage": 106,
+    "endPage": 127
+  },
+  {
+    "id": 6,
+    "name": "الأنعام",
+    "startPage": 128,
+    "endPage": 150
+  },
+  {
+    "id": 7,
+    "name": "الأعراف",
+    "startPage": 151,
+    "endPage": 176
+  },
+  {
+    "id": 8,
+    "name": "الأنفال",
+    "startPage": 177,
+    "endPage": 186
+  },
+  {
+    "id": 9,
+    "name": "التوبة",
+    "startPage": 187,
+    "endPage": 207
+  },
+  {
+    "id": 10,
+    "name": "يونس",
+    "startPage": 208,
+    "endPage": 221
+  },
+  {
+    "id": 11,
+    "name": "هود",
+    "startPage": 221,
+    "endPage": 235
+  },
+  {
+    "id": 12,
+    "name": "يوسف",
+    "startPage": 235,
+    "endPage": 248
+  },
+  {
+    "id": 13,
+    "name": "الرعد",
+    "startPage": 249,
+    "endPage": 255
+  },
+  {
+    "id": 14,
+    "name": "إبراهيم",
+    "startPage": 255,
+    "endPage": 261
+  },
+  {
+    "id": 15,
+    "name": "الحجر",
+    "startPage": 262,
+    "endPage": 267
+  },
+  {
+    "id": 16,
+    "name": "النحل",
+    "startPage": 267,
+    "endPage": 281
+  },
+  {
+    "id": 17,
+    "name": "الإسراء",
+    "startPage": 282,
+    "endPage": 293
+  },
+  {
+    "id": 18,
+    "name": "الكهف",
+    "startPage": 293,
+    "endPage": 304
+  },
+  {
+    "id": 19,
+    "name": "مريم",
+    "startPage": 305,
+    "endPage": 312
+  },
+  {
+    "id": 20,
+    "name": "طه",
+    "startPage": 312,
+    "endPage": 321
+  },
+  {
+    "id": 21,
+    "name": "الأنبياء",
+    "startPage": 322,
+    "endPage": 331
+  },
+  {
+    "id": 22,
+    "name": "الحج",
+    "startPage": 332,
+    "endPage": 341
+  },
+  {
+    "id": 23,
+    "name": "المؤمنون",
+    "startPage": 342,
+    "endPage": 349
+  },
+  {
+    "id": 24,
+    "name": "النور",
+    "startPage": 350,
+    "endPage": 359
+  },
+  {
+    "id": 25,
+    "name": "الفرقان",
+    "startPage": 359,
+    "endPage": 366
+  },
+  {
+    "id": 26,
+    "name": "الشعراء",
+    "startPage": 367,
+    "endPage": 376
+  },
+  {
+    "id": 27,
+    "name": "النمل",
+    "startPage": 377,
+    "endPage": 385
+  },
+  {
+    "id": 28,
+    "name": "القصص",
+    "startPage": 385,
+    "endPage": 396
+  },
+  {
+    "id": 29,
+    "name": "العنكبوت",
+    "startPage": 396,
+    "endPage": 404
+  },
+  {
+    "id": 30,
+    "name": "الروم",
+    "startPage": 404,
+    "endPage": 410
+  },
+  {
+    "id": 31,
+    "name": "لقمان",
+    "startPage": 411,
+    "endPage": 414
+  },
+  {
+    "id": 32,
+    "name": "السجدة",
+    "startPage": 415,
+    "endPage": 417
+  },
+  {
+    "id": 33,
+    "name": "الأحزاب",
+    "startPage": 418,
+    "endPage": 427
+  },
+  {
+    "id": 34,
+    "name": "سبأ",
+    "startPage": 428,
+    "endPage": 434
+  },
+  {
+    "id": 35,
+    "name": "فاطر",
+    "startPage": 434,
+    "endPage": 440
+  },
+  {
+    "id": 36,
+    "name": "يس",
+    "startPage": 440,
+    "endPage": 445
+  },
+  {
+    "id": 37,
+    "name": "الصافات",
+    "startPage": 446,
+    "endPage": 452
+  },
+  {
+    "id": 38,
+    "name": "ص",
+    "startPage": 453,
+    "endPage": 458
+  },
+  {
+    "id": 39,
+    "name": "الزمر",
+    "startPage": 458,
+    "endPage": 467
+  },
+  {
+    "id": 40,
+    "name": "غافر",
+    "startPage": 467,
+    "endPage": 476
+  },
+  {
+    "id": 41,
+    "name": "فصلت",
+    "startPage": 477,
+    "endPage": 482
+  },
+  {
+    "id": 42,
+    "name": "الشورى",
+    "startPage": 483,
+    "endPage": 489
+  },
+  {
+    "id": 43,
+    "name": "الزخرف",
+    "startPage": 489,
+    "endPage": 495
+  },
+  {
+    "id": 44,
+    "name": "الدخان",
+    "startPage": 496,
+    "endPage": 498
+  },
+  {
+    "id": 45,
+    "name": "الجاثية",
+    "startPage": 499,
+    "endPage": 502
+  },
+  {
+    "id": 46,
+    "name": "الأحقاف",
+    "startPage": 502,
+    "endPage": 506
+  },
+  {
+    "id": 47,
+    "name": "محمد",
+    "startPage": 507,
+    "endPage": 510
+  },
+  {
+    "id": 48,
+    "name": "الفتح",
+    "startPage": 511,
+    "endPage": 514
+  },
+  {
+    "id": 49,
+    "name": "الحجرات",
+    "startPage": 515,
+    "endPage": 517
+  },
+  {
+    "id": 50,
+    "name": "ق",
+    "startPage": 518,
+    "endPage": 520
+  },
+  {
+    "id": 51,
+    "name": "الذاريات",
+    "startPage": 520,
+    "endPage": 523
+  },
+  {
+    "id": 52,
+    "name": "الطور",
+    "startPage": 523,
+    "endPage": 525
+  },
+  {
+    "id": 53,
+    "name": "النجم",
+    "startPage": 526,
+    "endPage": 528
+  },
+  {
+    "id": 54,
+    "name": "القمر",
+    "startPage": 528,
+    "endPage": 531
+  },
+  {
+    "id": 55,
+    "name": "الرحمن",
+    "startPage": 531,
+    "endPage": 534
+  },
+  {
+    "id": 56,
+    "name": "الواقعة",
+    "startPage": 534,
+    "endPage": 537
+  },
+  {
+    "id": 57,
+    "name": "الحديد",
+    "startPage": 537,
+    "endPage": 541
+  },
+  {
+    "id": 58,
+    "name": "المجادلة",
+    "startPage": 542,
+    "endPage": 545
+  },
+  {
+    "id": 59,
+    "name": "الحشر",
+    "startPage": 545,
+    "endPage": 548
+  },
+  {
+    "id": 60,
+    "name": "الممتحنة",
+    "startPage": 549,
+    "endPage": 551
+  },
+  {
+    "id": 61,
+    "name": "الصف",
+    "startPage": 551,
+    "endPage": 553
+  },
+  {
+    "id": 62,
+    "name": "الجمعة",
+    "startPage": 553,
+    "endPage": 554
+  },
+  {
+    "id": 63,
+    "name": "المنافقون",
+    "startPage": 554,
+    "endPage": 556
+  },
+  {
+    "id": 64,
+    "name": "التغابن",
+    "startPage": 556,
+    "endPage": 558
+  },
+  {
+    "id": 65,
+    "name": "الطلاق",
+    "startPage": 558,
+    "endPage": 559
+  },
+  {
+    "id": 66,
+    "name": "التحريم",
+    "startPage": 560,
+    "endPage": 561
+  },
+  {
+    "id": 67,
+    "name": "الملك",
+    "startPage": 562,
+    "endPage": 564
+  },
+  {
+    "id": 68,
+    "name": "القلم",
+    "startPage": 564,
+    "endPage": 566
+  },
+  {
+    "id": 69,
+    "name": "الحاقة",
+    "startPage": 566,
+    "endPage": 568
+  },
+  {
+    "id": 70,
+    "name": "المعارج",
+    "startPage": 568,
+    "endPage": 570
+  },
+  {
+    "id": 71,
+    "name": "نوح",
+    "startPage": 570,
+    "endPage": 571
+  },
+  {
+    "id": 72,
+    "name": "الجن",
+    "startPage": 572,
+    "endPage": 573
+  },
+  {
+    "id": 73,
+    "name": "المزمل",
+    "startPage": 574,
+    "endPage": 575
+  },
+  {
+    "id": 74,
+    "name": "المدثر",
+    "startPage": 575,
+    "endPage": 577
+  },
+  {
+    "id": 75,
+    "name": "القيامة",
+    "startPage": 577,
+    "endPage": 578
+  },
+  {
+    "id": 76,
+    "name": "الإنسان",
+    "startPage": 578,
+    "endPage": 580
+  },
+  {
+    "id": 77,
+    "name": "المرسلات",
+    "startPage": 580,
+    "endPage": 581
+  },
+  {
+    "id": 78,
+    "name": "النبأ",
+    "startPage": 582,
+    "endPage": 583
+  },
+  {
+    "id": 79,
+    "name": "النازعات",
+    "startPage": 583,
+    "endPage": 584
+  },
+  {
+    "id": 80,
+    "name": "عبس",
+    "startPage": 585,
+    "endPage": 585
+  },
+  {
+    "id": 81,
+    "name": "التكوير",
+    "startPage": 586,
+    "endPage": 586
+  },
+  {
+    "id": 82,
+    "name": "الانفطار",
+    "startPage": 587,
+    "endPage": 587
+  },
+  {
+    "id": 83,
+    "name": "المطففين",
+    "startPage": 587,
+    "endPage": 589
+  },
+  {
+    "id": 84,
+    "name": "الانشقاق",
+    "startPage": 589,
+    "endPage": 590
+  },
+  {
+    "id": 85,
+    "name": "البروج",
+    "startPage": 590,
+    "endPage": 590
+  },
+  {
+    "id": 86,
+    "name": "الطارق",
+    "startPage": 591,
+    "endPage": 591
+  },
+  {
+    "id": 87,
+    "name": "الأعلى",
+    "startPage": 591,
+    "endPage": 592
+  },
+  {
+    "id": 88,
+    "name": "الغاشية",
+    "startPage": 592,
+    "endPage": 593
+  },
+  {
+    "id": 89,
+    "name": "الفجر",
+    "startPage": 593,
+    "endPage": 594
+  },
+  {
+    "id": 90,
+    "name": "البلد",
+    "startPage": 594,
+    "endPage": 595
+  },
+  {
+    "id": 91,
+    "name": "الشمس",
+    "startPage": 595,
+    "endPage": 595
+  },
+  {
+    "id": 92,
+    "name": "الليل",
+    "startPage": 595,
+    "endPage": 596
+  },
+  {
+    "id": 93,
+    "name": "الضحى",
+    "startPage": 596,
+    "endPage": 596
+  },
+  {
+    "id": 94,
+    "name": "الشرح",
+    "startPage": 596,
+    "endPage": 597
+  },
+  {
+    "id": 95,
+    "name": "التين",
+    "startPage": 597,
+    "endPage": 597
+  },
+  {
+    "id": 96,
+    "name": "العلق",
+    "startPage": 597,
+    "endPage": 598
+  },
+  {
+    "id": 97,
+    "name": "القدر",
+    "startPage": 598,
+    "endPage": 598
+  },
+  {
+    "id": 98,
+    "name": "البينة",
+    "startPage": 598,
+    "endPage": 599
+  },
+  {
+    "id": 99,
+    "name": "الزلزلة",
+    "startPage": 599,
+    "endPage": 599
+  },
+  {
+    "id": 100,
+    "name": "العاديات",
+    "startPage": 599,
+    "endPage": 600
+  },
+  {
+    "id": 101,
+    "name": "القارعة",
+    "startPage": 600,
+    "endPage": 600
+  },
+  {
+    "id": 102,
+    "name": "التكاثر",
+    "startPage": 600,
+    "endPage": 600
+  },
+  {
+    "id": 103,
+    "name": "العصر",
+    "startPage": 601,
+    "endPage": 601
+  },
+  {
+    "id": 104,
+    "name": "الهمزة",
+    "startPage": 601,
+    "endPage": 601
+  },
+  {
+    "id": 105,
+    "name": "الفيل",
+    "startPage": 601,
+    "endPage": 601
+  },
+  {
+    "id": 106,
+    "name": "قريش",
+    "startPage": 602,
+    "endPage": 602
+  },
+  {
+    "id": 107,
+    "name": "الماعون",
+    "startPage": 602,
+    "endPage": 602
+  },
+  {
+    "id": 108,
+    "name": "الكوثر",
+    "startPage": 602,
+    "endPage": 602
+  },
+  {
+    "id": 109,
+    "name": "الكافرون",
+    "startPage": 603,
+    "endPage": 603
+  },
+  {
+    "id": 110,
+    "name": "النصر",
+    "startPage": 603,
+    "endPage": 603
+  },
+  {
+    "id": 111,
+    "name": "المسد",
+    "startPage": 603,
+    "endPage": 603
+  },
+  {
+    "id": 112,
+    "name": "الإخلاص",
+    "startPage": 604,
+    "endPage": 604
+  },
+  {
+    "id": 113,
+    "name": "الفلق",
+    "startPage": 604,
+    "endPage": 604
+  },
+  {
+    "id": 114,
+    "name": "الناس",
+    "startPage": 604,
+    "endPage": 604
+  }
+]

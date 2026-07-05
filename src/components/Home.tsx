@@ -17,27 +17,21 @@ import {
   BellRing,
   MapPin
 } from 'lucide-react';
-import { AppState, Surah } from '../types';
+import { AppState } from '../types';
 import { Capacitor } from '@capacitor/core';
-import { SURAHS } from '../constants';
 import { cn } from '../lib/utils';
 import { isAppInstallable, installPWA } from '../registerSW';
-import { ProgressService } from '../services/progress';
+import surahsData from '../data/surahs.json';
 
 interface HomeProps {
   state: AppState;
   onNavigate: (screen: any) => void;
-  onSurahClick: (surah: Surah) => void;
+  onPageClick: (pageNumber: number) => void;
 }
 
-export default function Home({ state, onNavigate, onSurahClick }: HomeProps) {
-  // Try retrieving reading progress
-  const progress = ProgressService.getQuranProgress();
-  const lastReadSurah = progress 
-    ? SURAHS.find(s => s.number === progress.surahNumber) 
-    : (state.lastRead ? SURAHS.find(s => s.number === state.lastRead?.surahNumber) : null);
-
-  const savedPage = progress ? progress.pageNumber : (state.lastRead ? state.lastRead.pageNumber : 1);
+export default function Home({ state, onNavigate, onPageClick }: HomeProps) {
+  const savedPage = state.lastRead ? state.lastRead.pageNumber : 1;
+  const lastReadSurah = surahsData.find(s => savedPage >= s.startPage && savedPage <= s.endPage) || null;
 
   const [isInstallable, setIsInstallable] = useState(false);
   const [isDismissed, setIsDismissed] = useState(() => {
@@ -260,7 +254,7 @@ export default function Home({ state, onNavigate, onSurahClick }: HomeProps) {
       {/* Continue Reading Card */}
       <motion.div 
         whileTap={{ scale: 0.98 }}
-        onClick={() => lastReadSurah && onSurahClick(lastReadSurah)}
+        onClick={() => onPageClick(savedPage)}
         className="bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 border border-gold-accent/20 rounded-3xl p-6 relative overflow-hidden cursor-pointer shadow-xl group border-l-4 border-l-gold-accent"
       >
         <div className="absolute top-0 left-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">

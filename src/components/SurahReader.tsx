@@ -3,10 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronLeft, 
   ChevronRight,
-  Settings as SettingsIcon, 
-  Menu, 
-  Bookmark, 
-  Share2,
+  Bookmark as BookmarkIcon, 
   Moon,
   Sun,
   LayoutGrid,
@@ -15,14 +12,13 @@ import {
   ZoomOut,
   Lock,
   Unlock,
-  Maximize2,
-  Minimize2,
   RotateCcw
 } from 'lucide-react';
 import { pdfjs, Document, Page } from 'react-pdf';
-import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
-import { Surah } from '../types';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { Bookmark as BookmarkType } from '../types';
 import { cn } from '../lib/utils';
+import surahsData from '../data/surahs.json';
 
 // Configure PDFJS worker
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -34,18 +30,32 @@ const PDF_OPTIONS = {
 };
 
 interface SurahReaderProps {
-  surah: Surah;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
   onBack: () => void;
-  onProgressUpdate: (surahNumber: number, pageNumber: number) => void;
   fontSize: number;
-  initialPage?: number;
+  bookmarks: BookmarkType[];
+  onToggleBookmark: (pageNumber: number) => void;
 }
 
-type FitMode = 'height' | 'width' | 'actual';
+// Memory-cached resolver for shared pages
+export const findCurrentSurah = (page: number) => {
+  // Shared page rule: if a surah starts exactly on this page, prioritize it!
+  const starting = surahsData.find(s => s.startPage === page);
+  if (starting) return starting;
+  // Otherwise, return the surah containing this page
+  return surahsData.find(s => page >= s.startPage && page <= s.endPage) || null;
+};
 
-export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize, initialPage }: SurahReaderProps) {
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(initialPage || surah.startPage || 1);
+export default function SurahReader({ 
+  currentPage, 
+  setCurrentPage, 
+  onBack, 
+  fontSize,
+  bookmarks,
+  onToggleBookmark
+}: SurahReaderProps) {
+  const [numPages, setNumPages] = useState<number | null>(604);
   const [isNightMode, setIsNightMode] = useState(true);
   const [showControls, setShowControls] = useState(true);
   const [isLocked, setIsLocked] = useState(false);
@@ -54,55 +64,19 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
   const [localPdfUrl, setLocalPdfUrl] = useState<string | null>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isZoomedIn, setIsZoomedIn] = useState(false);
-  const [resolvedPdfUrl, setResolvedPdfUrl] = useState<string>("/quran.pdf");
-  const [isCheckingPdf, setIsCheckingPdf] = useState(true);
+  const [isCheckingPdf, setIsCheckingPdf] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const transformRef = useRef<any>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    const checkPdf = async () => {
-      setIsCheckingPdf(true);
-      const url = localPdfUrl || surah.pdfUrl || "/quran.pdf";
-      if (localPdfUrl) {
-        if (active) {
-          setResolvedPdfUrl(localPdfUrl);
-          setIsCheckingPdf(false);
-        }
-        return;
-      }
-      try {
-        const response = await fetch(url, { method: 'HEAD' });
-        const contentType = response.headers.get('content-type');
-        if (response.ok && contentType && contentType.includes('pdf')) {
-          if (active) {
-            setResolvedPdfUrl(url);
-            setIsCheckingPdf(false);
-          }
-        } else {
-          // Individual PDF not found, fallback to the main quran.pdf
-          if (active) {
-            setResolvedPdfUrl("/quran.pdf");
-            setIsCheckingPdf(false);
-          }
-        }
-      } catch (err) {
-        if (active) {
-          setResolvedPdfUrl("/quran.pdf");
-          setIsCheckingPdf(false);
-        }
-      }
-    };
-    checkPdf();
-    return () => {
-      active = false;
-    };
-  }, [surah.pdfUrl, localPdfUrl]);
+  const resolvedPdfUrl = localPdfUrl || "/quran.pdf";
 
-  const activePdf = resolvedPdfUrl;
+  // Dynamic Surah name and bookmark state mapping (Zero state variables)
+  const currentSurah = useMemo(() => findCurrentSurah(currentPage), [currentPage]);
+  const surahName = currentSurah ? `سورة ${currentSurah.name}` : 'القرآن الكريم';
+  const isBookmarked = useMemo(() => bookmarks.some(b => b.pageNumber === currentPage), [bookmarks, currentPage]);
 
   const resetControlsTimeout = useCallback(() => {
     if (isLocked) return;
@@ -141,24 +115,6 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
     };
   }, [localPdfUrl]);
 
-  useEffect(() => {
-    if (currentPage) {
-      onProgressUpdate(surah.number, currentPage);
-    }
-  }, [currentPage, surah.number, onProgressUpdate]);
-
-  useEffect(() => {
-    if (initialPage) {
-      setCurrentPage(initialPage);
-    } else if (surah.startPage) {
-      setCurrentPage(surah.startPage);
-    }
-    setPdfError(null);
-    if (transformRef.current) {
-      transformRef.current.resetTransform();
-    }
-  }, [surah, initialPage]);
-
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setPdfError(null);
@@ -166,7 +122,6 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
 
   const toggleControls = (e: React.MouseEvent) => {
     if (isLocked) return;
-    // Allow controls toggle if clicking empty areas, but not if zooming or clicking on control elements
     const isControlClick = (e.target as HTMLElement).closest('button, input, select, .no-toggle');
     if (!isControlClick) {
       setShowControls(prev => !prev);
@@ -176,25 +131,25 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
 
   const goToNextPage = useCallback(() => {
     if (isLocked) return;
-    if (numPages && currentPage < numPages) {
+    if (currentPage < 604) {
       setDirection('forward');
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage(currentPage + 1);
       if (transformRef.current) {
         transformRef.current.resetTransform(0);
       }
     }
-  }, [isLocked, currentPage, numPages]);
+  }, [isLocked, currentPage, setCurrentPage]);
 
   const goToPrevPage = useCallback(() => {
     if (isLocked) return;
     if (currentPage > 1) {
       setDirection('backward');
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage(currentPage - 1);
       if (transformRef.current) {
         transformRef.current.resetTransform(0);
       }
     }
-  }, [isLocked, currentPage]);
+  }, [isLocked, currentPage, setCurrentPage]);
 
   const handleZoomIn = () => {
     if (transformRef.current) {
@@ -217,7 +172,6 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
   const onZoomChange = (ref: any) => {
     const newScale = ref.state.scale;
     setIsZoomedIn(newScale > 1.05);
-    // Hide controls when actively zooming
     if (newScale > 1.05) {
       setShowControls(false);
     }
@@ -236,9 +190,9 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
     
     const swipeThreshold = 50;
     if (deltaX > swipeThreshold) {
-      goToNextPage(); // Swipe right pulls previous page in RTL context
+      goToPrevPage(); // Swipe right pulls previous page
     } else if (deltaX < -swipeThreshold) {
-      goToPrevPage();
+      goToNextPage(); // Swipe left pulls next page
     }
     touchStartX.current = null;
   };
@@ -250,7 +204,6 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
     const availableWidth = containerSize.width - MARGIN;
     const availableHeight = containerSize.height - MARGIN - (showControls && !isLocked ? 140 : 20);
 
-    // Standard Madinah Mushaf Aspect Ratio (~0.68)
     const pageAspectRatio = 850 / 1250;
     const widthIfFittingHeight = availableHeight * pageAspectRatio;
     
@@ -267,7 +220,6 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
     };
   };
 
-  // Setup animations for page sliding
   const slideVariants: any = {
     enter: (dir: 'forward' | 'backward') => ({
       opacity: 0,
@@ -316,27 +268,39 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
             <div className="flex items-center gap-3">
               <button 
                 onClick={(e) => { e.stopPropagation(); onBack(); }}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white hover:bg-gold-accent hover:text-black transition-all active:scale-95 shadow-md"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white hover:bg-gold-accent hover:text-black transition-all active:scale-95 shadow-md cursor-pointer"
               >
                 <ChevronLeft size={20} className="rotate-180" />
               </button>
               <div className="text-right">
-                <h3 className="font-bold text-lg leading-none tracking-tight text-white">{surah.name}</h3>
+                <h3 className="font-bold text-lg leading-none tracking-tight text-white">{surahName}</h3>
                 <span className="text-[10px] uppercase font-black text-gold-accent tracking-tighter block mt-1.5">صفحة {currentPage}</span>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
               <button 
+                onClick={(e) => { e.stopPropagation(); onToggleBookmark(currentPage); resetControlsTimeout(); }} 
+                className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center border transition-all active:scale-95 shadow-md cursor-pointer",
+                  isBookmarked 
+                    ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400" 
+                    : "bg-white/10 border-white/5 text-white hover:text-gold-accent"
+                )}
+                title={isBookmarked ? "إلغاء حفظ الصفحة" : "حفظ الصفحة الحالية"}
+              >
+                <BookmarkIcon size={18} className={cn(isBookmarked && "fill-emerald-400")} />
+              </button>
+              <button 
                 onClick={(e) => { e.stopPropagation(); setIsNightMode(!isNightMode); resetControlsTimeout(); }} 
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white transition-all active:scale-95 shadow-md"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white transition-all active:scale-95 shadow-md cursor-pointer"
                 title="تغيير الإضاءة والمظهر"
               >
                 {isNightMode ? <Sun size={18} className="text-gold-bright" /> : <Moon size={18} className="text-white" />}
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsLocked(true); setShowControls(false); }} 
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white transition-all active:scale-95 shadow-md"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/5 text-white transition-all active:scale-95 shadow-md cursor-pointer"
                 title="تأمين شاشة القراءة"
               >
                 <Unlock size={18} />
@@ -357,7 +321,7 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               setIsLocked(false);
               setShowControls(true);
             }}
-            className="fixed top-6 left-6 z-[60] w-12 h-12 bg-gold-accent text-emerald-950 font-bold rounded-full flex items-center justify-center border border-gold-bright/30 shadow-[0_4px_30px_rgba(212,175,55,0.4)] active:scale-90 transition-transform"
+            className="fixed top-6 left-6 z-[60] w-12 h-12 bg-gold-accent text-emerald-950 font-bold rounded-full flex items-center justify-center border border-gold-bright/30 shadow-[0_4px_30px_rgba(212,175,55,0.4)] active:scale-90 transition-transform cursor-pointer"
             title="إلغاء قفل الشاشة"
           >
             <Lock size={20} className="animate-pulse" />
@@ -404,7 +368,7 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               <button 
                 onClick={(e) => { e.stopPropagation(); goToPrevPage(); resetControlsTimeout(); }}
                 className={cn(
-                  "p-3 bg-black/40 text-white rounded-full backdrop-blur-md pointer-events-auto transition-all transform hover:scale-110 border border-white/5",
+                  "p-3 bg-black/40 text-white rounded-full backdrop-blur-md pointer-events-auto transition-all transform hover:scale-110 border border-white/5 cursor-pointer",
                   currentPage === 1 ? "opacity-20 cursor-not-allowed" : "hover:bg-gold-accent hover:text-black"
                 )}
                 disabled={currentPage === 1}
@@ -414,10 +378,10 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               <button 
                 onClick={(e) => { e.stopPropagation(); goToNextPage(); resetControlsTimeout(); }}
                 className={cn(
-                  "p-3 bg-black/40 text-white rounded-full backdrop-blur-md pointer-events-auto transition-all transform hover:scale-110 border border-white/5",
-                  currentPage === numPages ? "opacity-20 cursor-not-allowed" : "hover:bg-gold-accent hover:text-black"
+                  "p-3 bg-black/40 text-white rounded-full backdrop-blur-md pointer-events-auto transition-all transform hover:scale-110 border border-white/5 cursor-pointer",
+                  currentPage === 604 ? "opacity-20 cursor-not-allowed" : "hover:bg-gold-accent hover:text-black"
                 )}
-                disabled={currentPage === (numPages || 604)}
+                disabled={currentPage === 604}
               >
                 <ChevronLeft size={32} />
               </button>
@@ -456,14 +420,14 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
                     <div className="space-y-2">
                       <p className="font-bold text-rose-500 text-base">تعذر تحميل صفحة المصحف</p>
                       <p className="text-xs text-white/50 leading-relaxed px-2">
-                        ملف المصحف الإلكتروني ({activePdf.replace("/pdfs/", "")}) غير متوفر حالياً أو لم يتم رفعه على الجهاز.
+                        ملف المصحف الإلكتروني غير متوفر حالياً أو لم يتم تحديثه بنجاح.
                       </p>
                     </div>
                     {/* Native PDF File Upload Box */}
                     <div className="mt-2 w-full">
                       <label className="inline-flex w-full items-center justify-center gap-2 px-5 py-3.5 bg-gold-accent text-emerald-950 font-black text-xs rounded-full cursor-pointer hover:bg-gold-bright active:scale-95 transition-all shadow-[0_4px_15px_rgba(212,175,55,0.3)] select-none">
                         <FileUp size={16} />
-                        <span>تحميل وتصفح ملف PDF يدوياً</span>
+                        <span>تصفح ملف PDF يدوياً</span>
                         <input 
                           type="file" 
                           accept="application/pdf" 
@@ -471,7 +435,7 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                             if (localPdfUrl) {
+                              if (localPdfUrl) {
                                 URL.revokeObjectURL(localPdfUrl);
                               }
                               setLocalPdfUrl(URL.createObjectURL(file));
@@ -484,14 +448,14 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
                   </div>
                 ) : (
                   <Document
-                    file={activePdf}
+                    file={resolvedPdfUrl}
                     options={PDF_OPTIONS}
                     onLoadSuccess={onDocumentLoadSuccess}
                     onLoadError={(error) => setPdfError(error.message)}
                     loading={
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-14 h-14 border-4 border-gold-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(212,175,55,0.3)]" />
-                        <div className="text-gold-accent font-black text-xs uppercase tracking-[0.3em] animate-pulse">جاري تحميل السورة...</div>
+                        <div className="text-gold-accent font-black text-xs uppercase tracking-[0.3em] animate-pulse">جاري تحميل صفحات المصحف...</div>
                       </div>
                     }
                     className="max-w-full max-h-full flex flex-col items-center justify-center select-none relative w-full h-full"
@@ -507,28 +471,28 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
                         style={{ filter: 'none', colorScheme: 'light' }}
                         className={cn(
                           "absolute shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden rounded-2xl border border-white/10 select-none",
-                          "bg-[#ffffff]" // Force pure white to ensure exact color fidelity and prevent transparency shift
+                          "bg-[#ffffff]" // Force pure white to ensure exact color fidelity
                         )}
                       >
                         <Page 
                           pageNumber={currentPage} 
                           renderTextLayer={false} 
                           renderAnnotationLayer={false}
-                          devicePixelRatio={4} // Enforce 300+ DPI equivalents
+                          devicePixelRatio={3} // High resolution rendering
                           width={getPageDimensions().width}
                           scale={getPageDimensions().scale}
                           className="max-w-full object-contain mx-auto select-none pointer-events-none pdf-page-wrapper"
                           loading={
-                            <div className="flex flex-col items-center justify-center p-24 gap-3">
+                            <div className="flex flex-col items-center justify-center p-24 gap-3 bg-white w-full h-full min-h-[300px]">
                               <div className="w-10 h-10 border-4 border-gold-accent border-t-transparent rounded-full animate-spin" />
-                              <span className="text-[10px] text-white/40 font-bold">جاري التهيئة...</span>
+                              <span className="text-[10px] text-emerald-950 font-bold">جاري التهيئة...</span>
                             </div>
                           }
                         />
                       </motion.div>
                     </AnimatePresence>
 
-                    {/* background Smart Cache Queue: Render neighboring pages invisible to force browser pre-caching */}
+                    {/* Background Smart Cache Queue: Render neighboring pages invisible to force browser pre-caching */}
                     <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-9999px' }}>
                       {currentPage > 1 && (
                         <Page 
@@ -576,20 +540,20 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               <div className="flex bg-white/5 border border-white/5 rounded-[1.8rem] p-1 gap-1">
                 <button 
                   onClick={(e) => { e.stopPropagation(); handleZoomIn(); resetControlsTimeout(); }} 
-                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white hover:bg-gold-accent hover:text-black transition-all active:scale-90"
+                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white hover:bg-gold-accent hover:text-black transition-all active:scale-90 cursor-pointer"
                 >
                   <ZoomIn size={18} />
                 </button>
                 <button 
                   onClick={(e) => { e.stopPropagation(); handleResetZoom(); resetControlsTimeout(); }} 
-                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white/50 hover:text-gold-accent hover:bg-white/10 transition-all active:scale-90"
+                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white/50 hover:text-gold-accent hover:bg-white/10 transition-all active:scale-90 cursor-pointer"
                   title="إعادة التكبير للأصل"
                 >
                   <RotateCcw size={15} />
                 </button>
                 <button 
                   onClick={(e) => { e.stopPropagation(); handleZoomOut(); resetControlsTimeout(); }} 
-                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white hover:bg-gold-accent hover:text-black transition-all active:scale-90"
+                  className="w-10 h-10 bg-white/5 rounded-[1.4rem] flex items-center justify-center text-white hover:bg-gold-accent hover:text-black transition-all active:scale-90 cursor-pointer"
                 >
                   <ZoomOut size={18} />
                 </button>
@@ -599,12 +563,12 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               <div className="flex-1 bg-white/5 border border-white/5 rounded-[1.8rem] p-3 flex flex-col gap-1.5 shadow-inner">
                  <div className="flex justify-between items-center px-1">
                     <span className="text-[9px] font-black text-gold-accent uppercase tracking-widest leading-none">صفحة {currentPage}</span>
-                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest leading-none">{numPages || '--'} صفحة</span>
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest leading-none">604 صفحة</span>
                  </div>
                  <div className="relative h-1 bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
                       className="absolute right-0 top-0 h-full bg-gold-accent rounded-full"
-                      animate={{ width: `${(currentPage / (numPages || 604)) * 100}%` }}
+                      animate={{ width: `${(currentPage / 604) * 100}%` }}
                       transition={{ duration: 0.1 }}
                     />
                  </div>
@@ -613,7 +577,7 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
               {/* Index return button */}
               <button 
                 onClick={(e) => { e.stopPropagation(); onBack(); }}
-                className="h-12 px-5 rounded-[1.4rem] bg-gradient-to-br from-gold-bright to-gold-accent text-emerald-950 flex items-center gap-2 shadow-lg hover:brightness-110 active:scale-95 transition-all font-black text-xs"
+                className="h-12 px-5 rounded-[1.4rem] bg-gradient-to-br from-gold-bright to-gold-accent text-emerald-950 flex items-center gap-2 shadow-lg hover:brightness-110 active:scale-95 transition-all font-black text-xs cursor-pointer"
               >
                 <LayoutGrid size={16} />
                 <span>الفهرس</span>
@@ -632,7 +596,7 @@ export default function SurahReader({ surah, onBack, onProgressUpdate, fontSize,
                exit={{ opacity: 0, scale: 0.8 }}
                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#00140a]/80 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black text-gold-accent shadow-2xl border border-white/5 pointer-events-none tracking-widest"
             >
-               صفحة {currentPage} / {numPages || '--'}
+               صفحة {currentPage} / 604
             </motion.div>
          )}
       </AnimatePresence>
