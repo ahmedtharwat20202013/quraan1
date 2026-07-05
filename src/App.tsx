@@ -298,12 +298,25 @@ export default function App() {
     });
   }, [currentScreen]);
 
-  // Sync and schedule Did You Know daily notifications on mount
+  // Sync and schedule Did You Know daily notifications and Adhans on mount
   useEffect(() => {
+    // 1. Did You Know
     import('./services/didYouKnow').then(({ syncDidYouKnowIndex, scheduleWeeklyDidYouKnow }) => {
       syncDidYouKnowIndex();
       scheduleWeeklyDidYouKnow();
     });
+
+    // 2. Azan
+    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') !== 'false';
+    if (isAzanEnabled) {
+      import('./services/azan').then(({ initAzan, scheduleWeeklyAzans }) => {
+        initAzan().then((success) => {
+          if (success) {
+            scheduleWeeklyAzans();
+          }
+        });
+      });
+    }
   }, []);
 
   // Handle native Android back button event

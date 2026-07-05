@@ -24,7 +24,7 @@ const PRESET_VERSES: DailyVerse[] = [
 export default function SettingsSection({ state, setState, onBack }: SettingsProps) {
   const [isInstallable, setIsInstallable] = useState(false);
   const [azanEnabled, setAzanEnabled] = useState(() => {
-    return localStorage.getItem('quran_azan_enabled') === 'true';
+    return localStorage.getItem('quran_azan_enabled') !== 'false';
   });
 
   const [calcMethod, setCalcMethod] = useState(() => {

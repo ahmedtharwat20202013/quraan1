@@ -98,7 +98,7 @@ export default function PrayerSection() {
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('quran_azan_enabled') === 'true';
+    return localStorage.getItem('quran_azan_enabled') !== 'false';
   });
 
 
@@ -303,7 +303,7 @@ export default function PrayerSection() {
 
   // Reschedule Azans when calculation method or location coordinates change
   useEffect(() => {
-    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') === 'true';
+    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') !== 'false';
     if (isAzanEnabled) {
       import('../services/azan').then(({ scheduleWeeklyAzans }) => {
         scheduleWeeklyAzans();
