@@ -6,6 +6,7 @@ import { cn } from '../lib/utils';
 import { isAppInstallable, installPWA } from '../registerSW';
 import { initAzan, scheduleWeeklyAzans, cancelAllScheduledAzans } from '../services/azan';
 import { initDidYouKnowNotifications, scheduleWeeklyDidYouKnow, cancelDidYouKnowNotifications } from '../services/didYouKnow';
+import { DiagnosticsService, DiagnosticsResult } from '../services/diagnostics';
 
 interface SettingsProps {
   state: AppState;
@@ -29,6 +30,18 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
   const [calcMethod, setCalcMethod] = useState(() => {
     return localStorage.getItem('quran_prayer_calc_method') || 'Egyptian';
   });
+
+  const [diagnostics, setDiagnostics] = useState<DiagnosticsResult | null>(null);
+  const [isRunningDiagnostics, setIsRunningDiagnostics] = useState(false);
+
+  const runDiagnostics = async () => {
+    setIsRunningDiagnostics(true);
+    // Tiny delay to make it feel premium
+    await new Promise(resolve => setTimeout(resolve, 800));
+    const result = await DiagnosticsService.check();
+    setDiagnostics(result);
+    setIsRunningDiagnostics(false);
+  };
 
   const handleCalcMethodChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     try {
@@ -289,6 +302,145 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
                 />
               </button>
             </div>
+
+            {/* Quick Settings Direct Launch Buttons */}
+            <div className="p-6 bg-white/[0.02] border-t border-white/5 space-y-3">
+              <span className="text-[10px] font-black text-white/30 uppercase tracking-wider block text-right">أزرار الوصول السريع للنظام</span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => DiagnosticsService.openAppSettings()}
+                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
+                >
+                  ⚙️ إعدادات التطبيق
+                </button>
+                <button
+                  onClick={() => DiagnosticsService.openNotificationSettings()}
+                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
+                >
+                  🔔 إذن الإشعارات
+                </button>
+                <button
+                  onClick={() => DiagnosticsService.openBatterySettings()}
+                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
+                >
+                  🔋 تحسين البطارية
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <button
+                  onClick={() => DiagnosticsService.openAutoStartSettings()}
+                  className="py-3 px-2 bg-gold-accent/10 hover:bg-gold-accent/20 text-gold-accent border border-gold-accent/10 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
+                >
+                  🚀 إعداد التشغيل التلقائي
+                </button>
+                <button
+                  onClick={runDiagnostics}
+                  disabled={isRunningDiagnostics}
+                  className="py-3 px-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/10 rounded-xl font-black text-[10px] text-center active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
+                >
+                  {isRunningDiagnostics ? (
+                    <div className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span>🔍 فحص الأذان والرسائل</span>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Diagnostics Results Panel */}
+            <AnimatePresence>
+              {diagnostics && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="p-6 bg-white/[0.03] border-t border-white/5 space-y-4 text-right overflow-hidden"
+                >
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <button 
+                      onClick={() => setDiagnostics(null)}
+                      className="text-[10px] font-bold text-white/40 hover:text-white"
+                    >
+                      إغلاق الفحص
+                    </button>
+                    <span className="text-[10px] font-black text-gold-accent uppercase tracking-wider">نتائج فحص نظام الأذان</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* 1. Notification Permission */}
+                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
+                      {!diagnostics.hasNotificationPermission ? (
+                        <button
+                          onClick={() => DiagnosticsService.openNotificationSettings()}
+                          className="px-3 py-1.5 bg-rose-500 text-white font-bold text-[9px] rounded-lg active:scale-95 transition-all"
+                        >
+                          فتح الإعدادات
+                        </button>
+                      ) : (
+                        <span className="text-[10px] text-emerald-400 font-bold">نشط وسليم ✅</span>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">إذن الإشعارات العامة</span>
+                        <span className="text-white/30">•</span>
+                        <span>{diagnostics.hasNotificationPermission ? '✅' : '❌'}</span>
+                      </div>
+                    </div>
+
+                    {/* 2. Battery Optimization */}
+                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
+                      {!diagnostics.isIgnoringBatteryOptimizations ? (
+                        <button
+                          onClick={() => DiagnosticsService.requestIgnoreBatteryOptimizations()}
+                          className="px-3 py-1.5 bg-amber-500 text-neutral-950 font-bold text-[9px] rounded-lg active:scale-95 transition-all"
+                        >
+                          إصلاح الآن
+                        </button>
+                      ) : (
+                        <span className="text-[10px] text-emerald-400 font-bold">غير مقيّد (سليم) ✅</span>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">تحسين استهلاك البطارية</span>
+                        <span className="text-white/30">•</span>
+                        <span>{diagnostics.isIgnoringBatteryOptimizations ? '✅' : '❌'}</span>
+                      </div>
+                    </div>
+
+                    {/* 3. Exact Alarms */}
+                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
+                      {!diagnostics.canScheduleExactAlarms ? (
+                        <button
+                          onClick={() => DiagnosticsService.openAppSettings()}
+                          className="px-3 py-1.5 bg-rose-500 text-white font-bold text-[9px] rounded-lg active:scale-95 transition-all"
+                        >
+                          منح الإذن
+                        </button>
+                      ) : (
+                        <span className="text-[10px] text-emerald-400 font-bold">مسموح ومفعّل ✅</span>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">جدولة التنبيهات الدقيقة (Exact Alarm)</span>
+                        <span className="text-white/30">•</span>
+                        <span>{diagnostics.canScheduleExactAlarms ? '✅' : '❌'}</span>
+                      </div>
+                    </div>
+
+                    {/* 4. Alarm Volume Level */}
+                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
+                      {diagnostics.alarmVolume === 0 ? (
+                        <span className="text-[9px] text-rose-400 font-bold animate-pulse">⚠️ يرجى رفع صوت المنبه بالهاتف!</span>
+                      ) : (
+                        <span className="text-[10px] text-emerald-400 font-bold">مسموع ({diagnostics.alarmVolume}/{diagnostics.maxAlarmVolume}) ✅</span>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">مستوى صوت منبه الأذان</span>
+                        <span className="text-white/30">•</span>
+                        <span>{diagnostics.alarmVolume > 0 ? '✅' : '⚠️'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Background Performance Guide (Xiaomi/Huawei/Oppo/Realme etc.) */}
             <div className="p-6 bg-white/[0.01] border-t border-white/5 space-y-4 no-toggle">
