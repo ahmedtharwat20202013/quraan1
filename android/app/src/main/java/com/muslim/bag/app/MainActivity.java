@@ -24,6 +24,12 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        com.capacitorjs.plugins.localnotifications.AzanAudioPlayer.stop();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         

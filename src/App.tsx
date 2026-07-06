@@ -179,11 +179,46 @@ export default function App() {
           if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
               async (position) => {
-                // Silently auto-correct to exact Bahbayt al-Hijarah coordinates
-                const coords = {
-                  latitude: 30.9405,
-                  longitude: 31.2291
-                };
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                if (lat && lon) {
+                  const coords = { latitude: lat, longitude: lon };
+                  localStorage.setItem('quran_gps_coords', JSON.stringify(coords));
+
+                  // Attempt reverse lookup for localized Arabic address display
+                  let address = 'موقع الويب الحالي';
+                  try {
+                    const response = await fetch(
+                      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ar`,
+                      { headers: { 'User-Agent': 'QuranLightApp/1.0' } }
+                    );
+                    if (response.ok) {
+                      const data = await response.json();
+                      if (data.display_name) {
+                        address = data.display_name;
+                      }
+                    }
+                  } catch (e) {
+                    console.warn('Reverse geocoding failed on web:', e);
+                  }
+                  localStorage.setItem('quran_gps_address', address);
+                } else {
+                  // Core fallback to Samanoud
+                  const coords = { latitude: 30.9405, longitude: 31.2291 };
+                  localStorage.setItem('quran_gps_coords', JSON.stringify(coords));
+                  localStorage.setItem('quran_gps_address', 'بهبيت الحجارة، سمنود، الغربية، مصر');
+                }
+
+                const hasReloaded = localStorage.getItem('quran_initial_geo_loaded');
+                if (!hasReloaded) {
+                  localStorage.setItem('quran_initial_geo_loaded', 'true');
+                  window.location.reload();
+                }
+              },
+              (err) => {
+                console.warn('Browser geolocation failed, using fallback coordinates:', err);
+                const coords = { latitude: 30.9405, longitude: 31.2291 };
                 localStorage.setItem('quran_gps_coords', JSON.stringify(coords));
                 localStorage.setItem('quran_gps_address', 'بهبيت الحجارة، سمنود، الغربية، مصر');
 
@@ -193,12 +228,9 @@ export default function App() {
                   window.location.reload();
                 }
               },
-              (err) => {
-                console.warn('Browser geolocation failed:', err);
-              },
               {
                 enableHighAccuracy: true,
-                timeout: 15000,
+                timeout: 8000,
                 maximumAge: 0
               }
             );
@@ -221,13 +253,14 @@ export default function App() {
       let receivedHandle: any = null;
       let actionHandle: any = null;
 
-      // 2. Handle when notification is received (app is in foreground)
       LocalNotifications.addListener(
         'localNotificationReceived',
         (notification) => {
           console.log('Foreground notification received:', notification);
-          // Dismiss notification immediately to stop native sound overlapping
-          LocalNotifications.removeAllDeliveredNotifications();
+          // Dismiss only this received notification to prevent clearing other unseen alerts
+          LocalNotifications.removeDeliveredNotifications({
+            notifications: [{ id: notification.id } as any]
+          });
           
           if (notification.extra?.type === 'did_you_know') {
             setDidYouKnowFact(notification.extra.factText || 'هل تعلم؟');
@@ -300,22 +333,45 @@ export default function App() {
 
   // Sync and schedule Did You Know daily notifications and Adhans on mount
   useEffect(() => {
-    // 1. Did You Know
-    import('./services/didYouKnow').then(({ syncDidYouKnowIndex, scheduleWeeklyDidYouKnow }) => {
-      syncDidYouKnowIndex();
-      scheduleWeeklyDidYouKnow();
-    });
+    const now = Date.now();
+    const oneDayMs = 24 * 60 * 60 * 1000;
 
-    // 2. Azan
-    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') !== 'false';
-    if (isAzanEnabled) {
-      import('./services/azan').then(({ initAzan, scheduleWeeklyAzans }) => {
-        initAzan().then((success) => {
+    // 1. Did You Know scheduling check (with 24-hour lock)
+    const lastDidYouKnowScheduled = localStorage.getItem('quran_last_didyouknow_scheduled');
+    const needsDidYouKnowSchedule = !lastDidYouKnowScheduled || (now - parseInt(lastDidYouKnowScheduled, 10) > oneDayMs);
+
+    import('./services/didYouKnow').then(({ initDidYouKnowNotifications, syncDidYouKnowIndex, scheduleWeeklyDidYouKnow }) => {
+      syncDidYouKnowIndex();
+      if (needsDidYouKnowSchedule) {
+        initDidYouKnowNotifications().then((success) => {
           if (success) {
-            scheduleWeeklyAzans();
+            scheduleWeeklyDidYouKnow().then(() => {
+              localStorage.setItem('quran_last_didyouknow_scheduled', now.toString());
+            });
+          } else {
+            console.warn('Did You Know channel creation failed or permissions rejected.');
           }
         });
-      });
+      }
+    });
+
+    // 2. Azan scheduling check (with 24-hour lock)
+    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') !== 'false';
+    if (isAzanEnabled) {
+      const lastAzanScheduled = localStorage.getItem('quran_last_azan_scheduled');
+      const needsAzanSchedule = !lastAzanScheduled || (now - parseInt(lastAzanScheduled, 10) > oneDayMs);
+
+      if (needsAzanSchedule) {
+        import('./services/azan').then(({ initAzan, scheduleWeeklyAzans }) => {
+          initAzan().then((success) => {
+            if (success) {
+              scheduleWeeklyAzans().then(() => {
+                localStorage.setItem('quran_last_azan_scheduled', now.toString());
+              });
+            }
+          });
+        });
+      }
     }
   }, []);
 

@@ -126,6 +126,7 @@ export const scheduleWeeklyDidYouKnow = async () => {
       await LocalNotifications.schedule({ notifications });
       console.log(`Scheduled ${notifications.length} daily Did You Know notifications.`);
     }
+    localStorage.setItem('quran_last_didyouknow_scheduled', Date.now().toString());
   } catch (e) {
     console.error('Error scheduling Did You Know notifications:', e);
   }

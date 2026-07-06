@@ -190,6 +190,7 @@ export const scheduleWeeklyAzans = async () => {
       });
       console.log(`Successfully scheduled ${notificationsToSchedule.length} future Azan alarms.`);
     }
+    localStorage.setItem('quran_last_azan_scheduled', Date.now().toString());
   } catch (e) {
     console.error('Failed to schedule weekly Azans:', e);
   }
