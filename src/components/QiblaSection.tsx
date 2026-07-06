@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Compass, Navigation, ArrowLeft, RefreshCw, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import { Compass, Navigation, ArrowLeft, RefreshCw, AlertTriangle, CheckCircle2, Info, Search, MapPin } from 'lucide-react';
 import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
+import { OFFLINE_CITIES, OfflineCity } from '../services/offlineGeocoder';
 
 interface QiblaSectionProps {
   onBack: () => void;
@@ -19,6 +20,17 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
   const [sensorStatus, setSensorStatus] = useState<string>('waiting'); // 'waiting' | 'active' | 'unavailable'
   const [isAligned, setIsAligned] = useState<boolean>(false);
   const [needsCalibration, setNeedsCalibration] = useState<boolean>(false);
+
+  // Manual city selection view state
+  const [showCitySelector, setShowCitySelector] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredCities = useMemo(() => {
+    if (!searchQuery.trim()) return OFFLINE_CITIES;
+    return OFFLINE_CITIES.filter(city =>
+      city.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
   // iOS orientation permission state
   const [isIOS, setIsIOS] = useState(false);
@@ -38,7 +50,9 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
   const isAlignedRef = useRef<boolean>(false);
   const compassCleanupRef = useRef<(() => void) | null>(null);
   const gpsWatchIdRef = useRef<string | null>(null);
+  const gpsTimeoutRef = useRef<any>(null);
   const animationFrameIdRef = useRef<number | null>(null);
+  const screenAdjustmentRef = useRef<number>(0);
 
   // Kaaba absolute coordinates (Masjid al-Haram, Makkah)
   const KAABA_LAT = 21.422487;
@@ -62,14 +76,18 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
   // Low-Pass Filter smoothing algorithm with angular wrap-around unwrap
   const filterAngle = (current: number, target: number): number => {
     let diff = ((target - current + 540) % 360) - 180;
-    
-    // Jerk prevention: if angle difference is less than 1 degree, do not rotate
-    if (Math.abs(diff) < 1) {
-      return current;
+    const speed = Math.abs(diff);
+
+    // Dynamic LPF Alpha: responsive during fast movement, hyper-smooth and stable during micro adjustments
+    const alpha = speed > 15 ? 0.22 : speed > 5 ? 0.12 : 0.06;
+
+    // Minimum movement threshold: below 0.3 degrees, apply a very slow ease-in motion
+    // instead of an abrupt freeze, which completely eliminates the "stuck needle" feeling.
+    const MIN_MOVEMENT = 0.3;
+    if (speed < MIN_MOVEMENT) {
+      return (current + diff * 0.03 + 360) % 360;
     }
-    
-    // Low Pass Filter alpha (0.12 ensures high stability while feeling naturally smooth)
-    const alpha = 0.12;
+
     return (current + diff * alpha + 360) % 360;
   };
 
@@ -96,7 +114,23 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
       Geolocation.clearWatch({ id: gpsWatchIdRef.current }).catch(err => console.error("Error clearing watch:", err));
       gpsWatchIdRef.current = null;
     }
+    if (gpsTimeoutRef.current) {
+      clearTimeout(gpsTimeoutRef.current);
+      gpsTimeoutRef.current = null;
+    }
     setIsLocating(false);
+  };
+
+  const handleSelectCity = (city: OfflineCity) => {
+    const coords = { latitude: city.lat, longitude: city.lon };
+    setGpsCoords(coords);
+    const angle = calculateQiblaDirection(coords.latitude, coords.longitude);
+    setQiblaAngle(angle);
+    localStorage.setItem('quran_gps_coords', JSON.stringify(coords));
+    localStorage.setItem('quran_gps_address', city.name);
+    setLocationError(null);
+    setLocationPrecisionLow(true); // Manually chosen, so precision flag warning is appropriate
+    setShowCitySelector(false);
   };
 
   // Fetch coordinates and apply the 50m change threshold restriction
@@ -116,7 +150,7 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
           const angle = calculateQiblaDirection(coords.latitude, coords.longitude);
           setQiblaAngle(angle);
           setIsLocating(false);
-          // Still fetch in background to check for updates
+          return;
         }
       }
 
@@ -139,11 +173,18 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
         if (err) {
           console.warn("GPS watch update error:", err);
           if (!lastCoordsRef.current) {
-            // Hard fallback if no coordinates resolved
-            setLocationPrecisionLow(true);
-            const fallback = { latitude: 30.9405, longitude: 31.2291 }; // Egypt defaults
-            setGpsCoords(fallback);
-            setQiblaAngle(calculateQiblaDirection(fallback.latitude, fallback.longitude));
+            // Check if we have any cached coords, otherwise prompt manual entry
+            const saved = localStorage.getItem('quran_gps_coords');
+            if (saved) {
+              const coords = JSON.parse(saved);
+              setGpsCoords(coords);
+              setQiblaAngle(calculateQiblaDirection(coords.latitude, coords.longitude));
+            } else {
+              setLocationPrecisionLow(true);
+              const fallback = { latitude: 30.9405, longitude: 31.2291 }; // Egypt defaults
+              setGpsCoords(fallback);
+              setQiblaAngle(calculateQiblaDirection(fallback.latitude, fallback.longitude));
+            }
           }
           clearGPSWatch();
           return;
@@ -193,7 +234,7 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
       gpsWatchIdRef.current = watchId;
 
       // Safety timeout: stop high precision watching after 8 seconds to save battery
-      setTimeout(() => {
+      gpsTimeoutRef.current = setTimeout(() => {
         if (gpsWatchIdRef.current) {
           clearGPSWatch();
         }
@@ -201,16 +242,29 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
 
     } catch (e: any) {
       console.warn(e);
-      let errorMsg = 'تعذر الحصول على الموقع الجغرافي. تم استخدام الإحداثيات الافتراضية.';
+      let errorMsg = 'تعذر الحصول على الموقع الجغرافي. يرجى اختيار المدينة يدوياً.';
       if (e.message === 'permission_denied') {
-        errorMsg = 'يرجى السماح بالوصول للموقع لحساب زاوية القبلة لبلدك بدقة.';
+        errorMsg = 'تم رفض إذن الوصول للموقع. يرجى تفعيل الصلاحية أو اختيار المدينة يدوياً.';
       }
       setLocationError(errorMsg);
       setLocationPrecisionLow(true);
       
-      const fallback = { latitude: 30.9405, longitude: 31.2291 };
-      setGpsCoords(fallback);
-      setQiblaAngle(calculateQiblaDirection(fallback.latitude, fallback.longitude));
+      const saved = localStorage.getItem('quran_gps_coords');
+      if (saved) {
+        try {
+          const coords = JSON.parse(saved);
+          setGpsCoords(coords);
+          setQiblaAngle(calculateQiblaDirection(coords.latitude, coords.longitude));
+        } catch (err) {
+          const fallback = { latitude: 30.9405, longitude: 31.2291 };
+          setGpsCoords(fallback);
+          setQiblaAngle(calculateQiblaDirection(fallback.latitude, fallback.longitude));
+        }
+      } else {
+        const fallback = { latitude: 30.9405, longitude: 31.2291 };
+        setGpsCoords(fallback);
+        setQiblaAngle(calculateQiblaDirection(fallback.latitude, fallback.longitude));
+      }
       setIsLocating(false);
     }
   };
@@ -263,17 +317,8 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
       }
 
       if (rawHeading !== null) {
-        // Read screen orientation to support landscape layouts correctly
-        let screenAdjustment = 0;
-        if (typeof window !== 'undefined') {
-          if (window.screen && window.screen.orientation) {
-            screenAdjustment = window.screen.orientation.angle;
-          } else if ('orientation' in window) {
-            screenAdjustment = (window as any).orientation || 0;
-          }
-        }
-
-        const normalizedHeading = (rawHeading + screenAdjustment + 360) % 360;
+        // Apply orientation adjustment cached dynamically in screenAdjustmentRef
+        const normalizedHeading = (rawHeading + screenAdjustmentRef.current + 360) % 360;
         targetHeadingRef.current = normalizedHeading;
         
         // Initialize heading state on first reading
@@ -282,8 +327,15 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
     };
 
     const win = window as any;
-    win.addEventListener('deviceorientationabsolute', handleOrientation);
-    win.addEventListener('deviceorientation', handleOrientation);
+    const supportsAbsolute = 'ondeviceorientationabsolute' in win;
+
+    if (supportsAbsolute) {
+      win.addEventListener('deviceorientationabsolute', handleOrientation);
+      console.log('Using DeviceOrientationAbsolute API for absolute compass readings.');
+    } else {
+      win.addEventListener('deviceorientation', handleOrientation);
+      console.log('Fallback to standard DeviceOrientation API.');
+    }
 
     // Watchdog fallback if sensors fail to report any reading within 2 seconds
     const timer = setTimeout(() => {
@@ -294,8 +346,11 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
     }, 2000);
 
     compassCleanupRef.current = () => {
-      win.removeEventListener('deviceorientationabsolute', handleOrientation);
-      win.removeEventListener('deviceorientation', handleOrientation);
+      if (supportsAbsolute) {
+        win.removeEventListener('deviceorientationabsolute', handleOrientation);
+      } else {
+        win.removeEventListener('deviceorientation', handleOrientation);
+      }
       clearTimeout(timer);
     };
   };
@@ -303,6 +358,29 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
   // 1. Initialize location and orientation listeners
   useEffect(() => {
     fetchLocationAndCalculate();
+
+    // Setup screen orientation adjustment factor listener
+    const updateScreenAdjustment = () => {
+      if (typeof window !== 'undefined') {
+        if (window.screen && window.screen.orientation) {
+          screenAdjustmentRef.current = window.screen.orientation.angle;
+        } else if ('orientation' in window) {
+          screenAdjustmentRef.current = (window as any).orientation || 0;
+        }
+        console.log('Screen orientation adjustment updated:', screenAdjustmentRef.current);
+      }
+    };
+
+    updateScreenAdjustment();
+    
+    if (typeof window !== 'undefined') {
+      if (window.screen && window.screen.orientation) {
+        window.screen.orientation.addEventListener('change', updateScreenAdjustment);
+      } else {
+        window.addEventListener('orientationchange', updateScreenAdjustment);
+      }
+      window.addEventListener('resize', updateScreenAdjustment);
+    }
 
     // Setup calibration listeners
     const handleCalibrationNeeded = (e: Event) => {
@@ -326,6 +404,15 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
     return () => {
       window.removeEventListener('compassneedscalibration', handleCalibrationNeeded);
       
+      if (typeof window !== 'undefined') {
+        if (window.screen && window.screen.orientation) {
+          window.screen.orientation.removeEventListener('change', updateScreenAdjustment);
+        } else {
+          window.removeEventListener('orientationchange', updateScreenAdjustment);
+        }
+        window.removeEventListener('resize', updateScreenAdjustment);
+      }
+
       if (compassCleanupRef.current) {
         compassCleanupRef.current();
       }
@@ -443,9 +530,17 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
       )}
 
       {locationError && !isLocating && (
-        <div className="w-full p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3">
-          <AlertTriangle className="text-rose-400 shrink-0 mt-0.5" size={16} />
-          <p className="text-xs text-rose-300 leading-relaxed">{locationError}</p>
+        <div className="w-full p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex flex-col gap-3">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="text-rose-400 shrink-0 mt-0.5" size={16} />
+            <p className="text-xs text-rose-300 leading-relaxed">{locationError}</p>
+          </div>
+          <button
+            onClick={() => setShowCitySelector(true)}
+            className="w-full py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+          >
+            اختر المدينة يدوياً 🏙️
+          </button>
         </div>
       )}
 
@@ -463,6 +558,13 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
           <span>خط الطول: {gpsCoords.longitude.toFixed(4)}°</span>
           <span className="text-gold-accent/40">•</span>
           <span className="text-gold-accent">القبلة: {qiblaAngle ? Math.round(qiblaAngle) : '--'}°</span>
+          <span className="text-gold-accent/40">•</span>
+          <button
+            onClick={() => setShowCitySelector(true)}
+            className="text-gold-accent hover:underline cursor-pointer"
+          >
+            تغيير
+          </button>
         </div>
       )}
 
@@ -689,6 +791,52 @@ export default function QiblaSection({ onBack }: QiblaSectionProps) {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* City Selector Modal */}
+      {showCitySelector && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-md bg-neutral-900 border border-white/10 rounded-t-3xl rounded-b-2xl flex flex-col max-h-[80vh] shadow-2xl overflow-hidden animate-slide-up">
+            <div className="p-4 border-b border-white/5 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-white">اختر مدينتك يدوياً</h2>
+              <button 
+                onClick={() => setShowCitySelector(false)}
+                className="p-1.5 rounded-lg bg-white/5 text-white/60 hover:text-white text-xs cursor-pointer active:scale-95 transition-all"
+              >
+                إغلاق
+              </button>
+            </div>
+            
+            <div className="p-3 border-b border-white/5">
+              <div className="relative flex items-center">
+                <Search className="absolute right-3 text-white/40" size={16} />
+                <input 
+                  type="text"
+                  placeholder="ابحث عن مدينتك..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full py-2.5 pr-10 pl-3 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/30 focus:outline-none focus:border-gold-accent/50 transition-all text-right"
+                  dir="rtl"
+                />
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+              {filteredCities.map((city, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSelectCity(city)}
+                  className="w-full text-right p-3 rounded-xl hover:bg-white/5 flex items-center justify-between transition-all cursor-pointer group"
+                >
+                  <span className="text-xs text-white group-hover:text-gold-accent transition-all">{city.name}</span>
+                  <MapPin size={14} className="text-white/20 group-hover:text-gold-accent/50" />
+                </button>
+              ))}
+              {filteredCities.length === 0 && (
+                <div className="text-center py-8 text-xs text-white/40">لا توجد نتائج تطابق بحثك</div>
+              )}
+            </div>
           </div>
         </div>
       )}

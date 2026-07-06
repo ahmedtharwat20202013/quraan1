@@ -1,10 +1,10 @@
-interface OfflineCity {
+export interface OfflineCity {
   name: string;
   lat: number;
   lon: number;
 }
 
-const OFFLINE_CITIES: OfflineCity[] = [
+export const OFFLINE_CITIES: OfflineCity[] = [
   // Egypt - Gharbia (High Density Detail)
   { name: 'بهبيت الحجارة، سمنود، الغربية، مصر', lat: 30.9405, lon: 31.2291 },
   { name: 'سمنود، الغربية، مصر', lat: 30.9622, lon: 31.2409 },
@@ -79,7 +79,23 @@ const OFFLINE_CITIES: OfflineCity[] = [
   { name: 'تونس، تونس', lat: 36.8065, lon: 10.1815 },
   { name: 'الجزائر، الجزائر', lat: 36.7525, lon: 3.0420 },
   { name: 'الرباط، المغرب', lat: 34.0209, lon: -6.8416 },
-  { name: 'الدار البيضاء، المغرب', lat: 33.5731, lon: -7.5898 }
+  { name: 'الدار البيضاء، المغرب', lat: 33.5731, lon: -7.5898 },
+
+  // Global & Major Islamic Centers
+  { name: 'جاكرتا، إندونيسيا', lat: -6.2088, lon: 106.8456 },
+  { name: 'كوالالمبور، ماليزيا', lat: 3.1390, lon: 101.6869 },
+  { name: 'كراتشي، باكستان', lat: 24.8607, lon: 67.0011 },
+  { name: 'دكا، بنغلاديش', lat: 23.8103, lon: 90.4125 },
+  { name: 'إسطنبول، تركيا', lat: 41.0082, lon: 28.9784 },
+  { name: 'لندن، المملكة المتحدة', lat: 51.5074, lon: -0.1278 },
+  { name: 'باريس، فرنسا', lat: 48.8566, lon: 2.3522 },
+  { name: 'نيويورك، الولايات المتحدة', lat: 40.7128, lon: -74.0060 },
+  { name: 'تورونتو، كندا', lat: 43.6532, lon: -79.3832 },
+  { name: 'سيدني، أستراليا', lat: -33.8688, lon: 151.2093 },
+  { name: 'مومباي، الهند', lat: 19.0760, lon: 72.8777 },
+  { name: 'موسكو، روسيا', lat: 55.7558, lon: 37.6173 },
+  { name: 'كيب تاون، جنوب أفريقيا', lat: -33.9249, lon: 18.4241 },
+  { name: 'لاغوس، نيجيريا', lat: 6.5244, lon: 3.3792 }
 ];
 
 // Haversine distance formula (in km)
