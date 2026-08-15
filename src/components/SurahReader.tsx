@@ -395,6 +395,7 @@ export default function SurahReader({
   initialTargetAyah,
   initialTargetWordIndex,
   onBack,
+  fontSize,
   bookmarks = [],
   onToggleBookmark,
   onPageChange
@@ -946,8 +947,8 @@ export default function SurahReader({
               >
                 <BalancedPageContent
                   page={currentBalancedPage}
-                  fontSize={QURAN_READER_FONT_SIZE}
-                  lineHeight={QURAN_READER_LINE_HEIGHT}
+                  fontSize={safeFontSize}
+                  lineHeight={activeLineHeight}
                   theme={theme}
                   highlightedWord={highlightedWord}
                 />
