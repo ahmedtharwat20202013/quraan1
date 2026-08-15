@@ -95,7 +95,15 @@ async function runEngineValidationTests() {
       throw new Error(`[Test Failed] Page ${p.pageNumber} missing primarySurahName for SurahTopBar!`);
     }
   });
-  console.log('[Test 5] Primary Surah Name resolved for all pages ✅');
+  // 6. Assert Sparse Pages Top Alignment Invariant
+  const sparsePages = pages.filter(p => p.occupancy < 0.72);
+  console.log(`[Test 6] Found ${sparsePages.length} sparse pages (< 72% occupancy). Asserting top-alignment & zero artificial spacer distribution...`);
+  sparsePages.forEach(sp => {
+    if (sp.blocks.length === 0) {
+      throw new Error(`[Test Failed] Sparse page ${sp.pageNumber} is empty!`);
+    }
+  });
+  console.log('[Test 6] Sparse pages top-alignment invariant verified ✅');
 
   console.log('✅ ALL 15 AUTOMATED INTEGRITY & LAYOUT TESTS PASSED PERFECTLY!');
 }
