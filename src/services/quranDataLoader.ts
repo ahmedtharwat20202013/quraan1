@@ -61,6 +61,7 @@ let fetchPagesV3Promise: Promise<RawQuranPageV3[]> | null = null;
 
 // Pre-computed surah start pages mapping (1..114 -> pageNumber)
 const surahStartPagesMap: Record<number, number> = {};
+const processedPageCache = new Map<number, ProcessedPageData>();
 
 export class QuranDataLoader {
   /**
@@ -203,20 +204,36 @@ export class QuranDataLoader {
 
   /**
    * Gets full processed page data for a page number (1..604) from quran_pages_v3.json + quran.json
+   * Utilizes in-memory processedPageCache for 0ms instant page turns.
    */
   static async getMushafPage(pageNumber: number): Promise<ProcessedPageData | null> {
+    const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
+    const targetPageNum = Math.max(1, Math.min(604, pageNumber));
+
+    // 1. Memory Cache Hit (0ms)
+    if (processedPageCache.has(targetPageNum)) {
+      const cached = processedPageCache.get(targetPageNum)!;
+      if (t0 > 0) {
+        const t1 = performance.now();
+        console.debug('[Mushaf performance]', {
+          page: targetPageNum,
+          source: 'memory-cache',
+          durationMs: Math.round((t1 - t0) * 100) / 100
+        });
+      }
+      return cached;
+    }
+
+    // 2. Build ProcessedPageData from raw JSON
     const pages = await this.getPagesV3Data();
     const quranData = await this.getQuranData();
 
-    const targetPageNum = Math.max(1, Math.min(604, pageNumber));
     const pageRaw = pages.find(p => p.page === targetPageNum);
     if (!pageRaw) return null;
 
     const sections: ProcessedSurahSection[] = pageRaw.surahs.map(section => {
       const surahData = quranData.find(s => s.index === section.id);
       const allAyas = surahData ? surahData.ayas : [];
-
-      // Filter Ayahs for this page section [fromAyah..toAyah]
       const sectionAyas = allAyas.filter(a => a.index >= section.fromAyah && a.index <= section.toAyah);
 
       return {
@@ -231,13 +248,25 @@ export class QuranDataLoader {
     });
 
     const primarySection = sections[0];
-
-    return {
+    const pageDataResult: ProcessedPageData = {
       pageNumber: targetPageNum,
       sections,
       primarySurahId: primarySection ? primarySection.id : 1,
       primarySurahName: primarySection ? primarySection.name : 'الفاتحة'
     };
+
+    processedPageCache.set(targetPageNum, pageDataResult);
+
+    if (t0 > 0) {
+      const t1 = performance.now();
+      console.debug('[Mushaf performance]', {
+        page: targetPageNum,
+        source: 'json-build',
+        durationMs: Math.round((t1 - t0) * 100) / 100
+      });
+    }
+
+    return pageDataResult;
   }
 
   /**
