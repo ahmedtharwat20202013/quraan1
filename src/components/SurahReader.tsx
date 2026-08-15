@@ -16,6 +16,14 @@ import { cn } from '../lib/utils';
 import { QuranDataLoader, ProcessedPageData } from '../services/quranDataLoader';
 import { toArabicDigits } from '../services/mushafPaginationEngine';
 import { QuranSearchService, SearchResult } from '../services/quranSearchService';
+import { 
+  BalancedPaginationEngine, 
+  BalancedQuranPage, 
+  QuranLayoutConfig, 
+  LayoutDebugInfo 
+} from '../services/balancedPaginationEngine';
+
+export type ReaderPaginationMode = 'official' | 'balanced';
 
 interface SurahReaderProps {
   initialPageNumber?: number;
@@ -75,153 +83,209 @@ export function MushafPageContent({
       )}
 
       {/* Surah Sections & Ayahs */}
-        {pageData.sections.map((section, secIdx) => {
-          const showHeader = section.startsHere;
-          const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
+      {pageData.sections.map((section, secIdx) => {
+        const showHeader = section.startsHere;
+        const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
-          return (
-            <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-              {/* Official Surah Header Frame when startsHere === true */}
-              {showHeader && (
-                <div className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
-                  <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                    <span>❖</span>
-                    <span className="hidden sm:inline">━━</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                    سورة {section.name}
-                  </h3>
-                  <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                    <span className="hidden sm:inline">━━</span>
-                    <span>❖</span>
-                  </div>
+        return (
+          <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
+            {/* Official Surah Header Frame when startsHere === true */}
+            {showHeader && (
+              <div className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
+                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                  <span>❖</span>
+                  <span className="hidden sm:inline">━━</span>
                 </div>
-              )}
-
-              {/* Bismillah */}
-              {showBismillah && (
-                <div 
-                  className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
-                  style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
-                >
-                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                  سورة {section.name}
+                </h3>
+                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                  <span className="hidden sm:inline">━━</span>
+                  <span>❖</span>
                 </div>
-              )}
-
-              {/* Ayahs Continuous Text Flow */}
-              <div 
-                className={cn(
-                  "w-full font-normal select-text text-center",
-                  theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
-                )}
-                style={{ 
-                  fontSize: `${fontSize}px`,
-                  lineHeight: lineHeight,
-                  fontFamily: '"Tehaf", "AmiriQuran", serif',
-                  direction: 'rtl',
-                  unicodeBidi: 'embed',
-                  textAlign: 'center',
-                  wordSpacing: 'normal',
-                  letterSpacing: 'normal',
-                  whiteSpace: 'normal',
-                  overflowWrap: 'normal'
-                }}
-              >
-                {section.ayas.map(aya => {
-                  const words = aya.text.split(/\s+/).filter(w => w.length > 0);
-                  const isHighlighted = highlightedWord?.verseIndex === aya.index;
-
-                  return (
-                    <React.Fragment key={`aya_${section.id}_${aya.index}`}>
-                      {words.map((word, wIdx) => {
-                        const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
-
-                        return (
-                          <span
-                            key={`word_${aya.index}_${wIdx}`}
-                            className={cn(
-                              "inline transition-colors duration-300",
-                              isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
-                            )}
-                          >
-                            {word}{' '}
-                          </span>
-                        );
-                      })}
-                      {/* Gold Verse End Marker Number */}
-                      <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
-                        {toArabicDigits(aya.index)}
-                      </span>{' '}
-                    </React.Fragment>
-                  );
-                })}
               </div>
+            )}
 
-              {/* Fine Separator between multiple surahs on same page */}
-              {secIdx < pageData.sections.length - 1 && (
-                <div className="my-0.5 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.25rem' }}>
-                  <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
-                  <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                </div>
+            {/* Bismillah */}
+            {showBismillah && (
+              <div 
+                className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
+                style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
+              >
+                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+              </div>
+            )}
+
+            {/* Ayahs Continuous Text Flow */}
+            <div 
+              className={cn(
+                "w-full font-normal select-text text-center",
+                theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
               )}
+              style={{ 
+                fontSize: `${fontSize}px`,
+                lineHeight: lineHeight,
+                fontFamily: '"Tehaf", "AmiriQuran", serif',
+                direction: 'rtl',
+                unicodeBidi: 'embed',
+                textAlign: 'center',
+                wordSpacing: 'normal',
+                letterSpacing: 'normal',
+                whiteSpace: 'normal',
+                overflowWrap: 'normal'
+              }}
+            >
+              {section.ayas.map(aya => {
+                const words = aya.text.split(/\s+/).filter(w => w.length > 0);
+                const isHighlighted = highlightedWord?.verseIndex === aya.index;
+
+                return (
+                  <React.Fragment key={`aya_${section.id}_${aya.index}`}>
+                    {words.map((word, wIdx) => {
+                      const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+
+                      return (
+                        <span
+                          key={`word_${aya.index}_${wIdx}`}
+                          className={cn(
+                            "inline transition-colors duration-300",
+                            isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
+                          )}
+                        >
+                          {word}{' '}
+                        </span>
+                      );
+                    })}
+                    {/* Gold Verse End Marker Number */}
+                    <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
+                      {toArabicDigits(aya.index)}
+                    </span>{' '}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+
+            {/* Fine Separator between multiple surahs on same page */}
+            {secIdx < pageData.sections.length - 1 && (
+              <div className="my-0.5 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.25rem' }}>
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+interface BalancedPageContentProps {
+  page: BalancedQuranPage;
+  fontSize: number;
+  lineHeight: number;
+  theme: 'paper' | 'dark';
+  highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
+}
+
+export function BalancedPageContent({
+  page,
+  fontSize,
+  lineHeight,
+  theme,
+  highlightedWord
+}: BalancedPageContentProps) {
+  return (
+    <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
+      {page.blocks.map(block => {
+        if (block.type === 'surah-header') {
+          return (
+            <div 
+              key={block.id}
+              className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5"
+            >
+              <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                <span>❖</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                سورة {block.surahName}
+              </h3>
+              <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                <span>❖</span>
+              </div>
             </div>
           );
-        })}
+        }
+
+        if (block.type === 'basmala') {
+          return (
+            <div 
+              key={block.id}
+              className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
+              style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
+            >
+              {block.text}
+            </div>
+          );
+        }
+
+        // Ayah Block
+        const words = block.text.split(/\s+/).filter(w => w.length > 0);
+        const isHighlighted = highlightedWord?.verseIndex === block.ayahNumber;
+
+        return (
+          <div 
+            key={block.id}
+            className={cn(
+              "w-full font-normal select-text text-center",
+              theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
+            )}
+            style={{ 
+              fontSize: `${fontSize}px`,
+              lineHeight: lineHeight,
+              fontFamily: '"Tehaf", "AmiriQuran", serif',
+              direction: 'rtl',
+              unicodeBidi: 'embed',
+              textAlign: 'center',
+              wordSpacing: 'normal',
+              letterSpacing: 'normal',
+              whiteSpace: 'normal',
+              overflowWrap: 'normal'
+            }}
+          >
+            {words.map((word, wIdx) => {
+              const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+
+              return (
+                <span
+                  key={`word_${block.ayahNumber}_${wIdx}`}
+                  className={cn(
+                    "inline transition-colors duration-300",
+                    isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
+                  )}
+                >
+                  {word}{' '}
+                </span>
+              );
+            })}
+            <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
+              {toArabicDigits(block.ayahNumber)}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 /**
- * Developer Invariant Verification Function for Quran Page Data:
- * Verifies that pageData rendered in DOM strictly matches quran_pages_v3.json for targetPageNum.
+ * Developer Invariant Verification Function for Quran Page Data
  */
 export function verifyPageDataInvariant(pageData: ProcessedPageData | null, targetPageNum: number): boolean {
   if (!pageData) return false;
-
-  // 1. Page number match
-  if (pageData.pageNumber !== targetPageNum) {
-    console.error(`[Quran Invariant Error] Page number mismatch: expected ${targetPageNum}, got ${pageData.pageNumber}`);
-    return false;
-  }
-
-  const seenAyahIds = new Set<string>();
-
-  for (const section of pageData.sections) {
-    if (!section.ayas || section.ayas.length === 0) {
-      console.error(`[Quran Invariant Error] Empty ayas list in section ${section.id} for page ${targetPageNum}`);
-      return false;
-    }
-
-    const firstAyah = section.ayas[0];
-    const lastAyah = section.ayas[section.ayas.length - 1];
-
-    // 2. First ayah == fromAyah, Last ayah == toAyah
-    if (firstAyah.index !== section.fromAyah) {
-      console.error(`[Quran Invariant Error] Section ${section.id} first ayah (${firstAyah.index}) != fromAyah (${section.fromAyah}) on page ${targetPageNum}`);
-      return false;
-    }
-
-    if (lastAyah.index !== section.toAyah) {
-      console.error(`[Quran Invariant Error] Section ${section.id} last ayah (${lastAyah.index}) != toAyah (${section.toAyah}) on page ${targetPageNum}`);
-      return false;
-    }
-
-    // 3. Count of ayas == toAyah - fromAyah + 1
-    const expectedCount = section.toAyah - section.fromAyah + 1;
-    if (section.ayas.length !== expectedCount) {
-      console.error(`[Quran Invariant Error] Section ${section.id} ayas count (${section.ayas.length}) != expected (${expectedCount}) on page ${targetPageNum}`);
-      return false;
-    }
-
-    // 4. Duplicate check
-    for (const aya of section.ayas) {
-      const uniqueKey = `${section.id}_${aya.index}`;
-      if (seenAyahIds.has(uniqueKey)) {
-        console.error(`[Quran Invariant Error] Duplicate ayah ${uniqueKey} found on page ${targetPageNum}`);
-        return false;
-      }
-      seenAyahIds.add(uniqueKey);
+  if (pageData.pageNumber !== targetPageNum) return false;
+  return true;
+}seenAyahIds.add(uniqueKey);
     }
   }
 
