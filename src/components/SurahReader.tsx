@@ -610,6 +610,8 @@ export default function SurahReader({
                   unicodeBidi: 'embed',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility'
+                }}
               >
                 <MushafPageContent
                   pageData={pageData}
