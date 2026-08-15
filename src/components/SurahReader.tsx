@@ -48,6 +48,7 @@ export const DEFAULT_QURAN_FONT_SIZE = 31;
 export const MAX_READABLE_FONT_SIZE = 44;
 export const QURAN_READER_LINE_HEIGHT = 1.65;
 export const QURAN_LAYOUT_VERSION = 'official-json-render-v1';
+export const QURAN_RENDER_VERSION = 'official-json-recovery-v1';
 
 export type RenderBlock =
   | { type: 'surah-header'; surahId: number; surahName: string }
@@ -60,7 +61,10 @@ export type QuranPageRenderModel = {
   primarySurahName: string;
   sections: ProcessedSurahSection[];
   blocks: RenderBlock[];
+  expectedAyahKeys: string[];
 };
+
+export type QuranPageModel = QuranPageRenderModel;
 
 export type ValidationResult = {
   isValid: boolean;
@@ -78,11 +82,12 @@ export type QuranVisualMetrics = {
   pageOccupancy: number;
 };
 
-export function getOfficialPageBlocks(
+export function buildOfficialPageModel(
   pageNumber: number,
   pageData: ProcessedPageData
-): QuranPageRenderModel {
+): QuranPageModel {
   const blocks: RenderBlock[] = [];
+  const expectedAyahKeys: string[] = [];
 
   pageData.sections.forEach(section => {
     const isSurahStart = section.startsHere;
@@ -105,6 +110,8 @@ export function getOfficialPageBlocks(
     }
 
     section.ayas.forEach(aya => {
+      const key = `${section.id}:${aya.index}`;
+      expectedAyahKeys.push(key);
       blocks.push({
         type: 'ayah',
         surahId: section.id,
@@ -119,11 +126,19 @@ export function getOfficialPageBlocks(
     primarySurahId: pageData.primarySurahId,
     primarySurahName: pageData.primarySurahName,
     sections: pageData.sections,
-    blocks
+    blocks,
+    expectedAyahKeys
   };
 }
 
-export function validateOfficialPageModel(model: QuranPageRenderModel): ValidationResult {
+export function getOfficialPageBlocks(
+  pageNumber: number,
+  pageData: ProcessedPageData
+): QuranPageRenderModel {
+  return buildOfficialPageModel(pageNumber, pageData);
+}
+
+export function validateQuranPageModel(model: QuranPageModel): ValidationResult {
   const errors: string[] = [];
   let expectedAyahsCount = 0;
 
@@ -140,10 +155,18 @@ export function validateOfficialPageModel(model: QuranPageRenderModel): Validati
     errors.push(`Expected ${expectedAyahsCount} total ayahs, rendered ${ayahBlocks.length}`);
   }
 
+  if (model.expectedAyahKeys.length !== expectedAyahsCount) {
+    errors.push(`Expected key count mismatch: expected ${expectedAyahsCount}, got ${model.expectedAyahKeys.length}`);
+  }
+
   return {
     isValid: errors.length === 0,
     errors
   };
+}
+
+export function validateOfficialPageModel(model: QuranPageRenderModel): ValidationResult {
+  return validateQuranPageModel(model);
 }
 
 export function getSafeQuranFontSize(requestedSize?: number): number {
