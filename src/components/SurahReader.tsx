@@ -29,16 +29,19 @@ interface SurahReaderProps {
 }
 
 // Reading Padding Constants
-export const READING_TOP_PADDING = 1.5;
-export const READING_BOTTOM_PADDING = 1.5;
+export const READING_TOP_PADDING = 2;
+export const READING_BOTTOM_PADDING = 2;
 export const READING_SIDE_PADDING = 12;
 
-// Font Policy Constants (32px Standard / 30px Dense Floor)
-export const QURAN_READER_FONT_SIZE = 32;
-export const QURAN_READER_LINE_HEIGHT = 1.68;
+// Font Policy Constants (Balanced Mobile Reading: 26px Standard / 24px Dense / 22px Floor)
+export const QURAN_READER_FONT_SIZE = 26;
+export const QURAN_READER_LINE_HEIGHT = 1.62;
 
-export const DENSE_PAGE_FONT_SIZE = 30;
-export const DENSE_PAGE_LINE_HEIGHT = 1.60;
+export const DENSE_PAGE_FONT_SIZE = 24;
+export const DENSE_PAGE_LINE_HEIGHT = 1.54;
+
+export const COMPACT_PAGE_FONT_SIZE = 22;
+export const COMPACT_PAGE_LINE_HEIGHT = 1.48;
 
 interface MushafPageContentProps {
   pageData: ProcessedPageData;
@@ -57,112 +60,119 @@ export function MushafPageContent({
   highlightedWord,
   currentPageNumber
 }: MushafPageContentProps) {
+  // Check if any section on this page has the official surah start header
+  const hasSurahStartHeader = pageData.sections.some(s => s.startsHere);
+
   return (
-    <div className="w-full flex flex-col justify-center items-center my-auto space-y-1">
+    <div className="w-full h-full flex flex-col justify-between items-center my-auto space-y-1">
       {/* 1. Mushaf Page Context Header (Top of Page) */}
       <div 
-        className="mushaf-page-context shrink-0 w-full flex items-center justify-between px-2 mb-0.5 py-0.5 text-sm font-bold text-gold-accent border-b border-gold-accent/30 select-none"
-        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '26px' }}
+        className="mushaf-page-context shrink-0 w-full flex items-center justify-between px-2 mb-0.5 py-0.5 text-xs font-bold text-gold-accent border-b border-gold-accent/25 select-none"
+        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '22px' }}
         dir="rtl"
       >
-        <span className="text-base font-black">سورة {pageData.primarySurahName}</span>
-        <span className="text-xs text-gold-accent/80">صفحة {toArabicDigits(currentPageNumber)}</span>
+        <span className="font-bold text-gold-accent">
+          {hasSurahStartHeader ? 'المصحف الشريف' : `سورة ${pageData.primarySurahName}`}
+        </span>
+        <span className="text-gold-accent/80">صفحة {toArabicDigits(currentPageNumber)}</span>
       </div>
 
       {/* 2. Surah Sections & Ayahs */}
-      {pageData.sections.map((section, secIdx) => {
-        const showHeader = section.startsHere;
-        const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
+      <div className="w-full flex-1 flex flex-col justify-center items-center space-y-1">
+        {pageData.sections.map((section, secIdx) => {
+          const showHeader = section.startsHere;
+          const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
-        return (
-          <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-            {/* Official Surah Header Frame when startsHere === true */}
-            {showHeader && (
-              <div className="w-full rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
-                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                  <span>❖</span>
-                  <span className="hidden sm:inline">━━</span>
+          return (
+            <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
+              {/* Official Surah Header Frame when startsHere === true */}
+              {showHeader && (
+                <div className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
+                  <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                    <span>❖</span>
+                    <span className="hidden sm:inline">━━</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                    سورة {section.name}
+                  </h3>
+                  <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                    <span className="hidden sm:inline">━━</span>
+                    <span>❖</span>
+                  </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                  سورة {section.name}
-                </h3>
-                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                  <span className="hidden sm:inline">━━</span>
-                  <span>❖</span>
-                </div>
-              </div>
-            )}
-
-            {/* Bismillah */}
-            {showBismillah && (
-              <div 
-                className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-1"
-                style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.25rem' }}
-              >
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-              </div>
-            )}
-
-            {/* Ayahs Continuous Text Flow */}
-            <div 
-              className={cn(
-                "w-full font-normal select-text text-center",
-                theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
               )}
-              style={{ 
-                fontSize: `${fontSize}px`,
-                lineHeight: lineHeight,
-                fontFamily: '"Tehaf", "AmiriQuran", serif',
-                direction: 'rtl',
-                unicodeBidi: 'embed',
-                textAlign: 'center',
-                wordSpacing: 'normal',
-                letterSpacing: 'normal',
-                whiteSpace: 'normal',
-                overflowWrap: 'normal'
-              }}
-            >
-              {section.ayas.map(aya => {
-                const words = aya.text.split(/\s+/).filter(w => w.length > 0);
-                const isHighlighted = highlightedWord?.verseIndex === aya.index;
 
-                return (
-                  <React.Fragment key={`aya_${section.id}_${aya.index}`}>
-                    {words.map((word, wIdx) => {
-                      const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+              {/* Bismillah */}
+              {showBismillah && (
+                <div 
+                  className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
+                  style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
+                >
+                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                </div>
+              )}
 
-                      return (
-                        <span
-                          key={`word_${aya.index}_${wIdx}`}
-                          className={cn(
-                            "inline transition-colors duration-300",
-                            isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
-                          )}
-                        >
-                          {word}{' '}
-                        </span>
-                      );
-                    })}
-                    {/* Gold Verse End Marker Number */}
-                    <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
-                      {toArabicDigits(aya.index)}
-                    </span>{' '}
-                  </React.Fragment>
-                );
-              })}
-            </div>
+              {/* Ayahs Continuous Text Flow */}
+              <div 
+                className={cn(
+                  "w-full font-normal select-text text-center",
+                  theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
+                )}
+                style={{ 
+                  fontSize: `${fontSize}px`,
+                  lineHeight: lineHeight,
+                  fontFamily: '"Tehaf", "AmiriQuran", serif',
+                  direction: 'rtl',
+                  unicodeBidi: 'embed',
+                  textAlign: 'center',
+                  wordSpacing: 'normal',
+                  letterSpacing: 'normal',
+                  whiteSpace: 'normal',
+                  overflowWrap: 'normal'
+                }}
+              >
+                {section.ayas.map(aya => {
+                  const words = aya.text.split(/\s+/).filter(w => w.length > 0);
+                  const isHighlighted = highlightedWord?.verseIndex === aya.index;
 
-            {/* Fine Separator between multiple surahs on same page */}
-            {secIdx < pageData.sections.length - 1 && (
-              <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.35rem' }}>
-                <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
-                <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                  return (
+                    <React.Fragment key={`aya_${section.id}_${aya.index}`}>
+                      {words.map((word, wIdx) => {
+                        const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+
+                        return (
+                          <span
+                            key={`word_${aya.index}_${wIdx}`}
+                            className={cn(
+                              "inline transition-colors duration-300",
+                              isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
+                            )}
+                          >
+                            {word}{' '}
+                          </span>
+                        );
+                      })}
+                      {/* Gold Verse End Marker Number */}
+                      <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
+                        {toArabicDigits(aya.index)}
+                      </span>{' '}
+                    </React.Fragment>
+                  );
+                })}
               </div>
-            )}
-          </div>
-        );
-      })}
+
+              {/* Fine Separator between multiple surahs on same page */}
+              {secIdx < pageData.sections.length - 1 && (
+                <div className="my-0.5 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.25rem' }}>
+                  <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
+                  <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -393,29 +403,32 @@ export default function SurahReader({
     }
   }, [pageData?.primarySurahId]);
 
-  // Typography policy states (32px standard / 30px dense floor)
+  // Typography policy states (26px Standard / 24px Dense / 22px Floor)
   const [activeFontSize, setActiveFontSize] = useState<number>(QURAN_READER_FONT_SIZE);
   const [activeLineHeight, setActiveLineHeight] = useState<number>(QURAN_READER_LINE_HEIGHT);
   const visibleContentRef = useRef<HTMLDivElement>(null);
 
-  // Reset font policy to 32px / 1.68 for each new page
+  // Reset font policy to 26px / 1.62 for each new page
   useEffect(() => {
     setActiveFontSize(QURAN_READER_FONT_SIZE);
     setActiveLineHeight(QURAN_READER_LINE_HEIGHT);
   }, [currentPageNumber, pageData]);
 
-  // Dev verification: Step down to 30px / 1.60 if 32px overflows, log if 30px floor overflows
+  // Dynamic font step-down to prevent any vertical clipping: 26px -> 24px -> 22px
   useEffect(() => {
     if (!pageData || !visibleContentRef.current) return;
     const el = visibleContentRef.current;
 
     if (el.scrollHeight > el.clientHeight + 2) {
       if (activeFontSize === QURAN_READER_FONT_SIZE) {
-        setActiveFontSize(DENSE_PAGE_FONT_SIZE);
-        setActiveLineHeight(DENSE_PAGE_LINE_HEIGHT);
+        setActiveFontSize(DENSE_PAGE_FONT_SIZE); // 24px
+        setActiveLineHeight(DENSE_PAGE_LINE_HEIGHT); // 1.54
+      } else if (activeFontSize === DENSE_PAGE_FONT_SIZE) {
+        setActiveFontSize(COMPACT_PAGE_FONT_SIZE); // 22px
+        setActiveLineHeight(COMPACT_PAGE_LINE_HEIGHT); // 1.48
       } else {
         const overflowPx = el.scrollHeight - el.clientHeight;
-        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at 30px dense floor.`);
+        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at 22px floor.`);
       }
     }
   }, [currentPageNumber, pageData, activeFontSize, activeLineHeight]);
