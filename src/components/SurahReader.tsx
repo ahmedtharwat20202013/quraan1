@@ -29,8 +29,8 @@ interface SurahReaderProps {
 }
 
 // Reading Padding Constants
-export const READING_TOP_PADDING = 6;
-export const READING_BOTTOM_PADDING = 8;
+export const READING_TOP_PADDING = 1.5;
+export const READING_BOTTOM_PADDING = 1.5;
 export const READING_SIDE_PADDING = 12;
 
 // Font Policy Constants (32px Standard / 30px Dense Floor)
@@ -59,15 +59,14 @@ export function MushafPageContent({
 }: MushafPageContentProps) {
   return (
     <div className="w-full flex flex-col justify-center items-center my-auto space-y-1">
-      {/* 1. Mushaf Page Context Header */}
+      {/* 1. Mushaf Page Context Header (Top of Page) */}
       <div 
-        className="mushaf-page-context shrink-0 w-full flex items-center justify-center gap-2 mb-1 py-0.5 text-[0.92rem] font-bold text-gold-accent border-b border-gold-accent/25 select-none"
-        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '30px' }}
+        className="mushaf-page-context shrink-0 w-full flex items-center justify-between px-2 mb-0.5 py-0.5 text-sm font-bold text-gold-accent border-b border-gold-accent/30 select-none"
+        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '26px' }}
         dir="rtl"
       >
-        <span>سورة {pageData.primarySurahName}</span>
-        <span className="opacity-60">•</span>
-        <span>صفحة {toArabicDigits(currentPageNumber)}</span>
+        <span className="text-base font-black">سورة {pageData.primarySurahName}</span>
+        <span className="text-xs text-gold-accent/80">صفحة {toArabicDigits(currentPageNumber)}</span>
       </div>
 
       {/* 2. Surah Sections & Ayahs */}
