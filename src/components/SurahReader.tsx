@@ -850,53 +850,6 @@ export default function SurahReader({
           </AnimatePresence>
         )}
       </div>
-                        {section.ayas.map(aya => {
-                          const words = aya.text.split(/\s+/).filter(w => w.length > 0);
-                          const isHighlighted = highlightedWord?.verseIndex === aya.index;
-
-                          return (
-                            <React.Fragment key={`aya_${section.id}_${aya.index}`}>
-                              {words.map((word, wIdx) => {
-                                const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
-
-                                return (
-                                  <span
-                                    key={`word_${aya.index}_${wIdx}`}
-                                    className={cn(
-                                      "inline transition-colors duration-300",
-                                      isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
-                                    )}
-                                  >
-                                    {word}{' '}
-                                  </span>
-                                );
-                              })}
-                              {/* Gold Verse End Marker Number (Without Brackets) */}
-                              <span className="text-gold-accent font-black text-[0.85em] px-1 inline-block select-none">
-                                {toArabicDigits(aya.index)}
-                              </span>{' '}
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-
-                      {/* Horizontal Separator if multiple surahs on page */}
-                      {secIdx < pageData.sections.length - 1 && (
-                        <div className="my-3 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
-                          <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
-                          <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        )}
-      </div>
 
       {/* Bottom Controls Floating Navigation Bar */}
       <AnimatePresence>
