@@ -394,49 +394,32 @@ export default function SurahReader({
     }
   }, [pageData?.primarySurahId]);
 
-  // Selected layout state
-  const [selectedLayout, setSelectedLayout] = useState<PageLayoutConfig>(PAGE_LAYOUTS[1]);
-  const [useCompactSpacing, setUseCompactSpacing] = useState<boolean>(false);
+  // Typography policy states (32px standard / 30px dense floor)
+  const [activeFontSize, setActiveFontSize] = useState<number>(QURAN_READER_FONT_SIZE);
+  const [activeLineHeight, setActiveLineHeight] = useState<number>(QURAN_READER_LINE_HEIGHT);
   const visibleContentRef = useRef<HTMLDivElement>(null);
 
-  // Initial layout candidate based on page word count
+  // Reset font policy to 32px / 1.68 for each new page
   useEffect(() => {
-    if (!pageData) return;
-    const totalWords = pageData.sections.reduce((acc, sec) => {
-      return acc + sec.ayas.reduce((wAcc, a) => wAcc + a.text.split(/\s+/).filter(w => w.length > 0).length, 0);
-    }, 0);
-
-    if (totalWords <= 65) {
-      setSelectedLayout(PAGE_LAYOUTS[0]); // spacious (30px)
-      setUseCompactSpacing(false);
-    } else if (totalWords > 125) {
-      setSelectedLayout(PAGE_LAYOUTS[2]); // dense (26px)
-      setUseCompactSpacing(false);
-    } else {
-      setSelectedLayout(PAGE_LAYOUTS[1]); // standard (28px)
-      setUseCompactSpacing(false);
-    }
+    setActiveFontSize(QURAN_READER_FONT_SIZE);
+    setActiveLineHeight(QURAN_READER_LINE_HEIGHT);
   }, [currentPageNumber, pageData]);
 
-  // Dev verification: Check if page fits; step down layout if overflow occurs
+  // Dev verification: Step down to 30px / 1.60 if 32px overflows, log if 30px floor overflows
   useEffect(() => {
     if (!pageData || !visibleContentRef.current) return;
     const el = visibleContentRef.current;
 
-    // Check overflow
     if (el.scrollHeight > el.clientHeight + 2) {
-      if (selectedLayout.name === 'spacious') {
-        setSelectedLayout(PAGE_LAYOUTS[1]); // standard (28px)
-      } else if (selectedLayout.name === 'standard') {
-        setSelectedLayout(PAGE_LAYOUTS[2]); // dense (26px)
-      } else if (selectedLayout.name === 'dense' && !useCompactSpacing) {
-        setUseCompactSpacing(true); // dense (26px) compact
+      if (activeFontSize === QURAN_READER_FONT_SIZE) {
+        setActiveFontSize(DENSE_PAGE_FONT_SIZE);
+        setActiveLineHeight(DENSE_PAGE_LINE_HEIGHT);
       } else {
         const overflowPx = el.scrollHeight - el.clientHeight;
-        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at dense (26px) layout.`);
+        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at 30px dense floor.`);
       }
     }
-  }, [currentPageNumber, pageData, selectedLayout, useCompactSpacing]);
+  }, [currentPageNumber, pageData, activeFontSize, activeLineHeight]);
 
   // Auto-hiding controls timeout
   const resetHideTimer = useCallback(() => {
@@ -718,9 +701,9 @@ export default function SurahReader({
                 className="h-full w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center items-center overflow-hidden z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: 'calc(10px + env(safe-area-inset-top, 0px))',
-                  paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
-                  paddingInline: '14px',
+                  paddingTop: `calc(${READING_TOP_PADDING}px + env(safe-area-inset-top, 0px))`,
+                  paddingBottom: `calc(${READING_BOTTOM_PADDING}px + env(safe-area-inset-bottom, 0px))`,
+                  paddingInline: `${READING_SIDE_PADDING}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   WebkitFontSmoothing: 'antialiased',
@@ -730,10 +713,11 @@ export default function SurahReader({
               >
                 <MushafPageContent
                   pageData={pageData}
-                  layout={selectedLayout}
+                  fontSize={activeFontSize}
+                  lineHeight={activeLineHeight}
                   theme={theme}
                   highlightedWord={highlightedWord}
-                  compactSpacing={useCompactSpacing}
+                  currentPageNumber={currentPageNumber}
                 />
               </div>
             </motion.div>
