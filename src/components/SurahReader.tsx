@@ -238,6 +238,41 @@ export default function SurahReader({
   const [error, setError] = useState<string | null>(null);
   const [direction, setDirection] = useState<number>(1);
 
+  // Auto-hiding controls state
+  const [showControls, setShowControls] = useState<boolean>(true);
+  const hideControlsTimer = useRef<any>(null);
+
+  // Theme state ('paper' | 'dark')
+  const [theme, setTheme] = useState<'paper' | 'dark'>(() => {
+    try {
+      return (localStorage.getItem('mushaf_theme') as 'paper' | 'dark') || 'paper';
+    } catch {
+      return 'paper';
+    }
+  });
+
+  // In-Surah Search States
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  // Word-Specific Highlight State
+  const [highlightedWord, setHighlightedWord] = useState<{ verseIndex: number; wordIndex: number; isFading?: boolean } | null>(
+    initialTargetAyah !== undefined && initialTargetWordIndex !== undefined
+      ? { verseIndex: initialTargetAyah, wordIndex: initialTargetWordIndex, isFading: false }
+      : null
+  );
+  const highlightTimerRef = useRef<any>(null);
+  const fadeTimerRef = useRef<any>(null);
+
+  // Touch gesture tracking
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchEndY = useRef<number | null>(null);
+  const prevInitialRef = useRef(initialPageNumber);
+
   // Non-blocking Font Loading with 600ms Timeout Race
   useEffect(() => {
     let active = true;
