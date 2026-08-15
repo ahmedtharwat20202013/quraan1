@@ -630,16 +630,16 @@ export default function SurahReader({
 
       {/* Main Container (100dvh Zero Scroll) */}
       <main className="relative min-h-0 flex-1 overflow-hidden flex flex-col justify-center items-center w-full h-full">
-        {/* Loading State */}
-        {(loading || !fontLoaded) && (
+        {/* Full-screen initial spinner ONLY on first open when pageData is null */}
+        {isInitialLoading && !pageData && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
             <div className="w-12 h-12 border-4 border-gold-accent border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-black text-gold-accent">جاري تحميل صفحة المصحف الشريف...</p>
+            <p className="text-sm font-black text-gold-accent">جاري فتح المصحف الشريف...</p>
           </div>
         )}
 
         {/* Error State */}
-        {error && !loading && (
+        {error && !isInitialLoading && !pageData && (
           <div className="max-w-md p-8 text-center space-y-6 bg-rose-500/10 rounded-[2rem] border border-rose-500/20 shadow-xl my-auto">
             <div className="w-14 h-14 bg-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mx-auto">
               <AlertTriangle size={28} />
@@ -656,12 +656,12 @@ export default function SurahReader({
         )}
 
         {/* Full Screen Edge-to-Edge 604 Mushaf Page View */}
-        {!loading && fontLoaded && !error && pageData && (
+        {pageData && (
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`mushaf_page_${currentPageNumber}_${theme}`}
               initial={{ opacity: 0, x: direction * 25, scale: 0.99 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
+              animate={{ opacity: isPageTransitioning ? 0.85 : 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
               className="flex h-full min-h-0 flex-col w-full justify-center items-center relative overflow-hidden"
