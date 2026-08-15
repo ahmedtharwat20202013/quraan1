@@ -28,11 +28,19 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-// Candidate font sizes for single-screen Page Composition Fitting (Clamped strictly 18px - 30px)
-export const PAGE_FONT_CANDIDATES = [30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18];
-export const SPARSE_PAGE_MAX_COVERAGE = 0.90;
-export const NORMAL_PAGE_MIN_COVERAGE = 0.68;
-export const PAGE_BOTTOM_SAFE_SPACE_PX = 18;
+// Mandatory Reading Constants & Fitting Floor (MINIMUM 23px STRICTLY ENFORCED!)
+export const MIN_READABLE_FONT_SIZE = 23;
+export const STANDARD_FONT_SIZE = 26;
+
+export const SPARSE_FONT_CANDIDATES = [30, 29, 28, 27];
+export const DENSE_FONT_CANDIDATES = [26, 25, 24, 23];
+
+export const SPARSE_LINE_HEIGHT = 1.82;
+export const STANDARD_LINE_HEIGHT = 1.74;
+export const DENSE_LINE_HEIGHT = 1.68;
+
+export const PAGE_SAFE_TOP_PX = 10;
+export const PAGE_SAFE_BOTTOM_PX = 18;
 
 export interface PageCompositionConfig {
   fontSize: number;
@@ -44,30 +52,32 @@ export interface PageCompositionConfig {
 }
 
 export function getCompositionPreset(fontPx: number): PageCompositionConfig {
-  if (fontPx >= 25) {
+  // STRICT FLOOR ENFORCEMENT: Never drop below 23px under any circumstances!
+  const font = Math.max(MIN_READABLE_FONT_SIZE, Math.min(30, fontPx));
+
+  if (font >= 27) {
     return {
-      fontSize: fontPx,
-      lineHeight: 1.92,
+      fontSize: font,
+      lineHeight: SPARSE_LINE_HEIGHT,
       presetName: 'Sparse',
       spaceClass: 'space-y-3 sm:space-y-4',
       headerMarginClass: 'my-2 py-2 px-3',
       bismillahMarginClass: 'my-2'
     };
-  } else if (fontPx === 24) {
+  } else if (font === 26) {
     return {
-      fontSize: 24,
-      lineHeight: 1.86,
+      fontSize: 26,
+      lineHeight: STANDARD_LINE_HEIGHT,
       presetName: 'Standard',
       spaceClass: 'space-y-2 sm:space-y-2.5',
-      headerMarginClass: 'my-1.5 py-1.5 px-3',
+      headerMarginClass: 'my-1 py-1.5 px-3',
       bismillahMarginClass: 'my-1.5'
     };
   } else {
-    // 23px down to 18px: line-height scales from 1.82 at 23px to 1.68 at 18px
-    const lh = Number((1.82 - (23 - fontPx) * 0.028).toFixed(2));
+    // 25px, 24px, 23px (Dense Preset with line height 1.68 and compact non-Quranic margins)
     return {
-      fontSize: fontPx,
-      lineHeight: Math.max(1.68, lh),
+      fontSize: font,
+      lineHeight: DENSE_LINE_HEIGHT,
       presetName: 'Dense',
       spaceClass: 'space-y-1 sm:space-y-1.5',
       headerMarginClass: 'my-0.5 py-1 px-2.5',
@@ -76,7 +86,7 @@ export function getCompositionPreset(fontPx: number): PageCompositionConfig {
   }
 }
 
-// In-memory cache for page composition fit per (pageNumber, containerWidth, availablePageHeight, theme)
+// In-memory cache for page composition fit per (pageNumber:viewportWidth:viewportHeight)
 const pageCompositionCache = new Map<string, PageCompositionConfig>();
 
 function renderMeasuringHtml(pageData: ProcessedPageData, config: PageCompositionConfig, theme: string): string {
@@ -97,7 +107,7 @@ function renderMeasuringHtml(pageData: ProcessedPageData, config: PageCompositio
     const ayasText = section.ayas.map(a => `${a.text} ${toArabicDigits(a.index)} `).join('');
 
     const ayasHtml = `
-      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:center; direction:rtl; unicode-bidi:embed;">
+      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:justify; text-align-last:center; text-justify:inter-word; direction:rtl; unicode-bidi:embed;">
         ${ayasText}
       </div>`;
 
@@ -239,7 +249,7 @@ export default function SurahReader({
     return () => observer.disconnect();
   }, []);
 
-  // DOM-Based Measurement Loop for Page Composition Fitting
+  // DOM-Based Measurement Loop for Page Composition Fitting (Enforcing MINIMUM 23px Floor!)
   useEffect(() => {
     if (!fontLoaded || loading || !pageData || !measuringContainerRef.current) {
       return;
@@ -249,9 +259,9 @@ export default function SurahReader({
     const viewportH = typeof window !== 'undefined' ? window.innerHeight : 800;
     const topBarH = 56;
     const bottomNavH = 60;
-    const availablePageH = Math.max(250, viewportH - topBarH - bottomNavH - PAGE_BOTTOM_SAFE_SPACE_PX);
+    const availablePageH = Math.max(250, viewportH - topBarH - bottomNavH - PAGE_SAFE_TOP_PX - PAGE_SAFE_BOTTOM_PX);
 
-    const cacheKey = `${currentPageNumber}_${availableW}_${availablePageH}_${theme}`;
+    const cacheKey = `${currentPageNumber}:${availableW}:${viewportH}`;
     if (pageCompositionCache.has(cacheKey)) {
       setComposition(pageCompositionCache.get(cacheKey)!);
       return;
@@ -260,30 +270,52 @@ export default function SurahReader({
     const measurerEl = measuringContainerRef.current;
     measurerEl.style.width = `${availableW}px`;
 
-    let bestConfig = getCompositionPreset(24);
+    let bestConfig = getCompositionPreset(STANDARD_FONT_SIZE); // Default 26px Standard
+    let found = false;
 
-    for (const candidate of PAGE_FONT_CANDIDATES) {
+    // Step 1: Check Sparse candidates [30, 29, 28, 27]
+    for (const candidate of SPARSE_FONT_CANDIDATES) {
       const config = getCompositionPreset(candidate);
-
       measurerEl.innerHTML = renderMeasuringHtml(pageData, config, theme);
       const measuredH = measurerEl.scrollHeight;
 
       if (measuredH <= availablePageH) {
-        const coverage = measuredH / availablePageH;
+        bestConfig = config;
+        found = true;
+        break;
+      }
+    }
 
-        if (candidate >= 25) {
-          if (coverage <= SPARSE_PAGE_MAX_COVERAGE) {
-            bestConfig = config;
-            break;
-          }
-        } else if (candidate === 24) {
+    // Step 2: If sparse doesn't fit, check Standard (26px)
+    if (!found) {
+      const config26 = getCompositionPreset(STANDARD_FONT_SIZE);
+      measurerEl.innerHTML = renderMeasuringHtml(pageData, config26, theme);
+      const measuredH = measurerEl.scrollHeight;
+
+      if (measuredH <= availablePageH) {
+        bestConfig = config26;
+        found = true;
+      }
+    }
+
+    // Step 3: If Standard doesn't fit, check Dense candidates [26, 25, 24, 23]
+    if (!found) {
+      for (const candidate of DENSE_FONT_CANDIDATES) {
+        const config = getCompositionPreset(candidate);
+        measurerEl.innerHTML = renderMeasuringHtml(pageData, config, theme);
+        const measuredH = measurerEl.scrollHeight;
+
+        if (measuredH <= availablePageH) {
           bestConfig = config;
-          break;
-        } else {
-          bestConfig = config;
+          found = true;
           break;
         }
       }
+    }
+
+    // Fallback if extremely dense: Use 23px floor (never drop below 23px!)
+    if (!found) {
+      bestConfig = getCompositionPreset(MIN_READABLE_FONT_SIZE);
     }
 
     pageCompositionCache.set(cacheKey, bestConfig);
