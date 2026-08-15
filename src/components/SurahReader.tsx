@@ -485,8 +485,8 @@ export default function SurahReader({
         </div>
       )}
 
-      {/* Main Full-Screen Mushaf Page Display Container (Starts AT VERY TOP top:0) */}
-      <div className="flex-1 min-h-0 w-full h-full flex flex-col justify-start items-center relative overflow-hidden pt-0 pb-0 px-0 sm:px-2">
+      {/* Main Full-Screen Display Container */}
+      <div className="flex-1 min-h-0 w-full h-full flex flex-col justify-start items-center relative pt-0 pb-0 px-0 sm:px-2">
         {/* Loading State */}
         {(loading || !fontLoaded) && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
@@ -521,7 +521,7 @@ export default function SurahReader({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="w-full h-full flex flex-col justify-start relative overflow-hidden"
+              className="w-full h-full min-h-0 flex flex-col justify-start relative"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
@@ -529,8 +529,13 @@ export default function SurahReader({
               {/* Page Surah Sections Body: READING MODE LAYOUT ENGINE */}
               <div 
                 ref={textContainerRef}
-                className="flex-1 min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto px-3.5 sm:px-6 md:px-8 pt-4 pb-[calc(6rem+env(safe-area-inset-bottom))] z-10 space-y-3"
+                className="flex-1 min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overscroll-contain px-3.5 sm:px-6 md:px-8 z-10 space-y-3"
                 style={{
+                  boxSizing: 'border-box',
+                  paddingTop: '1rem',
+                  paddingInline: '0.75rem',
+                  paddingBottom: `calc(${BOTTOM_CONTROLS_SAFE_SPACE_PX}px + env(safe-area-inset-bottom, 0px))`,
+                  scrollPaddingBottom: `calc(${BOTTOM_CONTROLS_SAFE_SPACE_PX}px + env(safe-area-inset-bottom, 0px))`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   whiteSpace: 'normal',
@@ -630,8 +635,6 @@ export default function SurahReader({
                     </div>
                   );
                 })}
-                {/* Natural bottom breathing space */}
-                <div className="w-full h-16 shrink-0 pointer-events-none" />
               </div>
             </motion.div>
           </AnimatePresence>
