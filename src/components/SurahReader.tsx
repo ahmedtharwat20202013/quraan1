@@ -473,7 +473,7 @@ export default function SurahReader({
                   {pageData ? `سورة ${pageData.primarySurahName}` : 'المصحف الشريف'}
                 </h2>
                 <p className="text-[10px] text-white/60 font-bold">
-                  صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤
+                  صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤ (قراءة حسب صفحات المصحف)
                   {pageData && pageData.sections.length > 0 && (
                     <span className="text-gold-accent/80 font-bold mr-1">
                       • آية {toArabicDigits(pageData.sections[0].fromAyah)} - {toArabicDigits(pageData.sections[pageData.sections.length - 1].toAyah)}
