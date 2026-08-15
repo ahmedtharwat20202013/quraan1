@@ -39,9 +39,9 @@ async function runEngineValidationTests() {
   const testConfig: QuranLayoutConfig = {
     containerWidth: 390,
     availableHeight: 840,
-    fontSize: 26,
-    lineHeight: 1.62,
-    fontFamily: '"Tehaf", "AmiriQuran", serif',
+    fontSize: 30,
+    lineHeight: 1.85,
+    fontFamily: '"Tehaf", "AmiriQuran", "Noto Sans Arabic", serif',
     theme: 'paper',
     showVerseNumbers: true
   };
