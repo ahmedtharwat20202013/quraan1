@@ -74,6 +74,9 @@ async function runEngineValidationTests() {
 
   if (!auditReport.isValid) {
     console.error('Validation errors:', auditReport.errors);
+    pages.filter(p => auditReport.overflowPages.includes(p.pageNumber)).slice(0, 3).forEach(p => {
+      console.log(`Page ${p.pageNumber} blocks count: ${p.blocks.length}, types: ${p.blocks.map(b => b.type).join(', ')}`);
+    });
     throw new Error('Balanced Pagination Engine Audit Failed!');
   }
 

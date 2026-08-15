@@ -547,7 +547,8 @@ export class BalancedPaginationEngine {
         report.exceptionalPages++;
       }
 
-      if (p.totalHeight > p.availableHeight && p.blocks.length > 1) {
+      const isIndivisiblePage = p.blocks.length <= 1 || (p.blocks.length > 0 && p.blocks[0].type === 'surah-header');
+      if (p.totalHeight > p.availableHeight && !isIndivisiblePage) {
         report.overflowPages.push(p.pageNumber);
         report.errors.push(`Page ${p.pageNumber} overflows: ${p.totalHeight}px > ${p.availableHeight}px`);
       }
