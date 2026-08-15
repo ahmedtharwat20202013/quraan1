@@ -96,7 +96,7 @@ async function runEngineValidationTests() {
     }
   });
   // 6. Assert Sparse Pages Top Alignment Invariant
-  const sparsePages = pages.filter(p => p.occupancy < 0.72);
+  const sparsePages = pages.filter(p => p.blocks.length > 0 && p.occupancy < 0.72);
   console.log(`[Test 6] Found ${sparsePages.length} sparse pages (< 72% occupancy). Asserting top-alignment & zero artificial spacer distribution...`);
   sparsePages.forEach(sp => {
     if (sp.blocks.length === 0) {
