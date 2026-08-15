@@ -57,28 +57,11 @@ export function MushafPageContent({
   fontSize,
   lineHeight,
   theme,
-  highlightedWord,
-  currentPageNumber
+  highlightedWord
 }: MushafPageContentProps) {
-  // Check if any section on this page has the official surah start header
-  const hasSurahStartHeader = pageData.sections.some(s => s.startsHere);
-
   return (
-    <div className="w-full h-full flex flex-col justify-between items-center my-auto space-y-1">
-      {/* 1. Mushaf Page Context Header (Top of Page) */}
-      <div 
-        className="mushaf-page-context shrink-0 w-full flex items-center justify-between px-2 mb-0.5 py-0.5 text-xs font-bold text-gold-accent border-b border-gold-accent/25 select-none"
-        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '22px' }}
-        dir="rtl"
-      >
-        <span className="font-bold text-gold-accent">
-          {hasSurahStartHeader ? 'المصحف الشريف' : `سورة ${pageData.primarySurahName}`}
-        </span>
-        <span className="text-gold-accent/80">صفحة {toArabicDigits(currentPageNumber)}</span>
-      </div>
-
-      {/* 2. Surah Sections & Ayahs */}
-      <div className="w-full flex-1 flex flex-col justify-center items-center space-y-1">
+    <div className="w-full flex flex-col justify-center items-center my-auto space-y-1">
+      {/* Surah Sections & Ayahs */}
         {pageData.sections.map((section, secIdx) => {
           const showHeader = section.startsHere;
           const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
@@ -172,7 +155,6 @@ export function MushafPageContent({
             </div>
           );
         })}
-      </div>
     </div>
   );
 }
