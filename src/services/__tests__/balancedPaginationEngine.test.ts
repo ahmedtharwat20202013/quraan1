@@ -1,18 +1,23 @@
+import fs from 'fs';
+import path from 'path';
 import { 
   BalancedPaginationEngine, 
   normalizeQuranBlocks, 
   QuranLayoutConfig, 
-  getLayoutKey 
+  measureBlockHeight,
+  pageCost
 } from '../balancedPaginationEngine';
-import { QuranDataLoader } from '../quranDataLoader';
+import { JsonSurah } from '../quranDataLoader';
 
 async function runEngineValidationTests() {
   console.log('====================================================');
   console.log('  BALANCED PAGINATION ENGINE AUTOMATED VALIDATION  ');
   console.log('====================================================\n');
 
-  // 1. Data Normalization Invariants
-  const quranData = await QuranDataLoader.getQuranData();
+  // 1. Load Quran Data from local file system in Node test runner
+  const quranJsonPath = path.resolve(process.cwd(), 'public', 'quran.json');
+  const rawData = JSON.parse(fs.readFileSync(quranJsonPath, 'utf-8'));
+  const quranData: JsonSurah[] = rawData.quran || rawData;
   console.log(`[Test 1] Loaded raw Quran data: ${quranData.length} surahs (expected 114)`);
 
   const rawBlocks = normalizeQuranBlocks(quranData);
@@ -40,6 +45,10 @@ async function runEngineValidationTests() {
     theme: 'paper',
     showVerseNumbers: true
   };
+
+  // Mock data loader for Node environment test
+  const { QuranDataLoader } = await import('../quranDataLoader');
+  QuranDataLoader.getQuranData = async () => quranData;
 
   console.log('[Test 3] Executing Balanced Pagination Algorithm...');
   const pages = await BalancedPaginationEngine.getBalancedPages(testConfig, true);
