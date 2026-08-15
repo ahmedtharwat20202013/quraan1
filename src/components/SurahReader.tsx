@@ -767,9 +767,9 @@ export default function SurahReader({
                 className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-hidden px-3.5 sm:px-6 md:px-8 z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: '0.5rem',
+                  paddingTop: `${PAGE_SAFE_TOP_PX}px`,
                   paddingInline: '0.75rem',
-                  paddingBottom: `${PAGE_BOTTOM_SAFE_SPACE_PX}px`,
+                  paddingBottom: `${PAGE_SAFE_BOTTOM_PX}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   whiteSpace: 'normal',
@@ -822,7 +822,7 @@ export default function SurahReader({
                         {/* Ayahs Continuous Text Flow with Smart Single-Screen Composition Fitting */}
                         <div 
                           className={cn(
-                            "w-full text-center select-text font-normal",
+                            "w-full font-normal select-text",
                             theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                           )}
                           style={{ 
@@ -831,6 +831,9 @@ export default function SurahReader({
                             fontFamily: '"Tehaf", "AmiriQuran", serif',
                             direction: 'rtl',
                             unicodeBidi: 'embed',
+                            textAlign: 'justify',
+                            textAlignLast: 'center',
+                            textJustify: 'inter-word',
                             letterSpacing: 'normal', 
                             wordSpacing: 'normal' 
                           }}
