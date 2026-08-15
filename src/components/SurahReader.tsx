@@ -103,7 +103,7 @@ export function MushafPageContent({
   highlightedWord
 }: MushafPageContentProps) {
   return (
-    <div className="quran-page-content w-full flex flex-col justify-start items-center my-auto space-y-1" dir="rtl">
+    <div className="quran-page-content w-full flex flex-col justify-start items-stretch space-y-1 mt-0 mb-0" dir="rtl">
       {pageData.sections.map((section, secIdx) => {
         const isSurahStart = section.startsHere;
         const showBismillah = isSurahStart && section.id !== 9 && section.id !== 1;
@@ -196,7 +196,7 @@ export function BalancedPageContent({
   highlightedWord
 }: BalancedPageContentProps) {
   return (
-    <div className="quran-page-content w-full flex flex-col justify-start items-center my-auto space-y-1" dir="rtl">
+    <div className="quran-page-content w-full flex flex-col justify-start items-stretch space-y-1 mt-0 mb-0" dir="rtl">
       {page.blocks.map(block => {
         if (block.type === 'surah-header') {
           return <SurahContentHeader key={block.id} surahName={block.surahName} />;
@@ -851,13 +851,13 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Main Container (100dvh Zero Scroll) */}
-      <main className="relative min-h-0 flex-1 overflow-hidden flex flex-col justify-center items-center w-full h-full">
+      {/* Main Container (Top-Aligned Normal Flow Viewport) */}
+      <main className="quran-viewport relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-start items-center w-full">
         {/* Full-screen initial spinner ONLY on first open when pageData is null */}
         {(isInitialLoading || isComputingBalanced) && !pageData && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
             <div className="w-12 h-12 border-4 border-gold-accent border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-black text-gold-accent">جاري تحميل الصفحات المتزنة للمصحف...</p>
+            <p className="text-sm font-black text-gold-accent">جاري تحميل صفحة المصحف الشريف...</p>
           </div>
         )}
 
@@ -887,7 +887,7 @@ export default function SurahReader({
               animate={{ opacity: isPageTransitioning ? 0.85 : 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="flex h-full min-h-0 flex-col w-full justify-center items-center relative overflow-hidden"
+              className="flex min-h-0 flex-col w-full justify-start items-center relative pt-14 pb-16"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
@@ -895,11 +895,11 @@ export default function SurahReader({
               <div 
                 ref={visibleContentRef}
                 data-json-page={currentPageNumber}
-                className="h-full w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center items-center overflow-hidden z-10"
+                className="quran-page-content h-auto min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start items-stretch z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: `calc(${READING_TOP_PADDING}px + env(safe-area-inset-top, 0px))`,
-                  paddingBottom: `calc(${READING_BOTTOM_PADDING}px + env(safe-area-inset-bottom, 0px))`,
+                  paddingTop: `calc(14px + env(safe-area-inset-top, 0px))`,
+                  paddingBottom: `calc(22px + env(safe-area-inset-bottom, 0px))`,
                   paddingInline: `${READING_SIDE_PADDING}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
@@ -929,17 +929,17 @@ export default function SurahReader({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="flex h-full min-h-0 flex-col w-full justify-center items-center relative overflow-hidden"
+              className="flex min-h-0 flex-col w-full justify-start items-center relative pt-14 pb-16"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
               <div 
-                className="h-full w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center items-center overflow-hidden z-10"
+                className="quran-page-content h-auto min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start items-stretch z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: `calc(${READING_TOP_PADDING}px + env(safe-area-inset-top, 0px))`,
-                  paddingBottom: `calc(${READING_BOTTOM_PADDING}px + env(safe-area-inset-bottom, 0px))`,
+                  paddingTop: `calc(14px + env(safe-area-inset-top, 0px))`,
+                  paddingBottom: `calc(22px + env(safe-area-inset-bottom, 0px))`,
                   paddingInline: `${READING_SIDE_PADDING}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
