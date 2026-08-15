@@ -28,44 +28,45 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-// Strict 2-Policy Typography Constants (NO Canvas Calibration, NO Candidate Loops, NO Font Below 26px!)
-export const DENSE_AND_STANDARD_FONT_SIZE = 26;
-export const DENSE_AND_STANDARD_LINE_HEIGHT = 1.52;
+// Natural Arabic Typography Constants (Zero Browser Justification Stretch, Clean Centered Alignment)
+export const NATURAL_PAGE_FONT_SIZE = 25;
+export const NATURAL_PAGE_LINE_HEIGHT = 1.66;
 
-export const SPARSE_FONT_SIZE = 30;
-export const SPARSE_LINE_HEIGHT = 1.58;
+export const DENSE_PAGE_FONT_SIZE = 24;
+export const DENSE_PAGE_LINE_HEIGHT = 1.60;
 
+export const NATURAL_PAGE_HORIZONTAL_PADDING = 12;
 export const PAGE_SAFE_TOP_PX = 10;
-export const PAGE_SAFE_BOTTOM_PX = 18;
+export const PAGE_SAFE_BOTTOM_PX = 14;
 
 export interface PageCompositionConfig {
-  fontSize: number; // 26 or 30 ONLY
-  lineHeight: number; // 1.52 or 1.58 ONLY
-  presetName: 'Standard' | 'Sparse';
+  fontSize: number; // 25 or 24 ONLY
+  lineHeight: number; // 1.66 or 1.60 ONLY
+  presetName: 'Natural' | 'Dense';
   spaceClass: string;
   headerMarginClass: string;
   bismillahMarginClass: string;
 }
 
-export function getStandardPreset(): PageCompositionConfig {
+export function getNaturalPreset(): PageCompositionConfig {
   return {
-    fontSize: DENSE_AND_STANDARD_FONT_SIZE, // 26px
-    lineHeight: DENSE_AND_STANDARD_LINE_HEIGHT, // 1.52
-    presetName: 'Standard',
-    spaceClass: 'space-y-1.5 sm:space-y-2',
-    headerMarginClass: 'my-0.5 py-1 px-2.5',
-    bismillahMarginClass: 'my-0.5'
+    fontSize: NATURAL_PAGE_FONT_SIZE, // 25px
+    lineHeight: NATURAL_PAGE_LINE_HEIGHT, // 1.66
+    presetName: 'Natural',
+    spaceClass: 'space-y-2 sm:space-y-2.5',
+    headerMarginClass: 'my-1 py-1.5 px-3',
+    bismillahMarginClass: 'my-1.5'
   };
 }
 
-export function getSparsePreset(): PageCompositionConfig {
+export function getDensePreset(): PageCompositionConfig {
   return {
-    fontSize: SPARSE_FONT_SIZE, // 30px
-    lineHeight: SPARSE_LINE_HEIGHT, // 1.58
-    presetName: 'Sparse',
-    spaceClass: 'space-y-3 sm:space-y-4',
-    headerMarginClass: 'my-1 py-1.5 px-3',
-    bismillahMarginClass: 'my-1.5'
+    fontSize: DENSE_PAGE_FONT_SIZE, // 24px
+    lineHeight: DENSE_PAGE_LINE_HEIGHT, // 1.60
+    presetName: 'Dense',
+    spaceClass: 'space-y-1 sm:space-y-1.5',
+    headerMarginClass: 'my-0.5 py-1 px-2.5',
+    bismillahMarginClass: 'my-0.5'
   };
 }
 
@@ -83,14 +84,14 @@ function renderMeasuringHtml(pageData: ProcessedPageData, config: PageCompositio
       </div>` : '';
 
     const bismillahHtml = showBismillah ? `
-      <div style="font-family:'Tehaf','AmiriQuran',serif;" class="text-center font-normal ${config.bismillahMarginClass} select-none shrink-0 opacity-95">
+      <div style="font-family:'Tehaf','AmiriQuran',serif; margin-block: 6px;" class="text-center font-normal select-none shrink-0 opacity-95">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       </div>` : '';
 
     const ayasText = section.ayas.map(a => `${a.text} ${toArabicDigits(a.index)} `).join('');
 
     const ayasHtml = `
-      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:justify; text-align-last:center; text-justify:inter-word; direction:rtl; unicode-bidi:embed; word-spacing:normal; letter-spacing:normal;">
+      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:center; direction:rtl; unicode-bidi:embed; word-spacing:normal; letter-spacing:normal; white-space:normal;">
         ${ayasText}
       </div>`;
 
@@ -230,7 +231,9 @@ export default function SurahReader({
     return () => observer.disconnect();
   }, []);
 
-  // Strict 2-Policy Decision Algorithm: Standard (26px / 1.52) vs Sparse (30px / 1.58)
+  // Natural Arabic Page Fitting (Natural 25px / 1.66 vs Dense 24px / 1.60)
+  const [composition, setComposition] = useState<PageCompositionConfig>(() => getNaturalPreset());
+
   useEffect(() => {
     if (!fontLoaded || loading || !pageData || !measuringContainerRef.current) {
       return;
@@ -251,23 +254,18 @@ export default function SurahReader({
     const measurerEl = measuringContainerRef.current;
     measurerEl.style.width = `${availableW}px`;
 
-    // 1. Measure at Base Standard Preset (26px / 1.52)
-    const stdPreset = getStandardPreset();
-    measurerEl.innerHTML = renderMeasuringHtml(pageData, stdPreset);
-    const measuredContentHeight = measurerEl.scrollHeight;
+    // 1. Measure at Natural Preset (25px / 1.66)
+    const naturalPreset = getNaturalPreset();
+    measurerEl.innerHTML = renderMeasuringHtml(pageData, naturalPreset);
+    const naturalHeight = measurerEl.scrollHeight;
 
-    const coverage = measuredContentHeight / availablePageH;
-    let finalConfig = stdPreset;
+    let finalConfig = naturalPreset;
 
-    // 2. If coverage < 0.55, test Sparse Preset (30px / 1.58)
-    if (coverage < 0.55) {
-      const sparsePreset = getSparsePreset();
-      measurerEl.innerHTML = renderMeasuringHtml(pageData, sparsePreset);
-      const sparseHeight = measurerEl.scrollHeight;
-
-      if (sparseHeight <= availablePageH) {
-        finalConfig = sparsePreset;
-      }
+    // 2. If Natural Preset overflows available height, switch to Dense Preset (24px / 1.60)
+    if (naturalHeight > availablePageH) {
+      const densePreset = getDensePreset();
+      measurerEl.innerHTML = renderMeasuringHtml(pageData, densePreset);
+      finalConfig = densePreset;
     }
 
     pageCompositionCache.set(cacheKey, finalConfig);
