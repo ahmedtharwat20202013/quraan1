@@ -215,7 +215,6 @@ export default function SurahReader({
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const measuringContainerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [composition, setComposition] = useState<PageCompositionConfig>(() => getStandardPreset());
 
   useEffect(() => {
     if (!pageContainerRef.current) return;
@@ -703,11 +702,11 @@ export default function SurahReader({
               <div 
                 ref={pageContainerRef}
                 data-json-page={currentPageNumber}
-                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-hidden px-3.5 sm:px-6 md:px-8 z-10"
+                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-hidden z-10"
                 style={{
                   boxSizing: 'border-box',
                   paddingTop: `${PAGE_SAFE_TOP_PX}px`,
-                  paddingInline: '0.75rem',
+                  paddingInline: `${NATURAL_PAGE_HORIZONTAL_PADDING}px`,
                   paddingBottom: `${PAGE_SAFE_BOTTOM_PX}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
@@ -749,7 +748,7 @@ export default function SurahReader({
                         {showBismillah && (
                           <div 
                             className={cn(
-                              "text-center font-normal select-none text-gold-accent text-xs sm:text-sm opacity-95 shrink-0",
+                              "text-center font-normal select-none text-gold-accent text-xs sm:text-sm opacity-95 shrink-0 my-[6px]",
                               composition.bismillahMarginClass
                             )}
                             style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
@@ -758,10 +757,10 @@ export default function SurahReader({
                           </div>
                         )}
 
-                        {/* Ayahs Continuous Text Flow with Smart Single-Screen Composition Fitting */}
+                        {/* Ayahs Continuous Text Flow with Natural Centered Arabic Typography */}
                         <div 
                           className={cn(
-                            "w-full font-normal select-text",
+                            "w-full font-normal select-text text-center",
                             theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                           )}
                           style={{ 
@@ -770,11 +769,10 @@ export default function SurahReader({
                             fontFamily: '"Tehaf", "AmiriQuran", serif',
                             direction: 'rtl',
                             unicodeBidi: 'embed',
-                            textAlign: 'justify',
-                            textAlignLast: 'center',
-                            textJustify: 'inter-word',
-                            letterSpacing: 'normal', 
-                            wordSpacing: 'normal' 
+                            textAlign: 'center',
+                            wordSpacing: 'normal',
+                            letterSpacing: 'normal',
+                            whiteSpace: 'normal'
                           }}
                         >
                           {section.ayas.map(aya => {
