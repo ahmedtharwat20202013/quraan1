@@ -274,6 +274,17 @@ export default function SurahReader({
     setComposition(finalConfig);
   }, [currentPageNumber, pageData, fontLoaded, loading, containerWidth]);
 
+  // Dev mode verification: Check scrollHeight <= clientHeight without masking
+  useEffect(() => {
+    if (pageContainerRef.current) {
+      const el = pageContainerRef.current;
+      if (el.scrollHeight > el.clientHeight) {
+        const overflowPx = el.scrollHeight - el.clientHeight;
+        console.warn(`[Quran Page Overflow Warning] Page ${currentPageNumber} overflows by ${overflowPx}px (scrollHeight: ${el.scrollHeight}px, clientHeight: ${el.clientHeight}px).`);
+      }
+    }
+  }, [currentPageNumber, composition]);
+
   // Ensure font is loaded
   useEffect(() => {
     if (typeof document !== 'undefined' && 'fonts' in document) {
