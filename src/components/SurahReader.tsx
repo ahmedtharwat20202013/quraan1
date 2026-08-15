@@ -522,16 +522,92 @@ export default function SurahReader({
     };
   }, [currentPageNumber, resetHideTimer]);
 
+  // Load balanced layout engine pages on resize or mode change
+  const computeBalancedLayout = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+    setIsComputingBalanced(true);
+
+    const w = visibleContentRef.current ? visibleContentRef.current.clientWidth : (window.innerWidth || 390);
+    const h = visibleContentRef.current ? visibleContentRef.current.clientHeight : (window.innerHeight || 840);
+
+    const config: QuranLayoutConfig = {
+      containerWidth: Math.max(280, w),
+      availableHeight: Math.max(400, h),
+      fontSize: QURAN_READER_FONT_SIZE,
+      lineHeight: QURAN_READER_LINE_HEIGHT,
+      fontFamily: '"Tehaf", "AmiriQuran", serif',
+      theme,
+      showVerseNumbers: true
+    };
+
+    try {
+      const pages = await BalancedPaginationEngine.getBalancedPages(config);
+      setBalancedPages(pages);
+    } catch (e) {
+      console.error('Failed to compute balanced pagination:', e);
+    } finally {
+      setIsComputingBalanced(false);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (paginationMode === 'balanced') {
+      computeBalancedLayout();
+    }
+  }, [paginationMode, computeBalancedLayout]);
+
+  const currentBalancedPage = useMemo(() => {
+    if (balancedPages.length === 0) return null;
+    const idx = Math.max(0, Math.min(balancedPages.length - 1, balancedPageNumber - 1));
+    return balancedPages[idx] || null;
+  }, [balancedPages, balancedPageNumber]);
+
   const performPageTurn = useCallback((step: number) => {
-    setCurrentPageNumber(prev => {
-      const next = Math.max(1, Math.min(604, prev + step));
-      if (next !== prev) {
-        setDirection(step);
-        resetHideTimer();
+    if (paginationMode === 'official') {
+      setCurrentPageNumber(prev => {
+        const next = Math.max(1, Math.min(604, prev + step));
+        if (next !== prev) {
+          setDirection(step);
+          resetHideTimer();
+        }
+        return next;
+      });
+    } else {
+      setBalancedPageNumber(prev => {
+        const maxP = Math.max(1, balancedPages.length);
+        const next = Math.max(1, Math.min(maxP, prev + step));
+        if (next !== prev) {
+          setDirection(step);
+          resetHideTimer();
+        }
+        return next;
+      });
+    }
+  }, [paginationMode, balancedPages.length, resetHideTimer]);
+
+  const togglePaginationMode = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newMode: ReaderPaginationMode = paginationMode === 'official' ? 'balanced' : 'official';
+    setPaginationMode(newMode);
+    try {
+      localStorage.setItem('quran_pagination_mode_v1', newMode);
+    } catch {}
+
+    // Map position smoothly between modes
+    if (newMode === 'balanced') {
+      if (pageData && balancedPages.length > 0) {
+        const targetBPage = BalancedPaginationEngine.getPageForSurah(pageData.primarySurahId, balancedPages);
+        setBalancedPageNumber(targetBPage);
       }
-      return next;
-    });
-  }, [resetHideTimer]);
+    } else {
+      if (currentBalancedPage) {
+        QuranDataLoader.getPageForSurah(currentBalancedPage.primarySurahId).then(targetMPage => {
+          setCurrentPageNumber(targetMPage);
+        });
+      }
+    }
+    resetHideTimer();
+  };
 
   const goToNextPage = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -664,7 +740,7 @@ export default function SurahReader({
             className="absolute top-0 inset-x-0 z-40 px-4 py-3 bg-emerald-950/95 backdrop-blur-md border-b border-gold-accent/20 flex items-center justify-between shadow-lg"
             onClick={e => e.stopPropagation()}
           >
-            {/* Right Group: Back Button & Surah Title */}
+            {/* Right Group: Back Button, Mode Switcher & Surah Title */}
             <div className="flex items-center gap-3">
               <button
                 onClick={onBack}
@@ -678,15 +754,37 @@ export default function SurahReader({
               <div className="h-4 w-[1px] bg-white/20" />
 
               <div className="text-right">
-                <h2 className="text-sm md:text-base font-black text-gold-accent">
-                  {pageData ? `سورة ${pageData.primarySurahName}` : 'المصحف الشريف'}
-                </h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm md:text-base font-black text-gold-accent">
+                    {paginationMode === 'balanced' && currentBalancedPage
+                      ? `سورة ${currentBalancedPage.primarySurahName}`
+                      : pageData
+                      ? `سورة ${pageData.primarySurahName}`
+                      : 'المصحف الشريف'}
+                  </h2>
+                  <button
+                    onClick={togglePaginationMode}
+                    className="px-2 py-0.5 rounded text-[10px] font-black bg-gold-accent/20 text-gold-accent hover:bg-gold-accent/30 border border-gold-accent/40 active:scale-95 transition-all"
+                    title="تبديل نمط الترقيم بين المصحف ٦٠٤ والصفحات المتزنة"
+                  >
+                    {paginationMode === 'official' ? 'المصحف (٦٠٤)' : 'صفحات متزنة'}
+                  </button>
+                </div>
+
                 <p className="text-[10px] text-white/60 font-bold">
-                  صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤
-                  {pageData && pageData.sections.length > 0 && (
-                    <span className="text-gold-accent/80 font-bold mr-1">
-                      • آية {toArabicDigits(pageData.sections[0].fromAyah)} - {toArabicDigits(pageData.sections[pageData.sections.length - 1].toAyah)}
-                    </span>
+                  {paginationMode === 'official' ? (
+                    <>
+                      صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤
+                      {pageData && pageData.sections.length > 0 && (
+                        <span className="text-gold-accent/80 font-bold mr-1">
+                          • آية {toArabicDigits(pageData.sections[0].fromAyah)} - {toArabicDigits(pageData.sections[pageData.sections.length - 1].toAyah)}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      صفحة {toArabicDigits(balancedPageNumber)} من {toArabicDigits(balancedPages.length || 1)} [متزنة]
+                    </>
                   )}
                 </p>
               </div>
@@ -732,10 +830,10 @@ export default function SurahReader({
       {/* Main Container (100dvh Zero Scroll) */}
       <main className="relative min-h-0 flex-1 overflow-hidden flex flex-col justify-center items-center w-full h-full">
         {/* Full-screen initial spinner ONLY on first open when pageData is null */}
-        {isInitialLoading && !pageData && (
+        {(isInitialLoading || isComputingBalanced) && !pageData && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
             <div className="w-12 h-12 border-4 border-gold-accent border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-black text-gold-accent">جاري فتح المصحف الشريف...</p>
+            <p className="text-sm font-black text-gold-accent">جاري تحميل الصفحات المتزنة للمصحف...</p>
           </div>
         )}
 
@@ -756,8 +854,8 @@ export default function SurahReader({
           </div>
         )}
 
-        {/* Full Screen Edge-to-Edge 604 Mushaf Page View */}
-        {pageData && (
+        {/* 1. Official 604 Mushaf Mode */}
+        {paginationMode === 'official' && pageData && (
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`mushaf_page_${currentPageNumber}_${theme}`}
@@ -770,7 +868,6 @@ export default function SurahReader({
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Single Screen Page Container (Zero Scroll) */}
               <div 
                 ref={visibleContentRef}
                 data-json-page={currentPageNumber}
@@ -791,6 +888,46 @@ export default function SurahReader({
                   pageData={pageData}
                   fontSize={activeFontSize}
                   lineHeight={activeLineHeight}
+                  theme={theme}
+                  highlightedWord={highlightedWord}
+                />
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {/* 2. Balanced Layout Mode */}
+        {paginationMode === 'balanced' && currentBalancedPage && (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`balanced_page_${balancedPageNumber}_${theme}`}
+              initial={{ opacity: 0, x: direction * 25, scale: 0.99 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
+              transition={{ duration: 0.16, ease: "easeOut" }}
+              className="flex h-full min-h-0 flex-col w-full justify-center items-center relative overflow-hidden"
+              style={{
+                backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
+              }}
+            >
+              <div 
+                className="h-full w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center items-center overflow-hidden z-10"
+                style={{
+                  boxSizing: 'border-box',
+                  paddingTop: `calc(${READING_TOP_PADDING}px + env(safe-area-inset-top, 0px))`,
+                  paddingBottom: `calc(${READING_BOTTOM_PADDING}px + env(safe-area-inset-bottom, 0px))`,
+                  paddingInline: `${READING_SIDE_PADDING}px`,
+                  direction: 'rtl',
+                  unicodeBidi: 'embed',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility'
+                }}
+              >
+                <BalancedPageContent
+                  page={currentBalancedPage}
+                  fontSize={QURAN_READER_FONT_SIZE}
+                  lineHeight={QURAN_READER_LINE_HEIGHT}
                   theme={theme}
                   highlightedWord={highlightedWord}
                 />
