@@ -1057,8 +1057,8 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Main Container (Fixed Viewport, NO Vertical Scroll) */}
-      <main className="quran-page-viewport relative min-h-0 flex-1 overflow-hidden flex flex-col justify-start items-center w-full">
+      {/* Main Container (Natural Flow Viewport, Zero Text Loss) */}
+      <main className="quran-page-viewport relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-start items-center w-full">
         {/* Full-screen initial spinner ONLY on first open when pageData is null */}
         {(isInitialLoading || isComputingBalanced) && !pageData && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
@@ -1093,7 +1093,7 @@ export default function SurahReader({
               animate={{ opacity: isPageTransitioning ? 0.85 : 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="flex h-full min-h-0 flex-col w-full justify-start items-center relative overflow-hidden pt-14 pb-16"
+              className="flex h-auto min-h-full flex-col w-full justify-start items-center relative pt-14 pb-16"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
@@ -1101,7 +1101,7 @@ export default function SurahReader({
               <div 
                 ref={visibleContentRef}
                 data-json-page={currentPageNumber}
-                className="quran-page-content h-full min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start items-stretch overflow-hidden z-10"
+                className="quran-page-content h-auto min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start items-stretch z-10"
                 style={{
                   boxSizing: 'border-box',
                   paddingTop: `calc(14px + env(safe-area-inset-top, 0px))`,
