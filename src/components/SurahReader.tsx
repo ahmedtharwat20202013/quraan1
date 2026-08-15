@@ -232,73 +232,66 @@ export default function SurahReader({
   });
 
   const [pageData, setPageData] = useState<ProcessedPageData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+  const [isPageTransitioning, setIsPageTransitioning] = useState<boolean>(false);
   const [fontLoaded, setFontLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [direction, setDirection] = useState<number>(1);
 
-  // Auto-hiding controls state
-  const [showControls, setShowControls] = useState<boolean>(true);
-  const hideControlsTimer = useRef<any>(null);
-
-  // Theme state ('paper' | 'dark')
-  const [theme, setTheme] = useState<'paper' | 'dark'>(() => {
-    try {
-      return (localStorage.getItem('mushaf_theme') as 'paper' | 'dark') || 'paper';
-    } catch {
-      return 'paper';
-    }
-  });
-
-  // In-Surah Search States
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-
-  // Word-Specific Highlight State
-  const [highlightedWord, setHighlightedWord] = useState<{ verseIndex: number; wordIndex: number; isFading?: boolean } | null>(
-    initialTargetAyah !== undefined && initialTargetWordIndex !== undefined
-      ? { verseIndex: initialTargetAyah, wordIndex: initialTargetWordIndex, isFading: false }
-      : null
-  );
-  const highlightTimerRef = useRef<any>(null);
-  const fadeTimerRef = useRef<any>(null);
-
-  // Touch gesture tracking
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-  const touchEndY = useRef<number | null>(null);
-  const prevInitialRef = useRef(initialPageNumber);
-
-  // Sync initialPageNumber ONLY when parent explicitly changes it (e.g. from Home or Search)
+  // Non-blocking Font Loading with 600ms Timeout Race
   useEffect(() => {
-    if (initialPageNumber !== undefined && initialPageNumber !== prevInitialRef.current) {
-      prevInitialRef.current = initialPageNumber;
-      setCurrentPageNumber(Math.max(1, Math.min(604, initialPageNumber)));
-    }
-  }, [initialPageNumber]);
+    let active = true;
+    Promise.race([
+      typeof document !== 'undefined' && 'fonts' in document ? document.fonts.ready : Promise.resolve(),
+      new Promise(resolve => setTimeout(resolve, 600))
+    ]).then(() => {
+      if (active) setFontLoaded(true);
+    }).catch(() => {
+      if (active) setFontLoaded(true);
+    });
 
-  // Load 1..604 page data from quran_pages_v3.json
+    return () => { active = false; };
+  }, []);
+
+  // Quiet Background Preloader for Adjacent Pages (n - 1 & n + 1)
+  const triggerNeighborPreload = useCallback((pageNum: number) => {
+    const runPreload = () => {
+      if (pageNum > 1) void QuranDataLoader.getMushafPage(pageNum - 1);
+      if (pageNum < 604) void QuranDataLoader.getMushafPage(pageNum + 1);
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(runPreload);
+    } else {
+      setTimeout(runPreload, 150);
+    }
+  }, []);
+
+  // Page Loader utilizing memory cache
   const loadPage = useCallback(async (pageNum: number) => {
-    setLoading(true);
+    if (!pageData) {
+      setIsInitialLoading(true);
+    } else {
+      setIsPageTransitioning(true);
+    }
     setError(null);
+
     try {
       const data = await QuranDataLoader.getMushafPage(pageNum);
       if (!data) {
         throw new Error(`تعذر تحميل صفحة ${pageNum} من المصحف الشريف`);
       }
-      // Developer Invariant Assertion Verification
       verifyPageDataInvariant(data, pageNum);
       setPageData(data);
+      triggerNeighborPreload(pageNum);
     } catch (err: any) {
       console.error('Failed to load page:', err);
-      setError(err?.message || 'تعذر تحميل صفحة المصحف. يرجى التحقق من الملفات والاتصال.');
+      setError(err?.message || 'تعذر تحميل صفحة المصحف. يرجى التحقق من الاتصال.');
     } finally {
-      setLoading(false);
+      setIsInitialLoading(false);
+      setIsPageTransitioning(false);
     }
-  }, []);
+  }, [pageData, triggerNeighborPreload]);
 
   useEffect(() => {
     loadPage(currentPageNumber);
