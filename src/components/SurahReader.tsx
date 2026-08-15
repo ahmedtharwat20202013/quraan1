@@ -157,7 +157,6 @@ export default function SurahReader({
   }, []);
 
   const activeFontSize = getReadingFontSize(containerWidth, fontScale);
-  }, [currentPageNumber, calibratedCssFontSize, containerWidth, pageData]);
 
   // Reset container scroll position to top whenever page changes
   useEffect(() => {
