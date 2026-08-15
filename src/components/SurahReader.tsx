@@ -270,7 +270,6 @@ export default function SurahReader({
   const touchEndX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
-
   // Ensure font is loaded
   useEffect(() => {
     if (typeof document !== 'undefined' && 'fonts' in document) {
@@ -280,147 +279,85 @@ export default function SurahReader({
     }
   }, []);
 
-  const prevInitialRef = useRef(initialPageNumber);
+  // Selected layout state
+  const [selectedLayout, setSelectedLayout] = useState<PageLayoutConfig>(PAGE_LAYOUTS[1]);
+  const [useCompactSpacing, setUseCompactSpacing] = useState<boolean>(false);
+  const visibleContentRef = useRef<HTMLDivElement>(null);
 
-  // Sync initialPageNumber ONLY when parent explicitly changes it (e.g. from Home or Search)
+  // Initial layout candidate based on page word count
   useEffect(() => {
-    if (initialPageNumber !== undefined && initialPageNumber !== prevInitialRef.current) {
-      prevInitialRef.current = initialPageNumber;
-      setCurrentPageNumber(Math.max(1, Math.min(604, initialPageNumber)));
+    if (!pageData) return;
+    const totalWords = pageData.sections.reduce((acc, sec) => {
+      return acc + sec.ayas.reduce((wAcc, a) => wAcc + a.text.split(/\s+/).filter(w => w.length > 0).length, 0);
+    }, 0);
+
+    if (totalWords <= 65) {
+      setSelectedLayout(PAGE_LAYOUTS[0]); // spacious (30px)
+      setUseCompactSpacing(false);
+    } else if (totalWords > 125) {
+      setSelectedLayout(PAGE_LAYOUTS[2]); // dense (26px)
+      setUseCompactSpacing(false);
+    } else {
+      setSelectedLayout(PAGE_LAYOUTS[1]); // standard (28px)
+      setUseCompactSpacing(false);
     }
-  }, [initialPageNumber]);
+  }, [currentPageNumber, pageData]);
 
-  // Load 1..604 page data from quran_pages_v3.json
-  const loadPage = useCallback(async (pageNum: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await QuranDataLoader.getMushafPage(pageNum);
-      if (!data) {
-        throw new Error(`تعذر تحميل صفحة ${pageNum} من المصحف الشريف`);
-      }
-      // Developer Invariant Assertion Verification
-      verifyPageDataInvariant(data, pageNum);
-      setPageData(data);
-    } catch (err: any) {
-      console.error('Failed to load page:', err);
-      setError(err?.message || 'تعذر تحميل صفحة المصحف. يرجى التحقق من الملفات والاتصال.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  // Dev verification: Check if page fits; step down layout if overflow occurs
   useEffect(() => {
-    loadPage(currentPageNumber);
-  }, [currentPageNumber, loadPage]);
+    if (!pageData || !visibleContentRef.current) return;
+    const el = visibleContentRef.current;
 
-  // Notify parent & save state
-  useEffect(() => {
-    if (pageData) {
-      if (onPageChange) {
-        onPageChange(pageData.primarySurahId, currentPageNumber);
-      }
-      try {
-        localStorage.setItem(
-          'quran_light_state',
-          JSON.stringify({
-            lastRead: {
-              surahId: pageData.primarySurahId,
-              pageNumber: currentPageNumber,
-              timestamp: Date.now()
-            }
-          })
-        );
-      } catch (e) {
-        console.warn('Failed to save last read state:', e);
+    // Check overflow
+    if (el.scrollHeight > el.clientHeight + 2) {
+      if (selectedLayout.name === 'spacious') {
+        setSelectedLayout(PAGE_LAYOUTS[1]); // standard (28px)
+      } else if (selectedLayout.name === 'standard') {
+        setSelectedLayout(PAGE_LAYOUTS[2]); // dense (26px)
+      } else if (selectedLayout.name === 'dense' && !useCompactSpacing) {
+        setUseCompactSpacing(true); // dense (26px) compact
+      } else {
+        const overflowPx = el.scrollHeight - el.clientHeight;
+        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at dense (26px) layout.`);
       }
     }
-  }, [currentPageNumber, pageData, onPageChange]);
+  }, [currentPageNumber, pageData, selectedLayout, useCompactSpacing]);
 
-  // Word highlight trigger
-  const triggerWordHighlight = useCallback((verseIndex: number, wordIndex: number) => {
-    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
-    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
-
-    setHighlightedWord({ verseIndex, wordIndex, isFading: false });
-
-    highlightTimerRef.current = setTimeout(() => {
-      setHighlightedWord({ verseIndex, wordIndex, isFading: true });
-      fadeTimerRef.current = setTimeout(() => {
-        setHighlightedWord(null);
-      }, 1200);
-    }, 3500);
-  }, []);
-
-  useEffect(() => {
-    if (initialTargetAyah !== undefined && initialTargetWordIndex !== undefined) {
-      triggerWordHighlight(initialTargetAyah, initialTargetWordIndex);
-    }
-  }, [initialTargetAyah, initialTargetWordIndex, triggerWordHighlight]);
-
-  // Auto-hide controls bar after inactivity
+  // Auto-hiding controls timeout
   const resetHideTimer = useCallback(() => {
     if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     setShowControls(true);
-    if (!isSearchOpen) {
-      hideControlsTimer.current = setTimeout(() => {
-        setShowControls(false);
-      }, 2500);
+    hideControlsTimer.current = setTimeout(() => {
+      setShowControls(false);
+    }, 3500);
+  }, []);
+
+  const toggleControls = useCallback(() => {
+    if (showControls) {
+      setShowControls(false);
+      if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
+    } else {
+      resetHideTimer();
     }
-  }, [isSearchOpen]);
+  }, [showControls, resetHideTimer]);
 
   useEffect(() => {
     resetHideTimer();
     return () => {
       if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     };
+  }, [currentPageNumber, resetHideTimer]);
+
+  const performPageTurn = useCallback((step: number) => {
+    setCurrentPageNumber(prev => {
+      const next = Math.max(1, Math.min(604, prev + step));
+      if (next !== prev) {
+        setDirection(step);
+        resetHideTimer();
+      }
+      return next;
+    });
   }, [resetHideTimer]);
-
-  const toggleControls = (e: React.MouseEvent | React.TouchEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest('button') || target.closest('input')) return;
-
-    if (isSearchOpen) {
-      setIsSearchOpen(false);
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-
-    if (showControls) {
-      if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
-      setShowControls(false);
-    } else {
-      resetHideTimer();
-    }
-  };
-
-  // Surah boundary bounds for strict Surah Session Isolation
-  const [surahBounds, setSurahBounds] = useState<{ minPage: number; maxPage: number }>({ minPage: 1, maxPage: 604 });
-
-  useEffect(() => {
-    if (pageData?.primarySurahId) {
-      QuranDataLoader.getSurahBounds(pageData.primarySurahId).then(bounds => {
-        setSurahBounds({ minPage: bounds.startPage, maxPage: bounds.endPage });
-      });
-    }
-  }, [pageData?.primarySurahId]);
-
-  // Single Controlled Page Navigation Entry Point
-  const performPageTurn = useCallback((dir: 1 | -1) => {
-    if (dir === 1) {
-      if (currentPageNumber < surahBounds.maxPage) {
-        setDirection(1);
-        setCurrentPageNumber(prev => prev + 1);
-        resetHideTimer();
-      }
-    } else {
-      if (currentPageNumber > surahBounds.minPage) {
-        setDirection(-1);
-        setCurrentPageNumber(prev => prev - 1);
-        resetHideTimer();
-      }
-    }
-  }, [currentPageNumber, surahBounds.maxPage, surahBounds.minPage, resetHideTimer]);
 
   const goToNextPage = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -454,18 +391,16 @@ export default function SurahReader({
       : 0;
     const duration = Date.now() - touchStartTime.current;
 
-    // VALIDATION: Page turn occurs ONLY on an intentional horizontal swipe (> 60px) within 1200ms
+    // Horizontal swipe (> 50px) within 1200ms
     if (
-      Math.abs(deltaX) >= 60 && 
+      Math.abs(deltaX) >= 50 && 
       Math.abs(deltaX) > Math.abs(deltaY) * 1.4 &&
       duration > 50 &&
       duration < 1200
     ) {
       if (deltaX < 0) {
-        // Swiped Left to Right -> Next Page in RTL Mushaf
         performPageTurn(1);
       } else {
-        // Swiped Right to Left -> Previous Page in RTL Mushaf
         performPageTurn(-1);
       }
     }
@@ -536,7 +471,7 @@ export default function SurahReader({
   return (
     <div 
       className={cn(
-        "relative w-full h-full flex flex-col justify-between overflow-hidden select-none transition-colors duration-300",
+        "relative flex h-[100dvh] min-h-0 w-full flex-col overflow-hidden select-none transition-colors duration-300",
         theme === 'paper' ? "bg-[#fdfbf7] text-[#0b2419]" : "bg-[#082117] text-[#f0faf5]"
       )}
       onClick={toggleControls}
@@ -573,7 +508,7 @@ export default function SurahReader({
                   {pageData ? `سورة ${pageData.primarySurahName}` : 'المصحف الشريف'}
                 </h2>
                 <p className="text-[10px] text-white/60 font-bold">
-                  صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤ (قراءة حسب صفحات المصحف)
+                  صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤
                   {pageData && pageData.sections.length > 0 && (
                     <span className="text-gold-accent/80 font-bold mr-1">
                       • آية {toArabicDigits(pageData.sections[0].fromAyah)} - {toArabicDigits(pageData.sections[pageData.sections.length - 1].toAyah)}
@@ -583,7 +518,7 @@ export default function SurahReader({
               </div>
             </div>
 
-            {/* Left Group: Search, Bookmark, Debug & Theme Toggle */}
+            {/* Left Group: Search, Bookmark, Theme Toggle */}
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setIsSearchOpen(true)}
@@ -620,8 +555,8 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Main Full-Screen Display Container (Single Screen, Zero Scroll) */}
-      <div className="flex min-h-0 flex-1 flex-col w-full h-full justify-start items-center relative overflow-hidden pt-0 pb-0 px-0 sm:px-2">
+      {/* Main Container (100dvh Zero Scroll) */}
+      <main className="relative min-h-0 flex-1 overflow-hidden flex flex-col justify-center items-center w-full h-full">
         {/* Loading State */}
         {(loading || !fontLoaded) && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
@@ -656,22 +591,21 @@ export default function SurahReader({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="flex h-full min-h-0 flex-col w-full justify-start relative overflow-hidden"
+              className="flex h-full min-h-0 flex-col w-full justify-center items-center relative overflow-hidden"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Scrollable Text Container (ONLY scrollable element) */}
+              {/* Single Screen Page Container (Zero Scroll) */}
               <div 
+                ref={visibleContentRef}
                 data-json-page={currentPageNumber}
-                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overflow-x-hidden overscroll-contain z-10"
+                className="h-full w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center items-center overflow-hidden z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingInline: `${QURAN_READER_HORIZONTAL_PADDING_PX}px`,
-                  paddingTop: '4.5rem',
-                  paddingBottom: '7.5rem',
-                  scrollPaddingTop: '4.5rem',
-                  scrollPaddingBottom: '7.5rem',
+                  paddingTop: 'calc(10px + env(safe-area-inset-top, 0px))',
+                  paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+                  paddingInline: '14px',
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   WebkitFontSmoothing: 'antialiased',
@@ -679,101 +613,13 @@ export default function SurahReader({
                   textRendering: 'optimizeLegibility'
                 }}
               >
-                <div className="w-full flex flex-col justify-start space-y-3">
-                  {pageData.sections.map((section, secIdx) => {
-                    const showHeader = section.startsHere;
-                    const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
-
-                    return (
-                      <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-                        {/* Surah Header Frame */}
-                        {showHeader && (
-                          <div className="w-full my-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0">
-                            <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                              <span>❖</span>
-                              <span className="hidden sm:inline">━━</span>
-                            </div>
-                            <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                              سورة {section.name}
-                            </h3>
-                            <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                              <span className="hidden sm:inline">━━</span>
-                              <span>❖</span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Bismillah */}
-                        {showBismillah && (
-                          <div 
-                            className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-1.5"
-                            style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
-                          >
-                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                          </div>
-                        )}
-
-                        {/* Ayahs Continuous Text Flow (30px / 1.82 Constant Font Size) */}
-                        <div 
-                          className={cn(
-                            "w-full font-normal select-text text-center",
-                            theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
-                          )}
-                          style={{ 
-                            fontSize: `${QURAN_READER_FONT_SIZE}px`,
-                            lineHeight: QURAN_READER_LINE_HEIGHT,
-                            fontFamily: '"Tehaf", "AmiriQuran", serif',
-                            direction: 'rtl',
-                            unicodeBidi: 'embed',
-                            textAlign: 'center',
-                            wordSpacing: 'normal',
-                            letterSpacing: 'normal',
-                            whiteSpace: 'normal',
-                            overflowWrap: 'normal'
-                          }}
-                        >
-                          {section.ayas.map(aya => {
-                            const words = aya.text.split(/\s+/).filter(w => w.length > 0);
-                            const isHighlighted = highlightedWord?.verseIndex === aya.index;
-
-                            return (
-                              <React.Fragment key={`aya_${section.id}_${aya.index}`}>
-                                {words.map((word, wIdx) => {
-                                  const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
-
-                                  return (
-                                    <span
-                                      key={`word_${aya.index}_${wIdx}`}
-                                      className={cn(
-                                        "inline transition-colors duration-300",
-                                        isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
-                                      )}
-                                    >
-                                      {word}{' '}
-                                    </span>
-                                  );
-                                })}
-                                {/* Gold Verse End Marker Number */}
-                                <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
-                                  {toArabicDigits(aya.index)}
-                                </span>{' '}
-                              </React.Fragment>
-                            );
-                          })}
-                        </div>
-
-                        {/* Fine Separator between multiple surahs on same page */}
-                        {secIdx < pageData.sections.length - 1 && (
-                          <div className="my-2 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
-                            <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                            <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
-                            <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                <MushafPageContent
+                  pageData={pageData}
+                  layout={selectedLayout}
+                  theme={theme}
+                  highlightedWord={highlightedWord}
+                  compactSpacing={useCompactSpacing}
+                />
               </div>
             </motion.div>
           </AnimatePresence>
