@@ -755,6 +755,7 @@ export default function SurahReader({
                     </div>
                   );
                 })}
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
