@@ -28,6 +28,45 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
+export type FontScaleOption = 'small' | 'medium' | 'large';
+
+// Pure line-height constant for Tehaf & Amiri Arabic fonts with diacritics
+export const READING_LINE_HEIGHT = 1.85;
+
+/**
+ * Pure screen-width breakpoint reading font size selector with strict bounds clamping.
+ * Range Table (CSS Pixels):
+ * <= 360px: 17px (range: 16px - 18px)
+ * 361px - 430px: 18px (range: 17px - 20px)
+ * 431px - 699px: 20px (range: 18px - 22px)
+ * 700px - 879px: 23px (range: 21px - 25px)
+ * >= 880px: 25px (range: 23px - 27px)
+ */
+export function getReadingFontSize(width: number, scale: FontScaleOption = 'medium'): number {
+  let base = 18;
+  let minBound = 17;
+  let maxBound = 20;
+
+  if (width <= 0) return 18;
+
+  if (width <= 360) {
+    base = 17; minBound = 16; maxBound = 18;
+  } else if (width <= 430) {
+    base = 18; minBound = 17; maxBound = 20;
+  } else if (width <= 699) {
+    base = 20; minBound = 18; maxBound = 22;
+  } else if (width <= 879) {
+    base = 23; minBound = 21; maxBound = 25;
+  } else {
+    base = 25; minBound = 23; maxBound = 27;
+  }
+
+  const scaleFactor = scale === 'small' ? 0.9 : scale === 'large' ? 1.1 : 1.0;
+  const calculated = Math.round(base * scaleFactor);
+
+  return Math.min(maxBound, Math.max(minBound, calculated));
+}
+
 export default function SurahReader({
   initialPageNumber = 1,
   initialTargetAyah,
@@ -61,6 +100,15 @@ export default function SurahReader({
     }
   });
 
+  // User Font Scale Preference ('small' | 'medium' | 'large')
+  const [fontScale, setFontScale] = useState<FontScaleOption>(() => {
+    try {
+      const saved = localStorage.getItem('mushaf_reader_font_scale');
+      if (saved === 'small' || saved === 'medium' || saved === 'large') return saved;
+    } catch {}
+    return 'medium';
+  });
+
   // In-Surah Search States
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -82,142 +130,33 @@ export default function SurahReader({
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
 
-  // CONSERVATIVE DIGITAL MUSHAF TYPOGRAPHY CALIBRATION ENGINE
+  // CONSERVATIVE READING MODE LAYOUT ENGINE
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [targetVisualHeight, setTargetVisualHeight] = useState<number>(21);
-  const [calibratedCssFontSize, setCalibratedCssFontSize] = useState<number>(26);
-  const [measuredGlyphHeight, setMeasuredGlyphHeight] = useState<number>(21);
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
-  const [calibrationIterations, setCalibrationIterations] = useState<number>(0);
 
-  // Representative Arabic Quran Calibration Sample Text with all diacritics
-  const QURAN_CALIBRATION_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ۞ ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ";
-
-  const calibrateTypography = useCallback((width: number, height: number) => {
-    if (width <= 0 || height <= 0) return;
-    setContainerWidth(width);
-
-    // 1. Determine DIGITAL MUSHAF TYPOGRAPHY CALIBRATION BOUNDS
-    let targetVisual = 18;
-    let minCssBound = 20.0;
-    let maxCssBound = 36.0;
-
-    if (width < 360) {
-      // SMALL_PHONE (< 360px container)
-      targetVisual = 14;
-      minCssBound = 13.0;
-      maxCssBound = 17.5;
-    } else if (width < 431) {
-      // PHONE (360px - 430px container, e.g. 390px iPhone)
-      targetVisual = 15;
-      minCssBound = 13.5;
-      maxCssBound = 19.0;
-    } else if (width < 540) {
-      // LARGE_PHONE (431px - 539px container)
-      targetVisual = 16;
-      minCssBound = 14.0;
-      maxCssBound = 21.0;
-    } else if (width < 700) {
-      // SMALL_TABLET (540px - 699px container)
-      targetVisual = 20;
-      minCssBound = 20.0;
-      maxCssBound = 25.0;
-    } else if (width < 880) {
-      // TABLET / iPad (700px - 879px container)
-      targetVisual = 23;
-      minCssBound = 24.0;
-      maxCssBound = 30.0;
-    } else {
-      // LARGE_TABLET / DESKTOP (>= 880px container)
-      targetVisual = 26;
-      minCssBound = 28.0;
-      maxCssBound = 35.0; // Capped at 35px CSS!
-    }
-
-    setTargetVisualHeight(targetVisual);
-
-    // 2. Perform Width-Based Calibration
-    let bestCss = minCssBound;
-    let bestMeasured = targetVisual;
-    let iterations = 0;
-
-    if (typeof document !== 'undefined') {
-      try {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          let low = minCssBound;
-          let high = maxCssBound;
-
-          for (let iter = 0; iter < 10; iter++) {
-            iterations = iter + 1;
-            const midCss = Math.round((low + high) / 2);
-            ctx.font = `${midCss}px "Tehaf", "AmiriQuran", serif`;
-            const metrics = ctx.measureText(QURAN_CALIBRATION_TEXT);
-            const actualVisual = (metrics.actualBoundingBoxAscent && metrics.actualBoundingBoxDescent)
-              ? Math.round(metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent)
-              : Math.round(midCss * 0.72);
-
-            bestCss = midCss;
-            bestMeasured = actualVisual;
-
-            if (Math.abs(actualVisual - targetVisual) <= 1) {
-              break;
-            }
-
-            if (actualVisual < targetVisual) {
-              low = midCss + 1;
-            } else {
-              high = midCss - 1;
-            }
-          }
-        }
-      } catch (e) {
-        bestCss = Math.min(maxCssBound, Math.max(minCssBound, Math.round(targetVisual * 1.35)));
-        bestMeasured = targetVisual;
-      }
-    }
-
-    // 3. Dynamic Height-Based Bounding: Guarantees ALL 604 pages (including 156-word dense pages like Page 6) fit 100% inside container height
-    const availableTextHeight = Math.max(180, height - 10);
-    const heightCapCss = Math.floor((availableTextHeight / (20.0 * 1.55)) * 10) / 10;
-
-    // Strict minimum of width-based candidate and height-capped bounds
-    bestCss = Math.max(11.0, Math.min(bestCss, heightCapCss));
-
-    setCalibratedCssFontSize(bestCss);
-    setMeasuredGlyphHeight(bestMeasured);
-    setCalibrationIterations(iterations);
-  }, []);
+  const handleFontScaleChange = (newScale: FontScaleOption) => {
+    setFontScale(newScale);
+    try {
+      localStorage.setItem('mushaf_reader_font_scale', newScale);
+    } catch {}
+  };
 
   useEffect(() => {
     if (!textContainerRef.current) return;
     const observer = new ResizeObserver(entries => {
       for (const entry of entries) {
         const w = Math.round(entry.contentRect.width);
-        const h = Math.round(entry.contentRect.height);
-        if (w > 0 && h > 0) {
-          calibrateTypography(w, h);
+        if (w > 0) {
+          setContainerWidth(w);
         }
       }
     });
     observer.observe(textContainerRef.current);
     return () => observer.disconnect();
-  }, [calibrateTypography]);
+  }, []);
 
-  const [hasOverflowWarning, setHasOverflowWarning] = useState<boolean>(false);
-
-  // Detect visual overflow on container without modifying typography or pagination
-  useEffect(() => {
-    if (!textContainerRef.current) return;
-    const el = textContainerRef.current;
-    const isOverflowing = el.scrollHeight > el.clientHeight + 4;
-    setHasOverflowWarning(isOverflowing);
-
-    if (isOverflowing) {
-      console.warn(`[Quran Overflow Warning] Page ${currentPageNumber} from quran_pages_v3.json exceeds visible height (${el.scrollHeight}px > ${el.clientHeight}px) with frozen font size ${calibratedCssFontSize}px on container width ${containerWidth}px`);
-    }
+  const activeFontSize = getReadingFontSize(containerWidth, fontScale);
   }, [currentPageNumber, calibratedCssFontSize, containerWidth, pageData]);
 
   // Reset container scroll position to top whenever page changes
