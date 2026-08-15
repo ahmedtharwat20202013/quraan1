@@ -59,6 +59,21 @@ interface MushafPageContentProps {
   highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
 }
 
+export function SurahContentHeader({ surahName }: { surahName: string }) {
+  return (
+    <div 
+      className="surah-content-header w-full max-w-[360px] mx-auto my-2 py-1 px-4 border border-gold-accent/65 rounded-[9px] bg-gradient-to-b from-[#3f481d] to-[#293714] text-[#dfbb3d] text-center flex items-center justify-between shadow-sm select-none shrink-0" 
+      dir="rtl"
+    >
+      <span className="surah-content-header-decoration text-gold-accent/90 text-xs font-bold select-none" aria-hidden="true">◆</span>
+      <span className="surah-content-header-name font-black text-sm sm:text-base tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+        سورة {surahName}
+      </span>
+      <span className="surah-content-header-decoration text-gold-accent/90 text-xs font-bold select-none" aria-hidden="true">◆</span>
+    </div>
+  );
+}
+
 export function BasmalaBlock() {
   return (
     <div
@@ -88,17 +103,20 @@ export function MushafPageContent({
   highlightedWord
 }: MushafPageContentProps) {
   return (
-    <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
-      {/* Surah Sections & Ayahs - ZERO Surah Headers inside Content Area */}
+    <div className="quran-page-content w-full flex flex-col justify-start items-center my-auto space-y-1" dir="rtl">
       {pageData.sections.map((section, secIdx) => {
-        const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
+        const isSurahStart = section.startsHere;
+        const showBismillah = isSurahStart && section.id !== 9 && section.id !== 1;
 
         return (
           <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-            {/* Basmala above first ayah when section.startsHere */}
+            {/* 1. Surah Content Header inside Quran page content */}
+            {isSurahStart && <SurahContentHeader surahName={section.name} />}
+
+            {/* 2. Basmala Block directly below surah content header */}
             {showBismillah && <BasmalaBlock />}
 
-            {/* Ayahs Continuous Text Flow */}
+            {/* 3. Ayahs Continuous Text Flow */}
             <div 
               className={cn(
                 "w-full font-normal select-text text-center",
@@ -178,11 +196,10 @@ export function BalancedPageContent({
   highlightedWord
 }: BalancedPageContentProps) {
   return (
-    <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
+    <div className="quran-page-content w-full flex flex-col justify-start items-center my-auto space-y-1" dir="rtl">
       {page.blocks.map(block => {
-        // Do NOT render surah-header inside content area (Surah Name is strictly in top bar)
         if (block.type === 'surah-header') {
-          return null;
+          return <SurahContentHeader key={block.id} surahName={block.surahName} />;
         }
 
         if (block.type === 'basmala') {
@@ -296,20 +313,14 @@ export function SurahTopBar({
         </button>
       </div>
 
-      {/* Center Area: Mathematically Centered Rounded Surah Bar */}
+      {/* Center Area: Application Title & Page Info */}
       <div className="flex flex-col items-center justify-center min-w-0 px-2" aria-live="polite">
-        <div 
-          className="reader-surah-title px-4 py-1 rounded-xl bg-gradient-to-b from-[#39451c] to-[#293614] border border-gold-accent/60 shadow-sm flex items-center justify-center gap-1.5 max-w-[200px] sm:max-w-[280px]"
+        <h1 
+          className="text-gold-accent font-black text-sm sm:text-base tracking-wide truncate"
+          style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
         >
-          <span className="text-gold-accent/80 text-xs select-none">❖</span>
-          <span 
-            className="text-gold-accent font-black text-xs sm:text-sm tracking-wide truncate"
-            style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
-          >
-            سورة {currentSurahName}
-          </span>
-          <span className="text-gold-accent/80 text-xs select-none">❖</span>
-        </div>
+          المصحف الشريف
+        </h1>
         <span className="text-[10px] text-white/70 font-bold mt-0.5">
           صفحة {toArabicDigits(currentPageNumber)} من {toArabicDigits(totalPages)}
         </span>
