@@ -217,26 +217,16 @@ export default function SurahReader({
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
 
-  // PAGE DENSITY BALANCING ENGINE
-  const scrollViewportRef = useRef<HTMLDivElement>(null);
-  const pageContentRef = useRef<HTMLDivElement>(null);
+  // PAGE COMPOSITION FITTING ENGINE (Single-Screen, Zero Scroll)
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+  const measuringContainerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
-  const [pageTextSize, setPageTextSize] = useState<number>(BASE_MUSHAF_TEXT_SIZE_PX);
-  const [isSparsePage, setIsSparsePage] = useState<boolean>(false);
-
-  // Reset font size & sparse status immediately when page changes before measuring
-  useEffect(() => {
-    setPageTextSize(BASE_MUSHAF_TEXT_SIZE_PX);
-    setIsSparsePage(false);
-    if (scrollViewportRef.current) {
-      scrollViewportRef.current.scrollTop = 0;
-    }
-  }, [currentPageNumber]);
+  const [composition, setComposition] = useState<PageCompositionConfig>(() => getCompositionPreset(24));
 
   useEffect(() => {
-    if (!scrollViewportRef.current) return;
+    if (!pageContainerRef.current) return;
     const observer = new ResizeObserver(entries => {
       for (const entry of entries) {
         const w = Math.round(entry.contentRect.width);
@@ -245,53 +235,60 @@ export default function SurahReader({
         }
       }
     });
-    observer.observe(scrollViewportRef.current);
+    observer.observe(pageContainerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Smart Page Density Balancing Algorithm
+  // DOM-Based Measurement Loop for Page Composition Fitting
   useEffect(() => {
-    if (!fontLoaded || loading || !pageData || !scrollViewportRef.current || !pageContentRef.current) {
+    if (!fontLoaded || loading || !pageData || !measuringContainerRef.current) {
       return;
     }
 
-    const viewportEl = scrollViewportRef.current;
-    const contentEl = pageContentRef.current;
+    const availableW = containerWidth > 0 ? containerWidth : (pageContainerRef.current?.clientWidth || 360);
+    const viewportH = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const topBarH = 56;
+    const bottomNavH = 60;
+    const availablePageH = Math.max(250, viewportH - topBarH - bottomNavH - PAGE_BOTTOM_SAFE_SPACE_PX);
 
-    const availableHeight = viewportEl.clientHeight;
-    if (availableHeight <= 0) return;
-
-    const contentHeight = contentEl.getBoundingClientRect().height;
-    if (contentHeight <= 0) return;
-
-    const coverage = contentHeight / availableHeight;
-
-    // Coverage >= 0.68 -> Dense or Normal Page. Stay at 24px.
-    if (coverage >= 0.68) {
-      if (pageTextSize !== BASE_MUSHAF_TEXT_SIZE_PX) {
-        setPageTextSize(BASE_MUSHAF_TEXT_SIZE_PX);
-        setIsSparsePage(false);
-      }
+    const cacheKey = `${currentPageNumber}_${availableW}_${availablePageH}_${theme}`;
+    if (pageCompositionCache.has(cacheKey)) {
+      setComposition(pageCompositionCache.get(cacheKey)!);
       return;
     }
 
-    // Coverage < 0.68 -> Sparse Page! Candidate evaluation for 88% available height limit
-    const targetMaxHeight = availableHeight * 0.88;
-    let bestCandidate = BASE_MUSHAF_TEXT_SIZE_PX;
+    const measurerEl = measuringContainerRef.current;
+    measurerEl.style.width = `${availableW}px`;
 
-    for (const candidate of SPARSE_PAGE_FONT_CANDIDATES) {
-      const estimatedHeight = contentHeight * (candidate / BASE_MUSHAF_TEXT_SIZE_PX);
-      if (estimatedHeight <= targetMaxHeight) {
-        bestCandidate = candidate;
-        break;
+    let bestConfig = getCompositionPreset(24);
+
+    for (const candidate of PAGE_FONT_CANDIDATES) {
+      const config = getCompositionPreset(candidate);
+
+      measurerEl.innerHTML = renderMeasuringHtml(pageData, config, theme);
+      const measuredH = measurerEl.scrollHeight;
+
+      if (measuredH <= availablePageH) {
+        const coverage = measuredH / availablePageH;
+
+        if (candidate >= 25) {
+          if (coverage <= SPARSE_PAGE_MAX_COVERAGE) {
+            bestConfig = config;
+            break;
+          }
+        } else if (candidate === 24) {
+          bestConfig = config;
+          break;
+        } else {
+          bestConfig = config;
+          break;
+        }
       }
     }
 
-    if (bestCandidate !== pageTextSize) {
-      setPageTextSize(bestCandidate);
-      setIsSparsePage(bestCandidate > BASE_MUSHAF_TEXT_SIZE_PX);
-    }
-  }, [currentPageNumber, pageData, fontLoaded, loading, containerWidth, pageTextSize]);
+    pageCompositionCache.set(cacheKey, bestConfig);
+    setComposition(bestConfig);
+  }, [currentPageNumber, pageData, fontLoaded, loading, containerWidth, theme]);
 
   // Ensure font is loaded
   useEffect(() => {
@@ -650,23 +647,48 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
+      {/* Hidden Measuring Container for DOM-based Page Composition Fitting */}
+      {!loading && fontLoaded && pageData && (
+        <div 
+          ref={measuringContainerRef}
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            left: '-10000px',
+            top: '0',
+            width: `${containerWidth > 0 ? containerWidth : 360}px`,
+            visibility: 'hidden',
+            pointerEvents: 'none',
+            direction: 'rtl',
+            unicodeBidi: 'embed',
+            whiteSpace: 'normal',
+            boxSizing: 'border-box',
+            paddingTop: '0.5rem',
+            paddingInline: '0.75rem',
+            paddingBottom: `${PAGE_BOTTOM_SAFE_SPACE_PX}px`,
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            textRendering: 'optimizeLegibility'
+          }}
+        />
+      )}
+
       {/* Development Reading Mode Debug Panel */}
       {showDebugPanel && (
         <div className="fixed top-16 left-4 z-50 p-4 rounded-2xl bg-black/95 text-amber-300 font-mono text-[11px] border border-gold-accent/40 shadow-2xl space-y-1 dir-ltr max-w-sm pointer-events-auto">
-          <div className="font-bold text-white border-b border-white/20 pb-1 mb-1">📐 Quran Reading Mode Debug Info</div>
-          <div>Mode: <span className="text-emerald-400 font-bold">وضع القراءة</span></div>
+          <div className="font-bold text-white border-b border-white/20 pb-1 mb-1">📐 Page Composition Fitting Debug Info</div>
+          <div>Mode: <span className="text-emerald-400 font-bold">Single-Screen Page Fitting (بلا تمرير)</span></div>
+          <div>Preset: <span className="text-emerald-400 font-bold">{composition.presetName} ({composition.fontSize}px)</span></div>
+          <div>Line-Height: <span className="text-white font-bold">{composition.lineHeight} ({Math.round(composition.fontSize * composition.lineHeight)}px)</span></div>
           <div>Container Width: <span className="text-white font-bold">{containerWidth}px</span></div>
           <div>Viewport: <span className="text-white font-bold">{typeof window !== 'undefined' ? `${window.innerWidth} × ${window.innerHeight}` : 'N/A'}</span></div>
-          <div>Applied Page Font Size: <span className="text-emerald-400 font-bold">{pageTextSize}px {isSparsePage ? '(Sparse Balanced ⚖️)' : '(Base 24px)'}</span></div>
-          <div>Line-Height: <span className="text-white font-bold">{MUSHAF_TEXT_LINE_HEIGHT} ({Math.round(pageTextSize * MUSHAF_TEXT_LINE_HEIGHT)}px)</span></div>
           <div>Font Family: <span className="text-white font-bold">Tehaf, AmiriQuran, serif</span></div>
-          <div>Font Loaded: <span className="text-emerald-400 font-bold">{fontLoaded ? 'YES' : 'NO'}</span></div>
           <div>Page: <span className="text-white font-bold">{currentPageNumber} / 604</span></div>
         </div>
       )}
 
-      {/* Main Full-Screen Display Container */}
-      <div className="flex-1 min-h-0 w-full h-full flex flex-col justify-start items-center relative pt-0 pb-0 px-0 sm:px-2">
+      {/* Main Full-Screen Display Container (Single Screen, Zero Scroll) */}
+      <div className="flex min-h-0 flex-1 flex-col w-full h-full justify-start items-center relative overflow-hidden pt-0 pb-0 px-0 sm:px-2">
         {/* Loading State */}
         {(loading || !fontLoaded) && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
@@ -701,22 +723,21 @@ export default function SurahReader({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -direction * 25, scale: 0.99 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              className="w-full h-full min-h-0 flex flex-col justify-start relative"
+              className="flex h-full min-h-0 flex-col w-full justify-start relative overflow-hidden"
               style={{
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Page Surah Sections Body: PAGE DENSITY BALANCING LAYOUT ENGINE */}
+              {/* Page Surah Sections Body: PAGE COMPOSITION FITTING ENGINE (Zero Scroll) */}
               <div 
-                ref={scrollViewportRef}
+                ref={pageContainerRef}
                 data-json-page={currentPageNumber}
-                className="flex-1 min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overscroll-contain px-3.5 sm:px-6 md:px-8 z-10"
+                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-hidden px-3.5 sm:px-6 md:px-8 z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: '1rem',
+                  paddingTop: '0.5rem',
                   paddingInline: '0.75rem',
-                  paddingBottom: `calc(${BOTTOM_CONTROLS_SAFE_SPACE_PX}px + env(safe-area-inset-bottom, 0px))`,
-                  scrollPaddingBottom: `calc(${BOTTOM_CONTROLS_SAFE_SPACE_PX}px + env(safe-area-inset-bottom, 0px))`,
+                  paddingBottom: `${PAGE_BOTTOM_SAFE_SPACE_PX}px`,
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   whiteSpace: 'normal',
@@ -726,13 +747,7 @@ export default function SurahReader({
                   textRendering: 'optimizeLegibility'
                 }}
               >
-                <div 
-                  ref={pageContentRef}
-                  className={cn(
-                    "w-full flex flex-col justify-start",
-                    isSparsePage ? "space-y-4" : "space-y-3"
-                  )}
-                >
+                <div className={cn("w-full flex flex-col justify-start", composition.spaceClass)}>
                   {pageData.sections.map((section, secIdx) => {
                     const showHeader = section.startsHere;
                     const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
@@ -741,12 +756,15 @@ export default function SurahReader({
                       <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
                         {/* Royal Islamic Surah Header Frame ALWAYS AT ABSOLUTE TOP when startsHere === true */}
                         {showHeader && (
-                          <div className="w-full mt-0 mb-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0">
+                          <div className={cn(
+                            "w-full rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0",
+                            composition.headerMarginClass
+                          )}>
                             <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
                               <span>❖</span>
                               <span className="hidden sm:inline">━━</span>
                             </div>
-                            <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                            <h3 className="text-sm sm:text-base md:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
                               سورة {section.name}
                             </h3>
                             <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
@@ -759,22 +777,25 @@ export default function SurahReader({
                         {/* Bismillah if startsHere === true */}
                         {showBismillah && (
                           <div 
-                            className="text-center font-normal my-1 select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0"
+                            className={cn(
+                              "text-center font-normal select-none text-gold-accent text-xs sm:text-sm opacity-95 shrink-0",
+                              composition.bismillahMarginClass
+                            )}
                             style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
                           >
                             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                           </div>
                         )}
 
-                        {/* Ayahs Continuous Text Flow with Smart Density Balanced Font Size (24px - 30px) */}
+                        {/* Ayahs Continuous Text Flow with Smart Single-Screen Composition Fitting */}
                         <div 
                           className={cn(
                             "w-full text-center select-text font-normal",
                             theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                           )}
                           style={{ 
-                            fontSize: `${pageTextSize}px`,
-                            lineHeight: MUSHAF_TEXT_LINE_HEIGHT,
+                            fontSize: `${composition.fontSize}px`,
+                            lineHeight: composition.lineHeight,
                             fontFamily: '"Tehaf", "AmiriQuran", serif',
                             direction: 'rtl',
                             unicodeBidi: 'embed',
@@ -782,6 +803,53 @@ export default function SurahReader({
                             wordSpacing: 'normal' 
                           }}
                         >
+                          {section.ayas.map(aya => {
+                            const words = aya.text.split(/\s+/).filter(w => w.length > 0);
+                            const isHighlighted = highlightedWord?.verseIndex === aya.index;
+
+                            return (
+                              <React.Fragment key={`aya_${section.id}_${aya.index}`}>
+                                {words.map((word, wIdx) => {
+                                  const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+
+                                  return (
+                                    <span
+                                      key={`word_${aya.index}_${wIdx}`}
+                                      className={cn(
+                                        "inline transition-colors duration-300",
+                                        isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
+                                      )}
+                                    >
+                                      {word}{' '}
+                                    </span>
+                                  );
+                                })}
+                                {/* Gold Verse End Marker Number (Without Brackets) */}
+                                <span className="text-gold-accent font-black text-[0.85em] px-1 inline-block select-none">
+                                  {toArabicDigits(aya.index)}
+                                </span>{' '}
+                              </React.Fragment>
+                            );
+                          })}
+                        </div>
+
+                        {/* Horizontal Separator if multiple surahs on page */}
+                        {secIdx < pageData.sections.length - 1 && (
+                          <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
+                            <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
+                            <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
                         {section.ayas.map(aya => {
                           const words = aya.text.split(/\s+/).filter(w => w.length > 0);
                           const isHighlighted = highlightedWord?.verseIndex === aya.index;
