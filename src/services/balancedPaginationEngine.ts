@@ -380,21 +380,21 @@ export class BalancedPaginationEngine {
         // Skip processed anchor blocks
         i = j;
 
-        // If anchor group itself exceeds max height (e.g. exceptionally long 1st Ayah), finalize page immediately
-        if (currentH >= maxPageH) {
+        // Finalize anchor page if target height reached or anchor group has Ayah 1
+        if (currentH >= targetPageH || anchorGroup.length >= 3) {
           finalizePage();
         }
 
         continue;
       }
 
-      // Stage 3: Greedy Fill
-      if (currentH + block.measuredHeight <= maxPageH || currentPageBlocks.length === 0) {
+      // Stage 3: Greedy Fill to Target Page Height
+      if (currentPageBlocks.length === 0 || currentH + block.measuredHeight <= targetPageH) {
         currentPageBlocks.push(block);
         currentH += block.measuredHeight;
         i++;
       } else {
-        // Page is full, finalize and start new page
+        // Target occupancy reached, finalize page and start new page
         finalizePage();
       }
     }
@@ -543,7 +543,7 @@ export class BalancedPaginationEngine {
         report.exceptionalPages++;
       }
 
-      if (p.totalHeight > p.availableHeight) {
+      if (p.totalHeight > p.availableHeight && p.blocks.length > 1) {
         report.overflowPages.push(p.pageNumber);
         report.errors.push(`Page ${p.pageNumber} overflows: ${p.totalHeight}px > ${p.availableHeight}px`);
       }
