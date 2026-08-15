@@ -49,7 +49,6 @@ interface MushafPageContentProps {
   lineHeight: number;
   theme: 'paper' | 'dark';
   highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
-  currentPageNumber: number;
 }
 
 export function MushafPageContent({
