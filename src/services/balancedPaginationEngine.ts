@@ -388,13 +388,17 @@ export class BalancedPaginationEngine {
         continue;
       }
 
-      // Stage 3: Greedy Fill to Target Page Height
-      if (currentPageBlocks.length === 0 || currentH + block.measuredHeight <= targetPageH) {
+      // Stage 3: Greedy Fill to Target Page Height (Strictly <= maxPageH)
+      if (currentPageBlocks.length === 0) {
+        currentPageBlocks.push(block);
+        currentH += block.measuredHeight;
+        i++;
+      } else if (currentH + block.measuredHeight <= maxPageH) {
         currentPageBlocks.push(block);
         currentH += block.measuredHeight;
         i++;
       } else {
-        // Target occupancy reached, finalize page and start new page
+        // Page capacity limit reached, finalize page and start new page
         finalizePage();
       }
     }
