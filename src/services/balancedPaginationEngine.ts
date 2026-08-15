@@ -361,9 +361,12 @@ export class BalancedPaginationEngine {
           j++;
         }
 
-        if (j < blocks.length && blocks[j].type === 'ayah' && blocks[j].ayahNumber === 1) {
-          anchorGroup.push(blocks[j]);
-          j++;
+        if (j < blocks.length) {
+          const cand = blocks[j];
+          if (cand.type === 'ayah' && cand.ayahNumber === 1) {
+            anchorGroup.push(cand);
+            j++;
+          }
         }
 
         const anchorH = anchorGroup.reduce((acc, b) => acc + b.measuredHeight, 0);
