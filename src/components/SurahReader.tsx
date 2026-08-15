@@ -589,8 +589,8 @@ export default function SurahReader({
           <div>Mode: <span className="text-emerald-400 font-bold">وضع القراءة</span></div>
           <div>Container Width: <span className="text-white font-bold">{containerWidth}px</span></div>
           <div>Viewport: <span className="text-white font-bold">{typeof window !== 'undefined' ? `${window.innerWidth} × ${window.innerHeight}` : 'N/A'}</span></div>
-          <div>Fixed Font Size (MUSHAF_TEXT_SIZE_PX): <span className="text-emerald-400 font-bold">{MUSHAF_TEXT_SIZE_PX}px</span></div>
-          <div>Fixed Line-Height (MUSHAF_TEXT_LINE_HEIGHT): <span className="text-white font-bold">{MUSHAF_TEXT_LINE_HEIGHT} ({Math.round(MUSHAF_TEXT_SIZE_PX * MUSHAF_TEXT_LINE_HEIGHT)}px)</span></div>
+          <div>Applied Page Font Size: <span className="text-emerald-400 font-bold">{pageTextSize}px {isSparsePage ? '(Sparse Balanced ⚖️)' : '(Base 24px)'}</span></div>
+          <div>Line-Height: <span className="text-white font-bold">{MUSHAF_TEXT_LINE_HEIGHT} ({Math.round(pageTextSize * MUSHAF_TEXT_LINE_HEIGHT)}px)</span></div>
           <div>Font Family: <span className="text-white font-bold">Tehaf, AmiriQuran, serif</span></div>
           <div>Font Loaded: <span className="text-emerald-400 font-bold">{fontLoaded ? 'YES' : 'NO'}</span></div>
           <div>Page: <span className="text-white font-bold">{currentPageNumber} / 604</span></div>
@@ -638,10 +638,11 @@ export default function SurahReader({
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Page Surah Sections Body: READING MODE LAYOUT ENGINE */}
+              {/* Page Surah Sections Body: PAGE DENSITY BALANCING LAYOUT ENGINE */}
               <div 
-                ref={textContainerRef}
-                className="flex-1 min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overscroll-contain px-3.5 sm:px-6 md:px-8 z-10 space-y-3"
+                ref={scrollViewportRef}
+                data-json-page={currentPageNumber}
+                className="flex-1 min-h-0 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overscroll-contain px-3.5 sm:px-6 md:px-8 z-10"
                 style={{
                   boxSizing: 'border-box',
                   paddingTop: '1rem',
@@ -657,55 +658,62 @@ export default function SurahReader({
                   textRendering: 'optimizeLegibility'
                 }}
               >
-                {pageData.sections.map((section, secIdx) => {
-                  const showHeader = section.startsHere;
-                  const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
+                <div 
+                  ref={pageContentRef}
+                  className={cn(
+                    "w-full flex flex-col justify-start",
+                    isSparsePage ? "space-y-4" : "space-y-3"
+                  )}
+                >
+                  {pageData.sections.map((section, secIdx) => {
+                    const showHeader = section.startsHere;
+                    const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
-                  return (
-                    <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-                      {/* Royal Islamic Surah Header Frame ALWAYS AT ABSOLUTE TOP when startsHere === true */}
-                      {showHeader && (
-                        <div className="w-full mt-0 mb-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0">
-                          <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                            <span>❖</span>
-                            <span className="hidden sm:inline">━━</span>
+                    return (
+                      <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
+                        {/* Royal Islamic Surah Header Frame ALWAYS AT ABSOLUTE TOP when startsHere === true */}
+                        {showHeader && (
+                          <div className="w-full mt-0 mb-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0">
+                            <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                              <span>❖</span>
+                              <span className="hidden sm:inline">━━</span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                              سورة {section.name}
+                            </h3>
+                            <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
+                              <span className="hidden sm:inline">━━</span>
+                              <span>❖</span>
+                            </div>
                           </div>
-                          <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                            سورة {section.name}
-                          </h3>
-                          <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                            <span className="hidden sm:inline">━━</span>
-                            <span>❖</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Bismillah if startsHere === true */}
-                      {showBismillah && (
-                        <div 
-                          className="text-center font-normal my-1 select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0"
-                          style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
-                        >
-                          بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                        </div>
-                      )}
-
-                      {/* Ayahs Continuous Text Flow with Fixed 24px Font Size & Line-Height 1.9 */}
-                      <div 
-                        className={cn(
-                          "w-full text-center select-text font-normal",
-                          theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                         )}
-                        style={{ 
-                          fontSize: `${MUSHAF_TEXT_SIZE_PX}px`,
-                          lineHeight: MUSHAF_TEXT_LINE_HEIGHT,
-                          fontFamily: '"Tehaf", "AmiriQuran", serif',
-                          direction: 'rtl',
-                          unicodeBidi: 'embed',
-                          letterSpacing: 'normal', 
-                          wordSpacing: 'normal' 
-                        }}
-                      >
+
+                        {/* Bismillah if startsHere === true */}
+                        {showBismillah && (
+                          <div 
+                            className="text-center font-normal my-1 select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0"
+                            style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
+                          >
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                          </div>
+                        )}
+
+                        {/* Ayahs Continuous Text Flow with Smart Density Balanced Font Size (24px - 30px) */}
+                        <div 
+                          className={cn(
+                            "w-full text-center select-text font-normal",
+                            theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
+                          )}
+                          style={{ 
+                            fontSize: `${pageTextSize}px`,
+                            lineHeight: MUSHAF_TEXT_LINE_HEIGHT,
+                            fontFamily: '"Tehaf", "AmiriQuran", serif',
+                            direction: 'rtl',
+                            unicodeBidi: 'embed',
+                            letterSpacing: 'normal', 
+                            wordSpacing: 'normal' 
+                          }}
+                        >
                         {section.ayas.map(aya => {
                           const words = aya.text.split(/\s+/).filter(w => w.length > 0);
                           const isHighlighted = highlightedWord?.verseIndex === aya.index;
