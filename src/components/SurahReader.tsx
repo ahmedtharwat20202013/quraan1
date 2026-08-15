@@ -48,7 +48,6 @@ export const DEFAULT_QURAN_FONT_SIZE = 31;
 export const MAX_READABLE_FONT_SIZE = 44;
 export const QURAN_READER_LINE_HEIGHT = 1.65;
 export const QURAN_LAYOUT_VERSION = 'official-json-render-v1';
-export const FEATURE_PAGINATION_MODE: ReaderPaginationMode = 'official-json';
 
 export type RenderBlock =
   | { type: 'surah-header'; surahId: number; surahName: string }
