@@ -96,7 +96,7 @@ const layoutCache = new Map<string, BalancedQuranPage[]>();
  */
 export function getLayoutKey(config: QuranLayoutConfig): string {
   return [
-    'balanced-v1',
+    'no-scroll-balanced-v1',
     Math.round(config.containerWidth),
     Math.round(config.availableHeight),
     config.fontSize,
