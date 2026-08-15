@@ -476,8 +476,48 @@ export default function SurahReader({
               </div>
             </div>
 
-            {/* Left Group: Search, Bookmark & Theme Toggle */}
+            {/* Left Group: Font Scale Switcher, Search, Bookmark, Debug & Theme Toggle */}
             <div className="flex items-center gap-1.5">
+              {/* User Font Scale Control (Small / Medium / Large) */}
+              <div className="flex items-center bg-white/10 p-0.5 rounded-xl border border-white/15">
+                <button
+                  onClick={() => handleFontScaleChange('small')}
+                  className={cn(
+                    "px-2 py-1 rounded-lg text-[10px] font-black transition-all",
+                    fontScale === 'small'
+                      ? "bg-gold-accent text-emerald-950 shadow-sm"
+                      : "text-white/70 hover:text-white"
+                  )}
+                  title="خط صغير"
+                >
+                  صغير
+                </button>
+                <button
+                  onClick={() => handleFontScaleChange('medium')}
+                  className={cn(
+                    "px-2 py-1 rounded-lg text-[10px] font-black transition-all",
+                    fontScale === 'medium'
+                      ? "bg-gold-accent text-emerald-950 shadow-sm"
+                      : "text-white/70 hover:text-white"
+                  )}
+                  title="خط مريح (افتراضي)"
+                >
+                  مريح
+                </button>
+                <button
+                  onClick={() => handleFontScaleChange('large')}
+                  className={cn(
+                    "px-2 py-1 rounded-lg text-[10px] font-black transition-all",
+                    fontScale === 'large'
+                      ? "bg-gold-accent text-emerald-950 shadow-sm"
+                      : "text-white/70 hover:text-white"
+                  )}
+                  title="خط كبير"
+                >
+                  كبير
+                </button>
+              </div>
+
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
@@ -521,23 +561,19 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Temporary Development Typography Calibration Debug Panel */}
+      {/* Development Reading Mode Debug Panel */}
       {showDebugPanel && (
         <div className="fixed top-16 left-4 z-50 p-4 rounded-2xl bg-black/95 text-amber-300 font-mono text-[11px] border border-gold-accent/40 shadow-2xl space-y-1 dir-ltr max-w-sm pointer-events-auto">
-          <div className="font-bold text-white border-b border-white/20 pb-1 mb-1">📐 Quran Calibration Debug Info</div>
-          <div>Quran Container Width: <span className="text-white font-bold">{containerWidth}px</span></div>
+          <div className="font-bold text-white border-b border-white/20 pb-1 mb-1">📐 Quran Reading Mode Debug Info</div>
+          <div>Mode: <span className="text-emerald-400 font-bold">Reading Mode (وضع القراءة)</span></div>
+          <div>Container Width: <span className="text-white font-bold">{containerWidth}px</span></div>
           <div>Viewport: <span className="text-white font-bold">{typeof window !== 'undefined' ? `${window.innerWidth} × ${window.innerHeight}` : 'N/A'}</span></div>
-          <div>Target Visual Height: <span className="text-emerald-400 font-bold">{targetVisualHeight}px</span></div>
-          <div>Calibrated CSS Font-Size: <span className="text-emerald-400 font-bold">{calibratedCssFontSize}px</span></div>
-          <div>Measured Actual Glyph: <span className="text-emerald-400 font-bold">{measuredGlyphHeight}px</span></div>
-          <div>Line-Height: <span className="text-white font-bold">1.95 ({Math.round(calibratedCssFontSize * 1.95)}px)</span></div>
-          <div>Font Rendered: <span className="text-white font-bold">Tehaf (TEHAFSProTharwatEmara-Regular)</span></div>
+          <div>CSS Reading Font-Size: <span className="text-emerald-400 font-bold">{activeFontSize}px</span></div>
+          <div>Font Scale Choice: <span className="text-emerald-400 font-bold">{fontScale}</span></div>
+          <div>Applied Line-Height: <span className="text-white font-bold">{READING_LINE_HEIGHT} ({Math.round(activeFontSize * READING_LINE_HEIGHT)}px)</span></div>
+          <div>Font Family: <span className="text-white font-bold">Tehaf, AmiriQuran, Amiri, serif</span></div>
           <div>Font Loaded: <span className="text-emerald-400 font-bold">{fontLoaded ? 'YES' : 'NO'}</span></div>
-          <div>Calibration Iterations: <span className="text-white font-bold">{calibrationIterations}</span></div>
-          <div>Typography Frozen: <span className="text-emerald-400 font-bold">YES</span></div>
-          <div>Pagination Modifies Typography: <span className="text-rose-400 font-bold">NO</span></div>
-          <div>Transform Scale Used: <span className="text-rose-400 font-bold">NO</span></div>
-          <div>Overflow Warning Detected: <span className={hasOverflowWarning ? "text-rose-400 font-bold" : "text-emerald-400 font-bold"}>{hasOverflowWarning ? 'YES (LOGGED)' : 'NO'}</span></div>
+          <div>Calibration Engine: <span className="text-emerald-400 font-bold">Disabled (Pure Width Breakpoint)</span></div>
           <div>Page: <span className="text-white font-bold">{currentPageNumber} / 604</span></div>
         </div>
       )}
@@ -583,13 +619,13 @@ export default function SurahReader({
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Page Surah Sections Body: CONSERVATIVE DIGITAL MUSHAF TYPOGRAPHY CALIBRATION ENGINE */}
+              {/* Page Surah Sections Body: CONSERVATIVE READING MODE LAYOUT ENGINE */}
               <div 
                 ref={textContainerRef}
-                className="flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto px-3 sm:px-6 md:px-8 pt-2 pb-6 z-10 space-y-1"
+                className="flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto px-3.5 sm:px-6 md:px-8 pt-4 pb-20 z-10 space-y-3"
                 style={{
-                  fontSize: `${calibratedCssFontSize}px`,
-                  fontFamily: '"Tehaf", "AmiriQuran", serif',
+                  fontSize: `${activeFontSize}px`,
+                  fontFamily: '"Tehaf", "AmiriQuran", "Amiri", serif',
                   direction: 'rtl',
                   unicodeBidi: 'embed',
                   whiteSpace: 'normal',
@@ -632,12 +668,18 @@ export default function SurahReader({
                         </div>
                       )}
 
-                      {/* Ayahs Continuous Text Flow with Optimal 1.55 Line Height & Natural Arabic Spacing */}
+                      {/* Ayahs Continuous Text Flow with Line-Height 1.85 & Natural Diacritic Spacing */}
                       <div 
                         className={cn(
-                          "w-full text-center select-text font-normal leading-[1.55]",
+                          "w-full text-center select-text font-normal",
                           theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                         )}
+                        style={{ 
+                          lineHeight: READING_LINE_HEIGHT,
+                          letterSpacing: 'normal', 
+                          wordSpacing: 'normal' 
+                        }}
+                      >
                         style={{ letterSpacing: 'normal', wordSpacing: 'normal' }}
                       >
                         {section.ayas.map(aya => {
