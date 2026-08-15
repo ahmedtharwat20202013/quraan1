@@ -610,8 +610,6 @@ export default function SurahReader({
                   unicodeBidi: 'embed',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale',
-                  textRendering: 'optimizeLegibility'
-                }}
               >
                 <MushafPageContent
                   pageData={pageData}
@@ -624,7 +622,7 @@ export default function SurahReader({
             </motion.div>
           </AnimatePresence>
         )}
-      </div>
+      </main>
 
       {/* Bottom Controls Floating Navigation Bar */}
       <AnimatePresence>
