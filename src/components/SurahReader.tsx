@@ -28,44 +28,9 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-export type FontScaleOption = 'small' | 'medium' | 'large';
-
-// Pure line-height constant for Tehaf & Amiri Arabic fonts with diacritics
-export const READING_LINE_HEIGHT = 1.85;
-
-/**
- * Pure screen-width breakpoint reading font size selector with strict bounds clamping.
- * Range Table (CSS Pixels):
- * <= 360px: 17px (range: 16px - 18px)
- * 361px - 430px: 18px (range: 17px - 20px)
- * 431px - 699px: 20px (range: 18px - 22px)
- * 700px - 879px: 23px (range: 21px - 25px)
- * >= 880px: 25px (range: 23px - 27px)
- */
-export function getReadingFontSize(width: number, scale: FontScaleOption = 'medium'): number {
-  let base = 18;
-  let minBound = 17;
-  let maxBound = 20;
-
-  if (width <= 0) return 18;
-
-  if (width <= 360) {
-    base = 17; minBound = 16; maxBound = 18;
-  } else if (width <= 430) {
-    base = 18; minBound = 17; maxBound = 20;
-  } else if (width <= 699) {
-    base = 20; minBound = 18; maxBound = 22;
-  } else if (width <= 879) {
-    base = 23; minBound = 21; maxBound = 25;
-  } else {
-    base = 25; minBound = 23; maxBound = 27;
-  }
-
-  const scaleFactor = scale === 'small' ? 0.9 : scale === 'large' ? 1.1 : 1.0;
-  const calculated = Math.round(base * scaleFactor);
-
-  return Math.min(maxBound, Math.max(minBound, calculated));
-}
+// Fixed Single Source of Truth Constants for Quran Reading Mode
+export const MUSHAF_TEXT_SIZE_PX = 24;
+export const MUSHAF_TEXT_LINE_HEIGHT = 1.9;
 
 export default function SurahReader({
   initialPageNumber = 1,
@@ -100,15 +65,6 @@ export default function SurahReader({
     }
   });
 
-  // User Font Scale Preference ('small' | 'medium' | 'large')
-  const [fontScale, setFontScale] = useState<FontScaleOption>(() => {
-    try {
-      const saved = localStorage.getItem('mushaf_reader_font_scale');
-      if (saved === 'small' || saved === 'medium' || saved === 'large') return saved;
-    } catch {}
-    return 'medium';
-  });
-
   // In-Surah Search States
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -130,17 +86,10 @@ export default function SurahReader({
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
 
-  // CONSERVATIVE READING MODE LAYOUT ENGINE
+  // READING MODE LAYOUT ENGINE
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
-
-  const handleFontScaleChange = (newScale: FontScaleOption) => {
-    setFontScale(newScale);
-    try {
-      localStorage.setItem('mushaf_reader_font_scale', newScale);
-    } catch {}
-  };
 
   useEffect(() => {
     if (!textContainerRef.current) return;
@@ -155,8 +104,6 @@ export default function SurahReader({
     observer.observe(textContainerRef.current);
     return () => observer.disconnect();
   }, []);
-
-  const activeFontSize = getReadingFontSize(containerWidth, fontScale);
 
   // Reset container scroll position to top whenever page changes
   useEffect(() => {
