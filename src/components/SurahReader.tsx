@@ -28,16 +28,84 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-// Fixed Single Source of Truth Constants for Quran Reading Mode
-export const BASE_MUSHAF_TEXT_SIZE_PX = 24;
-export const MUSHAF_TEXT_SIZE_PX = 24; // Backward compatibility alias
-export const MUSHAF_TEXT_LINE_HEIGHT = 1.9;
+// Candidate font sizes for single-screen Page Composition Fitting (Clamped strictly 18px - 30px)
+export const PAGE_FONT_CANDIDATES = [30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18];
+export const SPARSE_PAGE_MAX_COVERAGE = 0.90;
+export const NORMAL_PAGE_MIN_COVERAGE = 0.68;
+export const PAGE_BOTTOM_SAFE_SPACE_PX = 18;
 
-// Candidate font sizes for sparse page density balancing (Clamped strictly 24px - 30px)
-export const SPARSE_PAGE_FONT_CANDIDATES = [30, 29, 28, 27, 26, 25, 24];
+export interface PageCompositionConfig {
+  fontSize: number;
+  lineHeight: number;
+  presetName: 'Sparse' | 'Standard' | 'Dense';
+  spaceClass: string;
+  headerMarginClass: string;
+  bismillahMarginClass: string;
+}
 
-// Reserve bottom clearance (8rem = 128px + safe-area) for bottom controls overlay
-export const BOTTOM_CONTROLS_SAFE_SPACE_PX = 128;
+export function getCompositionPreset(fontPx: number): PageCompositionConfig {
+  if (fontPx >= 25) {
+    return {
+      fontSize: fontPx,
+      lineHeight: 1.92,
+      presetName: 'Sparse',
+      spaceClass: 'space-y-3 sm:space-y-4',
+      headerMarginClass: 'my-2 py-2 px-3',
+      bismillahMarginClass: 'my-2'
+    };
+  } else if (fontPx === 24) {
+    return {
+      fontSize: 24,
+      lineHeight: 1.86,
+      presetName: 'Standard',
+      spaceClass: 'space-y-2 sm:space-y-2.5',
+      headerMarginClass: 'my-1.5 py-1.5 px-3',
+      bismillahMarginClass: 'my-1.5'
+    };
+  } else {
+    // 23px down to 18px: line-height scales from 1.82 at 23px to 1.68 at 18px
+    const lh = Number((1.82 - (23 - fontPx) * 0.028).toFixed(2));
+    return {
+      fontSize: fontPx,
+      lineHeight: Math.max(1.68, lh),
+      presetName: 'Dense',
+      spaceClass: 'space-y-1 sm:space-y-1.5',
+      headerMarginClass: 'my-0.5 py-1 px-2.5',
+      bismillahMarginClass: 'my-0.5'
+    };
+  }
+}
+
+// In-memory cache for page composition fit per (pageNumber, containerWidth, availablePageHeight, theme)
+const pageCompositionCache = new Map<string, PageCompositionConfig>();
+
+function renderMeasuringHtml(pageData: ProcessedPageData, config: PageCompositionConfig, theme: string): string {
+  const sectionsHtml = pageData.sections.map((section, secIdx) => {
+    const showHeader = section.startsHere;
+    const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
+
+    const headerHtml = showHeader ? `
+      <div style="font-family:'Tehaf','AmiriQuran',serif;" class="w-full ${config.headerMarginClass} rounded-xl text-center flex items-center justify-between shrink-0">
+        <h3 style="font-size: 1.05em; font-weight: bold;">سورة ${section.name}</h3>
+      </div>` : '';
+
+    const bismillahHtml = showBismillah ? `
+      <div style="font-family:'Tehaf','AmiriQuran',serif;" class="text-center font-normal ${config.bismillahMarginClass} select-none shrink-0 opacity-95">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </div>` : '';
+
+    const ayasText = section.ayas.map(a => `${a.text} ${toArabicDigits(a.index)} `).join('');
+
+    const ayasHtml = `
+      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:center; direction:rtl; unicode-bidi:embed;">
+        ${ayasText}
+      </div>`;
+
+    return `<div class="w-full flex flex-col justify-start space-y-1">${headerHtml}${bismillahHtml}${ayasHtml}</div>`;
+  }).join('');
+
+  return `<div class="w-full flex flex-col justify-start ${config.spaceClass}">${sectionsHtml}</div>`;
+}
 
 /**
  * Developer Invariant Verification Function for Quran Page Data:
