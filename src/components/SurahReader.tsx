@@ -559,43 +559,39 @@ export default function SurahReader({
                 backgroundColor: theme === 'paper' ? '#fdfbf7' : '#082117',
               }}
             >
-              {/* Page Surah Sections Body: PAGE COMPOSITION FITTING ENGINE (Zero Scroll) */}
+              {/* Scrollable Text Container (ONLY scrollable element) */}
               <div 
-                ref={pageContainerRef}
                 data-json-page={currentPageNumber}
-                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-hidden z-10"
+                className="min-h-0 flex-1 w-full max-w-md md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-start overflow-y-auto overflow-x-hidden overscroll-contain z-10"
                 style={{
                   boxSizing: 'border-box',
-                  paddingTop: `${PAGE_SAFE_TOP_PX}px`,
-                  paddingInline: `${NATURAL_PAGE_HORIZONTAL_PADDING}px`,
-                  paddingBottom: `${PAGE_SAFE_BOTTOM_PX}px`,
+                  paddingInline: `${QURAN_READER_HORIZONTAL_PADDING_PX}px`,
+                  paddingTop: '4.5rem',
+                  paddingBottom: '7.5rem',
+                  scrollPaddingTop: '4.5rem',
+                  scrollPaddingBottom: '7.5rem',
                   direction: 'rtl',
                   unicodeBidi: 'embed',
-                  whiteSpace: 'normal',
-                  letterSpacing: 'normal',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale',
                   textRendering: 'optimizeLegibility'
                 }}
               >
-                <div className={cn("w-full flex flex-col justify-start", composition.spaceClass)}>
+                <div className="w-full flex flex-col justify-start space-y-3">
                   {pageData.sections.map((section, secIdx) => {
                     const showHeader = section.startsHere;
                     const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
                     return (
                       <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-                        {/* Royal Islamic Surah Header Frame ALWAYS AT ABSOLUTE TOP when startsHere === true */}
+                        {/* Surah Header Frame */}
                         {showHeader && (
-                          <div className={cn(
-                            "w-full rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0",
-                            composition.headerMarginClass
-                          )}>
+                          <div className="w-full my-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0">
                             <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
                               <span>❖</span>
                               <span className="hidden sm:inline">━━</span>
                             </div>
-                            <h3 className="text-sm sm:text-base md:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+                            <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
                               سورة {section.name}
                             </h3>
                             <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
@@ -605,35 +601,33 @@ export default function SurahReader({
                           </div>
                         )}
 
-                        {/* Bismillah if startsHere === true */}
+                        {/* Bismillah */}
                         {showBismillah && (
                           <div 
-                            className={cn(
-                              "text-center font-normal select-none text-gold-accent text-xs sm:text-sm opacity-95 shrink-0 my-[6px]",
-                              composition.bismillahMarginClass
-                            )}
+                            className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-1.5"
                             style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
                           >
                             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                           </div>
                         )}
 
-                        {/* Ayahs Continuous Text Flow with Natural Centered Arabic Typography */}
+                        {/* Ayahs Continuous Text Flow (30px / 1.82 Constant Font Size) */}
                         <div 
                           className={cn(
                             "w-full font-normal select-text text-center",
                             theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
                           )}
                           style={{ 
-                            fontSize: `${composition.fontSize}px`,
-                            lineHeight: composition.lineHeight,
+                            fontSize: `${QURAN_READER_FONT_SIZE}px`,
+                            lineHeight: QURAN_READER_LINE_HEIGHT,
                             fontFamily: '"Tehaf", "AmiriQuran", serif',
                             direction: 'rtl',
                             unicodeBidi: 'embed',
                             textAlign: 'center',
                             wordSpacing: 'normal',
                             letterSpacing: 'normal',
-                            whiteSpace: 'normal'
+                            whiteSpace: 'normal',
+                            overflowWrap: 'normal'
                           }}
                         >
                           {section.ayas.map(aya => {
@@ -657,8 +651,8 @@ export default function SurahReader({
                                     </span>
                                   );
                                 })}
-                                {/* Gold Verse End Marker Number (Without Brackets) */}
-                                <span className="text-gold-accent font-black text-[0.85em] px-1 inline-block select-none">
+                                {/* Gold Verse End Marker Number */}
+                                <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
                                   {toArabicDigits(aya.index)}
                                 </span>{' '}
                               </React.Fragment>
@@ -666,9 +660,9 @@ export default function SurahReader({
                           })}
                         </div>
 
-                        {/* Horizontal Separator if multiple surahs on page */}
+                        {/* Fine Separator between multiple surahs on same page */}
                         {secIdx < pageData.sections.length - 1 && (
-                          <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
+                          <div className="my-2 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
                             <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
                             <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
                             <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
