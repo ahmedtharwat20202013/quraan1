@@ -49,6 +49,9 @@ async function runEngineValidationTests() {
   // Mock data loader for Node environment test
   const { QuranDataLoader } = await import('../quranDataLoader');
   QuranDataLoader.getQuranData = async () => quranData;
+  const pagesV3Path = path.join(process.cwd(), 'public/quran_pages_v3.json');
+  const pagesV3Data = JSON.parse(fs.readFileSync(pagesV3Path, 'utf-8'));
+  QuranDataLoader.getPagesV3Data = async () => pagesV3Data;
 
   console.log('[Test 3] Executing Balanced Pagination Algorithm...');
   const pages = await BalancedPaginationEngine.getBalancedPages(testConfig, true);
