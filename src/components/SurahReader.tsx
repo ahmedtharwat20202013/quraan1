@@ -29,8 +29,12 @@ interface SurahReaderProps {
 }
 
 // Fixed Single Source of Truth Constants for Quran Reading Mode
-export const MUSHAF_TEXT_SIZE_PX = 24;
+export const BASE_MUSHAF_TEXT_SIZE_PX = 24;
+export const MUSHAF_TEXT_SIZE_PX = 24; // Backward compatibility alias
 export const MUSHAF_TEXT_LINE_HEIGHT = 1.9;
+
+// Candidate font sizes for sparse page density balancing (Clamped strictly 24px - 30px)
+export const SPARSE_PAGE_FONT_CANDIDATES = [30, 29, 28, 27, 26, 25, 24];
 
 // Reserve bottom clearance (8rem = 128px + safe-area) for bottom controls overlay
 export const BOTTOM_CONTROLS_SAFE_SPACE_PX = 128;
@@ -145,13 +149,26 @@ export default function SurahReader({
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
 
-  // READING MODE LAYOUT ENGINE
-  const textContainerRef = useRef<HTMLDivElement>(null);
+  // PAGE DENSITY BALANCING ENGINE
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const pageContentRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
+  const [pageTextSize, setPageTextSize] = useState<number>(BASE_MUSHAF_TEXT_SIZE_PX);
+  const [isSparsePage, setIsSparsePage] = useState<boolean>(false);
+
+  // Reset font size & sparse status immediately when page changes before measuring
   useEffect(() => {
-    if (!textContainerRef.current) return;
+    setPageTextSize(BASE_MUSHAF_TEXT_SIZE_PX);
+    setIsSparsePage(false);
+    if (scrollViewportRef.current) {
+      scrollViewportRef.current.scrollTop = 0;
+    }
+  }, [currentPageNumber]);
+
+  useEffect(() => {
+    if (!scrollViewportRef.current) return;
     const observer = new ResizeObserver(entries => {
       for (const entry of entries) {
         const w = Math.round(entry.contentRect.width);
@@ -160,16 +177,53 @@ export default function SurahReader({
         }
       }
     });
-    observer.observe(textContainerRef.current);
+    observer.observe(scrollViewportRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Reset container scroll position to top whenever page changes
+  // Smart Page Density Balancing Algorithm
   useEffect(() => {
-    if (textContainerRef.current) {
-      textContainerRef.current.scrollTop = 0;
+    if (!fontLoaded || loading || !pageData || !scrollViewportRef.current || !pageContentRef.current) {
+      return;
     }
-  }, [currentPageNumber]);
+
+    const viewportEl = scrollViewportRef.current;
+    const contentEl = pageContentRef.current;
+
+    const availableHeight = viewportEl.clientHeight;
+    if (availableHeight <= 0) return;
+
+    const contentHeight = contentEl.getBoundingClientRect().height;
+    if (contentHeight <= 0) return;
+
+    const coverage = contentHeight / availableHeight;
+
+    // Coverage >= 0.68 -> Dense or Normal Page. Stay at 24px.
+    if (coverage >= 0.68) {
+      if (pageTextSize !== BASE_MUSHAF_TEXT_SIZE_PX) {
+        setPageTextSize(BASE_MUSHAF_TEXT_SIZE_PX);
+        setIsSparsePage(false);
+      }
+      return;
+    }
+
+    // Coverage < 0.68 -> Sparse Page! Candidate evaluation for 88% available height limit
+    const targetMaxHeight = availableHeight * 0.88;
+    let bestCandidate = BASE_MUSHAF_TEXT_SIZE_PX;
+
+    for (const candidate of SPARSE_PAGE_FONT_CANDIDATES) {
+      const estimatedHeight = contentHeight * (candidate / BASE_MUSHAF_TEXT_SIZE_PX);
+      if (estimatedHeight <= targetMaxHeight) {
+        bestCandidate = candidate;
+        break;
+      }
+    }
+
+    if (bestCandidate !== pageTextSize) {
+      setPageTextSize(bestCandidate);
+      setIsSparsePage(bestCandidate > BASE_MUSHAF_TEXT_SIZE_PX);
+    }
+  }, [currentPageNumber, pageData, fontLoaded, loading, containerWidth, pageTextSize]);
 
   // Ensure font is loaded
   useEffect(() => {
