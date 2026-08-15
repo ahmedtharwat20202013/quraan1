@@ -196,6 +196,48 @@ export function BasmalaBlock() {
   );
 }
 
+export type DomAuditResult = {
+  isValid: boolean;
+  totalExpected: number;
+  totalFound: number;
+  missingKeys: string[];
+  clippedKeys: string[];
+};
+
+export function auditRenderedDom(
+  root: HTMLElement | null,
+  expectedAyahKeys: string[]
+): DomAuditResult {
+  if (!root) {
+    return { isValid: false, totalExpected: expectedAyahKeys.length, totalFound: 0, missingKeys: expectedAyahKeys, clippedKeys: [] };
+  }
+
+  const foundKeys: string[] = [];
+  const clippedKeys: string[] = [];
+  const rootBounds = root.getBoundingClientRect();
+
+  expectedAyahKeys.forEach(key => {
+    const node = root.querySelector(`[data-ayah-key="${key}"]`);
+    if (node) {
+      foundKeys.push(key);
+      const rect = node.getBoundingClientRect();
+      if (rect.height === 0 || rect.bottom > rootBounds.bottom + 5) {
+        clippedKeys.push(key);
+      }
+    }
+  });
+
+  const missingKeys = expectedAyahKeys.filter(k => !foundKeys.includes(k));
+
+  return {
+    isValid: missingKeys.length === 0 && clippedKeys.length === 0,
+    totalExpected: expectedAyahKeys.length,
+    totalFound: foundKeys.length,
+    missingKeys,
+    clippedKeys
+  };
+}
+
 interface MushafPageContentProps {
   pageData: ProcessedPageData;
   fontSize: number;
@@ -247,28 +289,31 @@ export function MushafPageContent({
               {section.ayas.map(aya => {
                 const words = aya.text.split(/\s+/).filter(w => w.length > 0);
                 const isHighlighted = highlightedWord?.verseIndex === aya.index;
+                const ayahKey = `${section.id}:${aya.index}`;
 
                 return (
                   <React.Fragment key={`aya_${section.id}_${aya.index}`}>
-                    {words.map((word, wIdx) => {
-                      const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
+                    <span data-ayah-key={ayahKey} className="inline-block">
+                      {words.map((word, wIdx) => {
+                        const isTargetWord = isHighlighted && highlightedWord.wordIndex === wIdx;
 
-                      return (
-                        <span
-                          key={`word_${aya.index}_${wIdx}`}
-                          className={cn(
-                            "inline transition-colors duration-300",
-                            isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
-                          )}
-                        >
-                          {word}{' '}
-                        </span>
-                      );
-                    })}
-                    {/* Gold Verse End Marker Number */}
-                    <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
-                      {toArabicDigits(aya.index)}
-                    </span>{' '}
+                        return (
+                          <span
+                            key={`word_${aya.index}_${wIdx}`}
+                            className={cn(
+                              "inline transition-colors duration-300",
+                              isTargetWord && !highlightedWord.isFading && "bg-gold-accent/40 text-gold-accent font-bold rounded px-0.5"
+                            )}
+                          >
+                            {word}{' '}
+                          </span>
+                        );
+                      })}
+                      {/* Gold Verse End Marker Number */}
+                      <span className="inline-block px-1 text-[0.82em] font-black text-gold-accent select-none">
+                        {toArabicDigits(aya.index)}
+                      </span>{' '}
+                    </span>
                   </React.Fragment>
                 );
               })}

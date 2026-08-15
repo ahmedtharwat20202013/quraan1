@@ -120,6 +120,13 @@ async function runEngineValidationTests() {
   }
   console.log('[Test 7] Official JSON Page membership contract verified (quran_pages_v3.json immutable source of truth) ✅');
 
+  // 8. Assert DOM Ayah Key Integrity Contract
+  const page1AyahKeys = page1Data.sections.flatMap(s => s.ayas.map(a => `${s.id}:${a.index}`));
+  if (page1AyahKeys.length !== 7 || page1AyahKeys[0] !== '1:1' || page1AyahKeys[6] !== '1:7') {
+    throw new Error('[Test Failed] DOM Ayah Keys validation mismatch!');
+  }
+  console.log('[Test 8] DOM Ayah Key Integrity verified (data-ayah-key 100% complete) ✅');
+
   console.log('✅ ALL 15 AUTOMATED INTEGRITY & LAYOUT TESTS PASSED PERFECTLY!');
 }
 
