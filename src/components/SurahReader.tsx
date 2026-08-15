@@ -492,32 +492,6 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Hidden Measuring Container for DOM-based Page Composition Fitting */}
-      {!loading && fontLoaded && pageData && (
-        <div 
-          ref={measuringContainerRef}
-          aria-hidden="true"
-          style={{
-            position: 'fixed',
-            left: '-10000px',
-            top: '0',
-            width: `${containerWidth > 0 ? containerWidth : 360}px`,
-            visibility: 'hidden',
-            pointerEvents: 'none',
-            direction: 'rtl',
-            unicodeBidi: 'embed',
-            whiteSpace: 'normal',
-            boxSizing: 'border-box',
-            paddingTop: `${PAGE_SAFE_TOP_PX}px`,
-            paddingInline: '0.75rem',
-            paddingBottom: `${PAGE_SAFE_BOTTOM_PX}px`,
-            WebkitFontSmoothing: 'antialiased',
-            MozOsxFontSmoothing: 'grayscale',
-            textRendering: 'optimizeLegibility'
-          }}
-        />
-      )}
-
       {/* Main Full-Screen Display Container (Single Screen, Zero Scroll) */}
       <div className="flex min-h-0 flex-1 flex-col w-full h-full justify-start items-center relative overflow-hidden pt-0 pb-0 px-0 sm:px-2">
         {/* Loading State */}
