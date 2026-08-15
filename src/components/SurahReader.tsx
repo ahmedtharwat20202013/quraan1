@@ -175,7 +175,7 @@ export function SurahContentHeader({ surahName }: { surahName: string }) {
       dir="rtl"
     >
       <span className="surah-content-header-decoration text-gold-accent/90 text-xs font-bold select-none" aria-hidden="true">◆</span>
-      <span className="surah-content-header-name font-black text-sm sm:text-base tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
+      <span className="surah-content-header-name font-black text-sm sm:text-base tracking-wide px-2" style={{ fontFamily: '"Tehaf", "TEHAFSProTharwatEmara", "AmiriQuran", serif' }}>
         سورة {surahName}
       </span>
       <span className="surah-content-header-decoration text-gold-accent/90 text-xs font-bold select-none" aria-hidden="true">◆</span>
@@ -187,7 +187,7 @@ export function BasmalaBlock() {
   return (
     <div
       className="basmala-block text-center font-normal select-none text-gold-accent text-base sm:text-xl opacity-95 shrink-0 my-1 sm:my-2"
-      style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.4rem' }}
+      style={{ fontFamily: '"Tehaf", "TEHAFSProTharwatEmara", "AmiriQuran", serif', marginBlock: '0.4rem' }}
       dir="rtl"
       aria-label="Basmala"
     >
@@ -276,7 +276,7 @@ export function MushafPageContent({
               style={{ 
                 fontSize: `${fontSize}px`,
                 lineHeight: lineHeight,
-                fontFamily: '"Tehaf", "AmiriQuran", serif',
+                fontFamily: '"Tehaf", "TEHAFSProTharwatEmara", "AmiriQuran", serif',
                 direction: 'rtl',
                 unicodeBidi: 'embed',
                 textAlign: 'center',
