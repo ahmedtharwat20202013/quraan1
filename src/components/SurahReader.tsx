@@ -37,19 +37,40 @@ interface SurahReaderProps {
 }
 
 // Reading Padding Constants
-export const READING_TOP_PADDING = 2;
-export const READING_BOTTOM_PADDING = 2;
-export const READING_SIDE_PADDING = 12;
+export const READING_TOP_PADDING = 14;
+export const READING_BOTTOM_PADDING = 22;
+export const READING_SIDE_PADDING = 14;
 
-// Font Policy Constants (Balanced Mobile Reading: 26px Standard / 24px Dense / 22px Floor)
-export const QURAN_READER_FONT_SIZE = 26;
-export const QURAN_READER_LINE_HEIGHT = 1.62;
+// Typography Policy Constants (Readable Baseline: 26px Floor, 30px Standard, 46px Max)
+export const MIN_QURAN_FONT_SIZE = 26;
+export const MAX_QURAN_FONT_SIZE = 46;
+export const DEFAULT_QURAN_FONT_SIZE = 30;
+export const QURAN_READER_LINE_HEIGHT = 1.85;
 
-export const DENSE_PAGE_FONT_SIZE = 24;
-export const DENSE_PAGE_LINE_HEIGHT = 1.54;
+export type QuranVisualMetrics = {
+  fontSize: number;
+  lineHeight: number;
+  viewportHeight: number;
+  availableHeight: number;
+  actualContentHeight: number;
+  topWhitespace: number;
+  bottomWhitespace: number;
+  pageOccupancy: number;
+};
 
-export const COMPACT_PAGE_FONT_SIZE = 22;
-export const COMPACT_PAGE_LINE_HEIGHT = 1.48;
+export function getSafeQuranFontSize(requestedSize?: number): number {
+  let size = requestedSize;
+  if (size === undefined && typeof localStorage !== 'undefined') {
+    try {
+      const saved = Number(localStorage.getItem('quran_font_size'));
+      if (Number.isFinite(saved) && saved >= MIN_QURAN_FONT_SIZE && saved <= MAX_QURAN_FONT_SIZE) {
+        size = saved;
+      }
+    } catch {}
+  }
+  const target = size ?? DEFAULT_QURAN_FONT_SIZE;
+  return Math.max(MIN_QURAN_FONT_SIZE, Math.min(target, MAX_QURAN_FONT_SIZE));
+}
 
 interface MushafPageContentProps {
   pageData: ProcessedPageData;
@@ -552,35 +573,10 @@ export default function SurahReader({
     }
   }, [pageData?.primarySurahId]);
 
-  // Typography policy states (26px Standard / 24px Dense / 22px Floor)
-  const [activeFontSize, setActiveFontSize] = useState<number>(QURAN_READER_FONT_SIZE);
-  const [activeLineHeight, setActiveLineHeight] = useState<number>(QURAN_READER_LINE_HEIGHT);
+  // Typography policy states (Strictly bounded: 26px to 46px, default 30px, line-height 1.85)
+  const safeFontSize = getSafeQuranFontSize(fontSize);
+  const activeLineHeight = QURAN_READER_LINE_HEIGHT;
   const visibleContentRef = useRef<HTMLDivElement>(null);
-
-  // Reset font policy to 26px / 1.62 for each new page
-  useEffect(() => {
-    setActiveFontSize(QURAN_READER_FONT_SIZE);
-    setActiveLineHeight(QURAN_READER_LINE_HEIGHT);
-  }, [currentPageNumber, pageData]);
-
-  // Dynamic font step-down to prevent any vertical clipping: 26px -> 24px -> 22px
-  useEffect(() => {
-    if (!pageData || !visibleContentRef.current) return;
-    const el = visibleContentRef.current;
-
-    if (el.scrollHeight > el.clientHeight + 2) {
-      if (activeFontSize === QURAN_READER_FONT_SIZE) {
-        setActiveFontSize(DENSE_PAGE_FONT_SIZE); // 24px
-        setActiveLineHeight(DENSE_PAGE_LINE_HEIGHT); // 1.54
-      } else if (activeFontSize === DENSE_PAGE_FONT_SIZE) {
-        setActiveFontSize(COMPACT_PAGE_FONT_SIZE); // 22px
-        setActiveLineHeight(COMPACT_PAGE_LINE_HEIGHT); // 1.48
-      } else {
-        const overflowPx = el.scrollHeight - el.clientHeight;
-        console.error(`[Quran Layout Overflow Error] Page ${currentPageNumber} overflows by ${overflowPx}px at 22px floor.`);
-      }
-    }
-  }, [currentPageNumber, pageData, activeFontSize, activeLineHeight]);
 
   // Auto-hiding controls timeout
   const resetHideTimer = useCallback(() => {
@@ -618,9 +614,9 @@ export default function SurahReader({
     const config: QuranLayoutConfig = {
       containerWidth: Math.max(280, w),
       availableHeight: Math.max(400, h),
-      fontSize: QURAN_READER_FONT_SIZE,
+      fontSize: safeFontSize,
       lineHeight: QURAN_READER_LINE_HEIGHT,
-      fontFamily: '"Tehaf", "AmiriQuran", serif',
+      fontFamily: '"Tehaf", "AmiriQuran", "Noto Sans Arabic", serif',
       theme,
       showVerseNumbers: true
     };
@@ -910,7 +906,7 @@ export default function SurahReader({
               >
                 <MushafPageContent
                   pageData={pageData}
-                  fontSize={activeFontSize}
+                  fontSize={safeFontSize}
                   lineHeight={activeLineHeight}
                   theme={theme}
                   highlightedWord={highlightedWord}
