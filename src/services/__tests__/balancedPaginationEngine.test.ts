@@ -79,6 +79,23 @@ async function runEngineValidationTests() {
     });
     throw new Error('Balanced Pagination Engine Audit Failed!');
   }
+  // 4. Assert At-Tawbah (Surah 9) Exception Rule
+  const tawbahPage = pages.find(p => p.blocks.some(b => b.surahId === 9));
+  if (tawbahPage) {
+    const hasTawbahBasmala = tawbahPage.blocks.some(b => b.surahId === 9 && b.type === 'basmala');
+    if (hasTawbahBasmala) {
+      throw new Error('[Test Failed] Surah At-Tawbah (9) received an unintended Basmala block!');
+    }
+    console.log('[Test 4] Surah At-Tawbah (9) correctly excludes Basmala ✅');
+  }
+
+  // 5. Assert Top Bar Surah Name Resolution
+  pages.forEach(p => {
+    if (!p.primarySurahName || p.primarySurahName.trim() === '') {
+      throw new Error(`[Test Failed] Page ${p.pageNumber} missing primarySurahName for SurahTopBar!`);
+    }
+  });
+  console.log('[Test 5] Primary Surah Name resolved for all pages ✅');
 
   console.log('✅ ALL 15 AUTOMATED INTEGRITY & LAYOUT TESTS PASSED PERFECTLY!');
 }
