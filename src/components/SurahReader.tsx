@@ -58,8 +58,22 @@ export function MushafPageContent({
   theme,
   highlightedWord
 }: MushafPageContentProps) {
+  // Check if page starts a new surah with official decorated frame
+  const hasSurahStartHeader = pageData.sections.some(s => s.startsHere);
+
   return (
-    <div className="w-full flex flex-col justify-center items-center my-auto space-y-1">
+    <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
+      {/* Surah Name Header at top of continuation pages */}
+      {!hasSurahStartHeader && (
+        <div 
+          className="w-full text-center py-0.5 font-bold text-gold-accent border-b border-gold-accent/20 shrink-0 text-sm select-none mb-0.5"
+          style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
+          dir="rtl"
+        >
+          سورة {pageData.primarySurahName}
+        </div>
+      )}
+
       {/* Surah Sections & Ayahs */}
         {pageData.sections.map((section, secIdx) => {
           const showHeader = section.startsHere;
