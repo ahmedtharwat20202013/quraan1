@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Bookmark as BookmarkType } from '../types';
 import { cn } from '../lib/utils';
-import { QuranDataLoader, ProcessedPageData } from '../services/quranDataLoader';
+import { QuranDataLoader, ProcessedPageData, ProcessedSurahSection } from '../services/quranDataLoader';
 import { toArabicDigits } from '../services/mushafPaginationEngine';
 import { QuranSearchService, SearchResult } from '../services/quranSearchService';
 import { 
@@ -23,7 +23,8 @@ import {
   LayoutDebugInfo 
 } from '../services/balancedPaginationEngine';
 
-export type ReaderPaginationMode = 'official' | 'balanced';
+export type ReaderPaginationMode = 'official-json' | 'official' | 'balanced' | 'balanced-experimental';
+export const FEATURE_PAGINATION_MODE: ReaderPaginationMode = 'official-json';
 
 interface SurahReaderProps {
   initialPageNumber?: number;
@@ -47,8 +48,6 @@ export const DEFAULT_QURAN_FONT_SIZE = 31;
 export const MAX_READABLE_FONT_SIZE = 44;
 export const QURAN_READER_LINE_HEIGHT = 1.65;
 export const QURAN_LAYOUT_VERSION = 'official-json-render-v1';
-
-export type ReaderPaginationMode = 'official-json' | 'balanced-experimental';
 export const FEATURE_PAGINATION_MODE: ReaderPaginationMode = 'official-json';
 
 export type RenderBlock =
