@@ -270,14 +270,94 @@ export default function SurahReader({
   const touchEndX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
-  // Ensure font is loaded
+  const prevInitialRef = useRef(initialPageNumber);
+
+  // Sync initialPageNumber ONLY when parent explicitly changes it (e.g. from Home or Search)
   useEffect(() => {
-    if (typeof document !== 'undefined' && 'fonts' in document) {
-      document.fonts.ready.then(() => setFontLoaded(true)).catch(() => setFontLoaded(true));
-    } else {
-      setFontLoaded(true);
+    if (initialPageNumber !== undefined && initialPageNumber !== prevInitialRef.current) {
+      prevInitialRef.current = initialPageNumber;
+      setCurrentPageNumber(Math.max(1, Math.min(604, initialPageNumber)));
+    }
+  }, [initialPageNumber]);
+
+  // Load 1..604 page data from quran_pages_v3.json
+  const loadPage = useCallback(async (pageNum: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await QuranDataLoader.getMushafPage(pageNum);
+      if (!data) {
+        throw new Error(`تعذر تحميل صفحة ${pageNum} من المصحف الشريف`);
+      }
+      // Developer Invariant Assertion Verification
+      verifyPageDataInvariant(data, pageNum);
+      setPageData(data);
+    } catch (err: any) {
+      console.error('Failed to load page:', err);
+      setError(err?.message || 'تعذر تحميل صفحة المصحف. يرجى التحقق من الملفات والاتصال.');
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadPage(currentPageNumber);
+  }, [currentPageNumber, loadPage]);
+
+  // Notify parent & save state
+  useEffect(() => {
+    if (pageData) {
+      if (onPageChange) {
+        onPageChange(pageData.primarySurahId, currentPageNumber);
+      }
+      try {
+        localStorage.setItem(
+          'quran_light_state',
+          JSON.stringify({
+            lastRead: {
+              surahId: pageData.primarySurahId,
+              pageNumber: currentPageNumber,
+              timestamp: Date.now()
+            }
+          })
+        );
+      } catch (e) {
+        console.warn('Failed to save last read state:', e);
+      }
+    }
+  }, [currentPageNumber, pageData, onPageChange]);
+
+  // Word highlight trigger
+  const triggerWordHighlight = useCallback((verseIndex: number, wordIndex: number) => {
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+
+    setHighlightedWord({ verseIndex, wordIndex, isFading: false });
+
+    highlightTimerRef.current = setTimeout(() => {
+      setHighlightedWord({ verseIndex, wordIndex, isFading: true });
+      fadeTimerRef.current = setTimeout(() => {
+        setHighlightedWord(null);
+      }, 1200);
+    }, 3500);
+  }, []);
+
+  useEffect(() => {
+    if (initialTargetAyah !== undefined && initialTargetWordIndex !== undefined) {
+      triggerWordHighlight(initialTargetAyah, initialTargetWordIndex);
+    }
+  }, [initialTargetAyah, initialTargetWordIndex, triggerWordHighlight]);
+
+  // Surah boundary bounds for strict Surah Session Isolation
+  const [surahBounds, setSurahBounds] = useState<{ minPage: number; maxPage: number }>({ minPage: 1, maxPage: 604 });
+
+  useEffect(() => {
+    if (pageData?.primarySurahId) {
+      QuranDataLoader.getSurahBounds(pageData.primarySurahId).then(bounds => {
+        setSurahBounds({ minPage: bounds.startPage, maxPage: bounds.endPage });
+      });
+    }
+  }, [pageData?.primarySurahId]);
 
   // Selected layout state
   const [selectedLayout, setSelectedLayout] = useState<PageLayoutConfig>(PAGE_LAYOUTS[1]);
