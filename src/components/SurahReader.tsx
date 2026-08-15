@@ -278,17 +278,9 @@ export function BalancedPageContent({
   );
 }
 
-/**
- * Developer Invariant Verification Function for Quran Page Data
- */
 export function verifyPageDataInvariant(pageData: ProcessedPageData | null, targetPageNum: number): boolean {
   if (!pageData) return false;
   if (pageData.pageNumber !== targetPageNum) return false;
-  return true;
-}seenAyahIds.add(uniqueKey);
-    }
-  }
-
   return true;
 }
 
@@ -312,6 +304,19 @@ export default function SurahReader({
   const [fontLoaded, setFontLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [direction, setDirection] = useState<number>(1);
+
+  // Pagination Mode ('official' | 'balanced')
+  const [paginationMode, setPaginationMode] = useState<ReaderPaginationMode>(() => {
+    try {
+      return (localStorage.getItem('quran_pagination_mode_v1') as ReaderPaginationMode) || 'official';
+    } catch {
+      return 'official';
+    }
+  });
+
+  const [balancedPages, setBalancedPages] = useState<BalancedQuranPage[]>([]);
+  const [balancedPageNumber, setBalancedPageNumber] = useState<number>(1);
+  const [isComputingBalanced, setIsComputingBalanced] = useState<boolean>(false);
 
   // Auto-hiding controls state
   const [showControls, setShowControls] = useState<boolean>(true);
