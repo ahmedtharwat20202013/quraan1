@@ -612,9 +612,9 @@ export default function SurahReader({
   // Pagination Mode ('official' | 'balanced')
   const [paginationMode, setPaginationMode] = useState<ReaderPaginationMode>(() => {
     try {
-      return (localStorage.getItem('quran_pagination_mode_v1') as ReaderPaginationMode) || 'official';
+      return (localStorage.getItem('quran_pagination_mode_v1') as ReaderPaginationMode) || 'balanced';
     } catch {
-      return 'official';
+      return 'balanced';
     }
   });
 
@@ -1057,8 +1057,8 @@ export default function SurahReader({
         )}
       </AnimatePresence>
 
-      {/* Main Container (Natural Flow Viewport, Zero Text Loss) */}
-      <main className="quran-page-viewport relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-start items-center w-full">
+      {/* Main Container (Fixed Viewport, NO Vertical Scroll) */}
+      <main className="quran-page-viewport relative min-h-0 flex-1 overflow-hidden flex flex-col justify-start items-center w-full">
         {/* Full-screen initial spinner ONLY on first open when pageData is null */}
         {(isInitialLoading || isComputingBalanced) && !pageData && (
           <div className="flex flex-col items-center justify-center space-y-4 my-auto">
