@@ -35,6 +35,62 @@ export const MUSHAF_TEXT_LINE_HEIGHT = 1.9;
 // Reserve bottom clearance (8rem = 128px + safe-area) for bottom controls overlay
 export const BOTTOM_CONTROLS_SAFE_SPACE_PX = 128;
 
+/**
+ * Developer Invariant Verification Function for Quran Page Data:
+ * Verifies that pageData rendered in DOM strictly matches quran_pages_v3.json for targetPageNum.
+ */
+export function verifyPageDataInvariant(pageData: ProcessedPageData | null, targetPageNum: number): boolean {
+  if (!pageData) return false;
+
+  // 1. Page number match
+  if (pageData.pageNumber !== targetPageNum) {
+    console.error(`[Quran Invariant Error] Page number mismatch: expected ${targetPageNum}, got ${pageData.pageNumber}`);
+    return false;
+  }
+
+  const seenAyahIds = new Set<string>();
+
+  for (const section of pageData.sections) {
+    if (!section.ayas || section.ayas.length === 0) {
+      console.error(`[Quran Invariant Error] Empty ayas list in section ${section.id} for page ${targetPageNum}`);
+      return false;
+    }
+
+    const firstAyah = section.ayas[0];
+    const lastAyah = section.ayas[section.ayas.length - 1];
+
+    // 2. First ayah == fromAyah, Last ayah == toAyah
+    if (firstAyah.index !== section.fromAyah) {
+      console.error(`[Quran Invariant Error] Section ${section.id} first ayah (${firstAyah.index}) != fromAyah (${section.fromAyah}) on page ${targetPageNum}`);
+      return false;
+    }
+
+    if (lastAyah.index !== section.toAyah) {
+      console.error(`[Quran Invariant Error] Section ${section.id} last ayah (${lastAyah.index}) != toAyah (${section.toAyah}) on page ${targetPageNum}`);
+      return false;
+    }
+
+    // 3. Count of ayas == toAyah - fromAyah + 1
+    const expectedCount = section.toAyah - section.fromAyah + 1;
+    if (section.ayas.length !== expectedCount) {
+      console.error(`[Quran Invariant Error] Section ${section.id} ayas count (${section.ayas.length}) != expected (${expectedCount}) on page ${targetPageNum}`);
+      return false;
+    }
+
+    // 4. Duplicate check
+    for (const aya of section.ayas) {
+      const uniqueKey = `${section.id}_${aya.index}`;
+      if (seenAyahIds.has(uniqueKey)) {
+        console.error(`[Quran Invariant Error] Duplicate ayah ${uniqueKey} found on page ${targetPageNum}`);
+        return false;
+      }
+      seenAyahIds.add(uniqueKey);
+    }
+  }
+
+  return true;
+}
+
 export default function SurahReader({
   initialPageNumber = 1,
   initialTargetAyah,
@@ -143,6 +199,8 @@ export default function SurahReader({
       if (!data) {
         throw new Error(`تعذر تحميل صفحة ${pageNum} من المصحف الشريف`);
       }
+      // Developer Invariant Assertion Verification
+      verifyPageDataInvariant(data, pageNum);
       setPageData(data);
     } catch (err: any) {
       console.error('Failed to load page:', err);
