@@ -37,15 +37,37 @@ interface SurahReaderProps {
 }
 
 // Reading Padding Constants
-export const READING_TOP_PADDING = 14;
-export const READING_BOTTOM_PADDING = 22;
+export const READING_TOP_PADDING = 12;
+export const READING_BOTTOM_PADDING = 18;
 export const READING_SIDE_PADDING = 14;
 
-// Typography Policy Constants (Readable Baseline: 26px Floor, 30px Standard, 46px Max)
-export const MIN_QURAN_FONT_SIZE = 26;
-export const MAX_QURAN_FONT_SIZE = 46;
-export const DEFAULT_QURAN_FONT_SIZE = 30;
-export const QURAN_READER_LINE_HEIGHT = 1.85;
+// Typography Policy Constants (Readable Baseline: 26px Floor, 31px Standard, 44px Max)
+export const MIN_READABLE_FONT_SIZE = 26;
+export const DEFAULT_QURAN_FONT_SIZE = 31;
+export const MAX_READABLE_FONT_SIZE = 44;
+export const QURAN_READER_LINE_HEIGHT = 1.65;
+export const QURAN_LAYOUT_VERSION = 'official-json-render-v1';
+
+export type ReaderPaginationMode = 'official-json' | 'balanced-experimental';
+export const FEATURE_PAGINATION_MODE: ReaderPaginationMode = 'official-json';
+
+export type RenderBlock =
+  | { type: 'surah-header'; surahId: number; surahName: string }
+  | { type: 'basmala'; surahId: number; text: string }
+  | { type: 'ayah'; surahId: number; ayahNumber: number; text: string };
+
+export type QuranPageRenderModel = {
+  pageNumber: number;
+  primarySurahId: number;
+  primarySurahName: string;
+  sections: ProcessedSurahSection[];
+  blocks: RenderBlock[];
+};
+
+export type ValidationResult = {
+  isValid: boolean;
+  errors: string[];
+};
 
 export type QuranVisualMetrics = {
   fontSize: number;
@@ -58,18 +80,86 @@ export type QuranVisualMetrics = {
   pageOccupancy: number;
 };
 
+export function getOfficialPageBlocks(
+  pageNumber: number,
+  pageData: ProcessedPageData
+): QuranPageRenderModel {
+  const blocks: RenderBlock[] = [];
+
+  pageData.sections.forEach(section => {
+    const isSurahStart = section.startsHere;
+    const showBismillah = isSurahStart && section.id !== 9 && section.id !== 1;
+
+    if (isSurahStart) {
+      blocks.push({
+        type: 'surah-header',
+        surahId: section.id,
+        surahName: section.name
+      });
+    }
+
+    if (showBismillah) {
+      blocks.push({
+        type: 'basmala',
+        surahId: section.id,
+        text: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'
+      });
+    }
+
+    section.ayas.forEach(aya => {
+      blocks.push({
+        type: 'ayah',
+        surahId: section.id,
+        ayahNumber: aya.index,
+        text: aya.text
+      });
+    });
+  });
+
+  return {
+    pageNumber: pageData.pageNumber,
+    primarySurahId: pageData.primarySurahId,
+    primarySurahName: pageData.primarySurahName,
+    sections: pageData.sections,
+    blocks
+  };
+}
+
+export function validateOfficialPageModel(model: QuranPageRenderModel): ValidationResult {
+  const errors: string[] = [];
+  let expectedAyahsCount = 0;
+
+  model.sections.forEach(sec => {
+    expectedAyahsCount += (sec.toAyah - sec.fromAyah + 1);
+    const ayasInRange = sec.ayas.filter(a => a.index >= sec.fromAyah && a.index <= sec.toAyah);
+    if (ayasInRange.length !== (sec.toAyah - sec.fromAyah + 1)) {
+      errors.push(`Section surah ${sec.id} expected ${sec.toAyah - sec.fromAyah + 1} ayahs, found ${ayasInRange.length}`);
+    }
+  });
+
+  const ayahBlocks = model.blocks.filter(b => b.type === 'ayah');
+  if (ayahBlocks.length !== expectedAyahsCount) {
+    errors.push(`Expected ${expectedAyahsCount} total ayahs, rendered ${ayahBlocks.length}`);
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+}
+
 export function getSafeQuranFontSize(requestedSize?: number): number {
   let size = requestedSize;
   if (size === undefined && typeof localStorage !== 'undefined') {
     try {
-      const saved = Number(localStorage.getItem('quran_font_size'));
-      if (Number.isFinite(saved) && saved >= MIN_QURAN_FONT_SIZE && saved <= MAX_QURAN_FONT_SIZE) {
+      const saved = Number(localStorage.getItem('quran_font_size_v2'));
+      if (Number.isFinite(saved) && saved >= MIN_READABLE_FONT_SIZE && saved <= MAX_READABLE_FONT_SIZE) {
         size = saved;
       }
     } catch {}
   }
   const target = size ?? DEFAULT_QURAN_FONT_SIZE;
-  return Math.max(MIN_QURAN_FONT_SIZE, Math.min(target, MAX_QURAN_FONT_SIZE));
+  return Math.max(MIN_READABLE_FONT_SIZE, Math.min(target, MAX_READABLE_FONT_SIZE));
 }
 
 interface MushafPageContentProps {
