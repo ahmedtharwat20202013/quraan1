@@ -32,6 +32,9 @@ interface SurahReaderProps {
 export const MUSHAF_TEXT_SIZE_PX = 24;
 export const MUSHAF_TEXT_LINE_HEIGHT = 1.9;
 
+// Reserve bottom clearance (8rem = 128px + safe-area) for bottom controls overlay
+export const BOTTOM_CONTROLS_SAFE_SPACE_PX = 128;
+
 export default function SurahReader({
   initialPageNumber = 1,
   initialTargetAyah,
