@@ -59,6 +59,27 @@ interface MushafPageContentProps {
   highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
 }
 
+export function BasmalaBlock() {
+  return (
+    <div
+      className="basmala-block text-center font-normal select-none text-gold-accent text-base sm:text-xl opacity-95 shrink-0 my-1 sm:my-2"
+      style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.4rem' }}
+      dir="rtl"
+      aria-label="Basmala"
+    >
+      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+    </div>
+  );
+}
+
+interface MushafPageContentProps {
+  pageData: ProcessedPageData;
+  fontSize: number;
+  lineHeight: number;
+  theme: 'paper' | 'dark';
+  highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
+}
+
 export function MushafPageContent({
   pageData,
   fontSize,
@@ -66,55 +87,16 @@ export function MushafPageContent({
   theme,
   highlightedWord
 }: MushafPageContentProps) {
-  // Check if page starts a new surah with official decorated frame
-  const hasSurahStartHeader = pageData.sections.some(s => s.startsHere);
-
   return (
     <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
-      {/* Surah Name Header at top of continuation pages */}
-      {!hasSurahStartHeader && (
-        <div 
-          className="w-full text-center py-0.5 font-bold text-gold-accent border-b border-gold-accent/20 shrink-0 text-sm select-none mb-0.5"
-          style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
-          dir="rtl"
-        >
-          سورة {pageData.primarySurahName}
-        </div>
-      )}
-
-      {/* Surah Sections & Ayahs */}
+      {/* Surah Sections & Ayahs - ZERO Surah Headers inside Content Area */}
       {pageData.sections.map((section, secIdx) => {
-        const showHeader = section.startsHere;
         const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
         return (
           <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-            {/* Official Surah Header Frame when startsHere === true */}
-            {showHeader && (
-              <div className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
-                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                  <span>❖</span>
-                  <span className="hidden sm:inline">━━</span>
-                </div>
-                <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                  سورة {section.name}
-                </h3>
-                <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                  <span className="hidden sm:inline">━━</span>
-                  <span>❖</span>
-                </div>
-              </div>
-            )}
-
-            {/* Bismillah */}
-            {showBismillah && (
-              <div 
-                className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
-                style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
-              >
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-              </div>
-            )}
+            {/* Basmala above first ayah when section.startsHere */}
+            {showBismillah && <BasmalaBlock />}
 
             {/* Ayahs Continuous Text Flow */}
             <div 
@@ -167,7 +149,7 @@ export function MushafPageContent({
 
             {/* Fine Separator between multiple surahs on same page */}
             {secIdx < pageData.sections.length - 1 && (
-              <div className="my-0.5 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.25rem' }}>
+              <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.25rem' }}>
                 <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
                 <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
                 <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
@@ -198,35 +180,13 @@ export function BalancedPageContent({
   return (
     <div className="w-full flex flex-col justify-start items-center my-auto space-y-1">
       {page.blocks.map(block => {
+        // Do NOT render surah-header inside content area (Surah Name is strictly in top bar)
         if (block.type === 'surah-header') {
-          return (
-            <div 
-              key={block.id}
-              className="w-full rounded-lg bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-sm relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5"
-            >
-              <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                <span>❖</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-black text-gold-accent tracking-wide px-2" style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}>
-                سورة {block.surahName}
-              </h3>
-              <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
-                <span>❖</span>
-              </div>
-            </div>
-          );
+          return null;
         }
 
         if (block.type === 'basmala') {
-          return (
-            <div 
-              key={block.id}
-              className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-0.5"
-              style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.2rem' }}
-            >
-              {block.text}
-            </div>
-          );
+          return <BasmalaBlock key={block.id} />;
         }
 
         // Ayah Block
@@ -275,6 +235,120 @@ export function BalancedPageContent({
         );
       })}
     </div>
+  );
+}
+
+interface SurahTopBarProps {
+  currentSurahName: string;
+  currentPageNumber: number;
+  totalPages: number;
+  isBalancedMode: boolean;
+  onBack: () => void;
+  onTogglePaginationMode: (e: React.MouseEvent) => void;
+  onOpenSearch: () => void;
+  onToggleBookmark?: () => void;
+  isBookmarked?: boolean;
+  onToggleTheme: (e: React.MouseEvent) => void;
+  theme: 'paper' | 'dark';
+}
+
+export function SurahTopBar({
+  currentSurahName,
+  currentPageNumber,
+  totalPages,
+  isBalancedMode,
+  onBack,
+  onTogglePaginationMode,
+  onOpenSearch,
+  onToggleBookmark,
+  isBookmarked,
+  onToggleTheme,
+  theme
+}: SurahTopBarProps) {
+  return (
+    <header 
+      className="reader-top-bar absolute top-0 inset-x-0 z-40 px-3 py-2 bg-emerald-950/95 backdrop-blur-md border-b border-gold-accent/30 shadow-lg"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'auto 1fr auto',
+        alignItems: 'center',
+        columnGap: '8px'
+      }}
+      onClick={e => e.stopPropagation()}
+    >
+      {/* Left Area: Back Button & Mode Switcher */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onBack}
+          className="p-1.5 rounded-xl text-white/90 hover:text-white hover:bg-white/10 active:scale-95 transition-all flex items-center gap-1 text-xs font-bold"
+          title="العودة"
+        >
+          <ChevronRight size={18} />
+          <span>العودة</span>
+        </button>
+
+        <button
+          onClick={onTogglePaginationMode}
+          className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-gold-accent/20 text-gold-accent hover:bg-gold-accent/30 border border-gold-accent/40 active:scale-95 transition-all"
+          title="تبديل نمط الترقيم بين المصحف ٦٠٤ والصفحات المتزنة"
+        >
+          {isBalancedMode ? 'صفحات متزنة' : 'المصحف (٦٠٤)'}
+        </button>
+      </div>
+
+      {/* Center Area: Mathematically Centered Rounded Surah Bar */}
+      <div className="flex flex-col items-center justify-center min-w-0 px-2" aria-live="polite">
+        <div 
+          className="reader-surah-title px-4 py-1 rounded-xl bg-gradient-to-b from-[#39451c] to-[#293614] border border-gold-accent/60 shadow-sm flex items-center justify-center gap-1.5 max-w-[200px] sm:max-w-[280px]"
+        >
+          <span className="text-gold-accent/80 text-xs select-none">❖</span>
+          <span 
+            className="text-gold-accent font-black text-xs sm:text-sm tracking-wide truncate"
+            style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
+          >
+            سورة {currentSurahName}
+          </span>
+          <span className="text-gold-accent/80 text-xs select-none">❖</span>
+        </div>
+        <span className="text-[10px] text-white/70 font-bold mt-0.5">
+          صفحة {toArabicDigits(currentPageNumber)} من {toArabicDigits(totalPages)}
+        </span>
+      </div>
+
+      {/* Right Area: Search, Bookmark, Theme Toggle */}
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onOpenSearch}
+          className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+          title="بحث داخل السورة"
+        >
+          <Search size={16} />
+        </button>
+
+        {onToggleBookmark && (
+          <button
+            onClick={onToggleBookmark}
+            className={cn(
+              "p-1.5 rounded-xl active:scale-95 transition-all",
+              isBookmarked
+                ? "text-gold-accent bg-gold-accent/20"
+                : "text-white/80 hover:text-white hover:bg-white/10"
+            )}
+            title={isBookmarked ? "إزالة الحفظ" : "حفظ الصفحة"}
+          >
+            <BookmarkIcon size={16} className={isBookmarked ? "fill-gold-accent" : ""} />
+          </button>
+        )}
+
+        <button
+          onClick={onToggleTheme}
+          className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+          title={theme === 'paper' ? "الوضع الليلي" : "الوضع الورقي"}
+        >
+          {theme === 'paper' ? <Moon size={16} /> : <Sun size={16} />}
+        </button>
+      </div>
+    </header>
   );
 }
 
@@ -737,92 +811,31 @@ export default function SurahReader({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -40 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute top-0 inset-x-0 z-40 px-4 py-3 bg-emerald-950/95 backdrop-blur-md border-b border-gold-accent/20 flex items-center justify-between shadow-lg"
-            onClick={e => e.stopPropagation()}
+            className="w-full"
           >
-            {/* Right Group: Back Button, Mode Switcher & Surah Title */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onBack}
-                className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all flex items-center gap-1 text-xs font-bold"
-                title="العودة"
-              >
-                <ChevronRight size={20} />
-                <span>العودة</span>
-              </button>
-
-              <div className="h-4 w-[1px] bg-white/20" />
-
-              <div className="text-right">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm md:text-base font-black text-gold-accent">
-                    {paginationMode === 'balanced' && currentBalancedPage
-                      ? `سورة ${currentBalancedPage.primarySurahName}`
-                      : pageData
-                      ? `سورة ${pageData.primarySurahName}`
-                      : 'المصحف الشريف'}
-                  </h2>
-                  <button
-                    onClick={togglePaginationMode}
-                    className="px-2 py-0.5 rounded text-[10px] font-black bg-gold-accent/20 text-gold-accent hover:bg-gold-accent/30 border border-gold-accent/40 active:scale-95 transition-all"
-                    title="تبديل نمط الترقيم بين المصحف ٦٠٤ والصفحات المتزنة"
-                  >
-                    {paginationMode === 'official' ? 'المصحف (٦٠٤)' : 'صفحات متزنة'}
-                  </button>
-                </div>
-
-                <p className="text-[10px] text-white/60 font-bold">
-                  {paginationMode === 'official' ? (
-                    <>
-                      صفحة {toArabicDigits(currentPageNumber)} من ٦٠٤
-                      {pageData && pageData.sections.length > 0 && (
-                        <span className="text-gold-accent/80 font-bold mr-1">
-                          • آية {toArabicDigits(pageData.sections[0].fromAyah)} - {toArabicDigits(pageData.sections[pageData.sections.length - 1].toAyah)}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      صفحة {toArabicDigits(balancedPageNumber)} من {toArabicDigits(balancedPages.length || 1)} [متزنة]
-                    </>
-                  )}
-                </p>
-              </div>
-            </div>
-
-            {/* Left Group: Search, Bookmark, Theme Toggle */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
-                title="بحث داخل السورة"
-              >
-                <Search size={18} />
-              </button>
-
-              {onToggleBookmark && pageData && (
-                <button
-                  onClick={() => onToggleBookmark(pageData.primarySurahId, currentPageNumber)}
-                  className={cn(
-                    "p-2 rounded-xl active:scale-95 transition-all",
-                    isBookmarked
-                      ? "text-gold-accent bg-gold-accent/20"
-                      : "text-white/80 hover:text-white hover:bg-white/10"
-                  )}
-                  title={isBookmarked ? "إزالة الحفظ" : "حفظ الصفحة"}
-                >
-                  <BookmarkIcon size={18} className={isBookmarked ? "fill-gold-accent" : ""} />
-                </button>
-              )}
-
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
-                title={theme === 'paper' ? "الوضع الليلي" : "الوضع الورقي"}
-              >
-                {theme === 'paper' ? <Moon size={18} /> : <Sun size={18} />}
-              </button>
-            </div>
+            <SurahTopBar
+              currentSurahName={
+                paginationMode === 'balanced' && currentBalancedPage
+                  ? currentBalancedPage.primarySurahName
+                  : pageData
+                  ? pageData.primarySurahName
+                  : 'الفاتحة'
+              }
+              currentPageNumber={paginationMode === 'official' ? currentPageNumber : balancedPageNumber}
+              totalPages={paginationMode === 'official' ? 604 : (balancedPages.length || 1)}
+              isBalancedMode={paginationMode === 'balanced'}
+              onBack={onBack}
+              onTogglePaginationMode={togglePaginationMode}
+              onOpenSearch={() => setIsSearchOpen(true)}
+              onToggleBookmark={
+                onToggleBookmark && pageData
+                  ? () => onToggleBookmark(pageData.primarySurahId, currentPageNumber)
+                  : undefined
+              }
+              isBookmarked={isBookmarked}
+              onToggleTheme={toggleTheme}
+              theme={theme}
+            />
           </motion.div>
         )}
       </AnimatePresence>
