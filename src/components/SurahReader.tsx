@@ -711,7 +711,6 @@ export default function SurahReader({
                   lineHeight={activeLineHeight}
                   theme={theme}
                   highlightedWord={highlightedWord}
-                  currentPageNumber={currentPageNumber}
                 />
               </div>
             </motion.div>
