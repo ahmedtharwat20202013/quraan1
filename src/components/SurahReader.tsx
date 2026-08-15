@@ -695,9 +695,9 @@ export default function SurahReader({
             unicodeBidi: 'embed',
             whiteSpace: 'normal',
             boxSizing: 'border-box',
-            paddingTop: '0.5rem',
+            paddingTop: `${PAGE_SAFE_TOP_PX}px`,
             paddingInline: '0.75rem',
-            paddingBottom: `${PAGE_BOTTOM_SAFE_SPACE_PX}px`,
+            paddingBottom: `${PAGE_SAFE_BOTTOM_PX}px`,
             WebkitFontSmoothing: 'antialiased',
             MozOsxFontSmoothing: 'grayscale',
             textRendering: 'optimizeLegibility'
