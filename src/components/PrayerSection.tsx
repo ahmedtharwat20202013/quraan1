@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Coordinates, CalculationMethod, PrayerTimes, SunnahTimes, Prayer } from 'adhan';
-import { MapPin, Calendar, Clock, CheckCircle2, AlertCircle, Bell, BellOff, Compass, Sliders, RefreshCw, Info } from 'lucide-react';
+import { Coordinates, CalculationMethod, PrayerTimes, Prayer, SunnahTimes } from 'adhan';
+import { MapPin, Calendar, Clock, CheckCircle2, AlertCircle, Compass, RefreshCw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
@@ -97,9 +97,8 @@ export default function PrayerSection() {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('quran_azan_enabled') !== 'false';
-  });
+
+
 
 
 
@@ -209,11 +208,22 @@ export default function PrayerSection() {
       const isWeb = !Capacitor.isNativePlatform();
 
       if (isWeb) {
-        const coords = { latitude: 30.9405, longitude: 31.2291, accuracy: 1 };
+        const savedCoords = localStorage.getItem('quran_gps_coords');
+        const savedAddress = localStorage.getItem('quran_gps_address');
+        if (savedCoords) {
+          try {
+            const parsed = JSON.parse(savedCoords);
+            setGpsCoords({ ...parsed, accuracy: 1 });
+            setDetectedAddress(savedAddress || 'موقع الويب الحالي');
+            setIsLocating(false);
+            return;
+          } catch {}
+        }
+        const coords = { latitude: 30.0444, longitude: 31.2357, accuracy: 1 };
         setGpsCoords(coords);
         localStorage.setItem('quran_gps_coords', JSON.stringify(coords));
-        setDetectedAddress('بهبيت الحجارة، سمنود، الغربية، مصر');
-        localStorage.setItem('quran_gps_address', 'بهبيت الحجارة، سمنود، الغربية، مصر');
+        setDetectedAddress('القاهرة، مصر (الافتراضي)');
+        localStorage.setItem('quran_gps_address', 'القاهرة، مصر (الافتراضي)');
         setIsLocating(false);
         return;
       }
@@ -228,10 +238,22 @@ export default function PrayerSection() {
           console.error("GPS watch error:", err);
           if (!resolved) {
             clearGPSWatch();
-            // Fallback to Egypt default coordinates
-            const coords = { latitude: 30.9405, longitude: 31.2291 };
+            const savedCoords = localStorage.getItem('quran_gps_coords');
+            const savedAddress = localStorage.getItem('quran_gps_address');
+            if (savedCoords) {
+              try {
+                const parsed = JSON.parse(savedCoords);
+                setGpsCoords(parsed);
+                setDetectedAddress(savedAddress || 'موقعك المحفوظ');
+                setIsLocating(false);
+                return;
+              } catch {}
+            }
+            // Fallback to Cairo default coordinates
+            const coords = { latitude: 30.0444, longitude: 31.2357 };
             setGpsCoords(coords);
-            setDetectedAddress('بهبيت الحجارة، سمنود، الغربية، مصر');
+            setDetectedAddress('القاهرة، مصر (الافتراضي)');
+            setIsLocating(false);
           }
           return;
         }
@@ -293,28 +315,52 @@ export default function PrayerSection() {
     }
   }, []);
 
-  // Update clock every second
+  // Update clock every second — optimized with Page Visibility API to save battery
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
+    let intervalId: any = null;
+
+    const startTimer = () => {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        setCurrentTime(new Date());
+      }, 1000);
+    };
+
+    const stopTimer = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopTimer();
+      } else {
+        setCurrentTime(new Date());
+        startTimer();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Start timer initially if document is visible
+    if (!document.hidden) {
+      startTimer();
+    }
+
+    return () => {
+      stopTimer();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
-  // Reschedule Azans when calculation method or location coordinates change
-  useEffect(() => {
-    const isAzanEnabled = localStorage.getItem('quran_azan_enabled') !== 'false';
-    if (isAzanEnabled) {
-      import('../services/azan').then(({ scheduleWeeklyAzans }) => {
-        scheduleWeeklyAzans();
-      });
-    }
-  }, [calcMethod, gpsCoords]);
+
 
   // Calculate prayer times
   const prayerData = useMemo(() => {
-    let lat = 30.9405; // Bahbayt al-Hijarah defaults
-    let lon = 31.2291;
+    let lat = 30.0444; // Cairo defaults
+    let lon = 31.2357;
     let activeMethod = calcMethod;
 
     if (gpsCoords) {
@@ -381,27 +427,6 @@ export default function PrayerSection() {
     };
   }, [calcMethod, gpsCoords, currentTime]);
 
-  // Handle local notification toggle (controls active Azan scheduling natively)
-  const toggleNotifications = async () => {
-    const newState = !notificationsEnabled;
-    
-    if (newState) {
-      const { initAzan, scheduleWeeklyAzans } = await import('../services/azan');
-      const success = await initAzan();
-      if (success) {
-        setNotificationsEnabled(true);
-        localStorage.setItem('quran_azan_enabled', 'true');
-        await scheduleWeeklyAzans();
-      } else {
-        alert('يرجى تمكين صلاحية الإشعارات لتتمكن من تشغيل الأذان.');
-      }
-    } else {
-      const { cancelAllScheduledAzans } = await import('../services/azan');
-      setNotificationsEnabled(false);
-      localStorage.setItem('quran_azan_enabled', 'false');
-      await cancelAllScheduledAzans();
-    }
-  };
 
   // Natively calculate Hijri date with exactly high precision
   const hijriDateStr = useMemo(() => {
@@ -448,19 +473,6 @@ export default function PrayerSection() {
               </h1>
               <p className="text-[10px] text-emerald-400 font-bold">المواقيت التلقائية والـ GPS الذكي</p>
             </div>
-            
-            <button 
-              onClick={toggleNotifications}
-              className={cn(
-                "p-2.5 rounded-xl border transition-all active:scale-95 duration-300",
-                notificationsEnabled 
-                  ? "bg-gold-accent/20 border-gold-accent/45 text-gold-accent hover:bg-gold-accent/30" 
-                  : "bg-white/5 border-white/10 text-white/40 hover:text-white/60"
-              )}
-              title="تنبيهات الأذان"
-            >
-              {notificationsEnabled ? <Bell size={18} /> : <BellOff size={18} />}
-            </button>
           </div>
 
           {/* Automatic Location Tracker Banner / Notifications */}
@@ -546,30 +558,30 @@ export default function PrayerSection() {
               </motion.div>
             )}
 
-            {/* 3. Handling Location Error / Permission Denied */}
-            {locationError && (
-              <motion.div 
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex gap-3 text-right"
-              >
-                <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-black text-rose-300">فشل تحديد الموقع التلقائي</h4>
-                  <p className="text-[10px] text-white/70 leading-relaxed font-bold">
-                    {locationError}
-                  </p>
-                  <button
-                    onClick={handleSmartLocate}
-                    className="bg-white/5 border border-white/5 hover:bg-white/10 text-gold-accent font-black text-[10px] py-1.5 px-3 rounded-lg transition-all"
-                  >
-                    إعادة المحاولة وتفعيل الـ GPS
-                  </button>
-                </div>
-              </motion.div>
-            )}
+              {/* 3. Handling Location Error / Permission Denied */}
+              {locationError && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex gap-3 text-right"
+                >
+                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
+                  <div className="space-y-1.5">
+                    <h4 className="text-xs font-black text-rose-300">فشل تحديد الموقع التلقائي</h4>
+                    <p className="text-[10px] text-white/70 leading-relaxed font-bold">
+                      {locationError}
+                    </p>
+                    <button
+                      onClick={handleSmartLocate}
+                      className="bg-white/5 border border-white/5 hover:bg-white/10 text-gold-accent font-black text-[10px] py-1.5 px-3 rounded-lg transition-all"
+                    >
+                      إعادة المحاولة وتفعيل الـ GPS
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
-        </div>
 
         {/* Big Countdown Timer Card */}
         <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/60 border border-white/10 rounded-3xl p-6 text-center backdrop-blur-2xl shadow-xl space-y-3 relative overflow-hidden">
@@ -612,10 +624,7 @@ export default function PrayerSection() {
               return (
                 <div 
                   key={prayer.id} 
-                  className={cn(
-                    "flex justify-between items-center relative transition-all duration-300",
-                    isNext ? "scale-105 origin-right" : ""
-                  )}
+                  className="flex justify-between items-center relative transition-all duration-300"
                 >
                   {/* Timeline point indicator */}
                   <div className={cn(

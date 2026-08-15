@@ -1,117 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, Moon, Sun, Download, Trash2, Info, ArrowLeft, Star, Smartphone, ShieldCheck, Volume2, HelpCircle, MapPin, Globe } from 'lucide-react';
+import { Info, ArrowLeft, Smartphone, ShieldCheck, Globe } from 'lucide-react';
 import { AppState, DailyVerse } from '../types';
-import { cn } from '../lib/utils';
+import { cn, normalizeArabicText } from '../lib/utils';
 import { isAppInstallable, installPWA } from '../registerSW';
-import { initAzan, scheduleWeeklyAzans, cancelAllScheduledAzans } from '../services/azan';
-import { initDidYouKnowNotifications, scheduleWeeklyDidYouKnow, cancelDidYouKnowNotifications } from '../services/didYouKnow';
-import { DiagnosticsService, DiagnosticsResult } from '../services/diagnostics';
+import { PRESET_VERSES } from '../data/verses';
 
 interface SettingsProps {
   state: AppState;
   setState: React.Dispatch<React.SetStateAction<AppState>>;
   onBack: () => void;
+  onChooseDailyVerse: () => void;
+  onOpenAbout?: () => void;
 }
 
-const PRESET_VERSES: DailyVerse[] = [
-  { surahName: 'البقرة', reference: 'الآية 255', text: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ' },
-  { surahName: 'طه', reference: 'الآية 25', text: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي' },
-  { surahName: 'الأحزاب', reference: 'الآية 41', text: 'يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا' },
-  { surahName: 'الإسراء', reference: 'الآية 82', text: 'وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ' },
-];
-
-export default function SettingsSection({ state, setState, onBack }: SettingsProps) {
+export default function SettingsSection({ state, setState, onBack, onChooseDailyVerse, onOpenAbout }: SettingsProps) {
   const [isInstallable, setIsInstallable] = useState(false);
-  const [azanEnabled, setAzanEnabled] = useState(() => {
-    return localStorage.getItem('quran_azan_enabled') !== 'false';
-  });
 
   const [calcMethod, setCalcMethod] = useState(() => {
     return localStorage.getItem('quran_prayer_calc_method') || 'Egyptian';
   });
 
-  const [diagnostics, setDiagnostics] = useState<DiagnosticsResult | null>(null);
-  const [isRunningDiagnostics, setIsRunningDiagnostics] = useState(false);
-
-  const runDiagnostics = async () => {
-    setIsRunningDiagnostics(true);
-    // Tiny delay to make it feel premium
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const result = await DiagnosticsService.check();
-    setDiagnostics(result);
-    setIsRunningDiagnostics(false);
-  };
-
-  const handleCalcMethodChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    try {
-      const newVal = e.target.value;
-      setCalcMethod(newVal);
-      localStorage.setItem('quran_prayer_calc_method', newVal);
-      
-      try {
-        await scheduleWeeklyAzans();
-      } catch (err) {
-        console.warn('Failed to reschedule Azans on calculation method change:', err);
-      }
-      
-      window.location.reload();
-    } catch (err) {
-      console.error('Error changing calculation method:', err);
-      window.location.reload();
-    }
-  };
-
-  const handleAzanToggle = async () => {
-    const newVal = !azanEnabled;
-    if (newVal) {
-      const success = await initAzan();
-      if (success) {
-        setAzanEnabled(true);
-        localStorage.setItem('quran_azan_enabled', 'true');
-        await scheduleWeeklyAzans();
-      } else {
-        alert('يرجى تمكين صلاحية الإشعارات لتتمكن من تشغيل الأذان.');
-      }
-    } else {
-      setAzanEnabled(false);
-      localStorage.setItem('quran_azan_enabled', 'false');
-      await cancelAllScheduledAzans();
-    }
-  };
-
-  const [didYouKnowEnabled, setDidYouKnowEnabled] = useState(() => {
-    return localStorage.getItem('quran_did_you_know_enabled') !== 'false';
-  });
-  const [didYouKnowTime, setDidYouKnowTime] = useState(() => {
-    return localStorage.getItem('quran_did_you_know_time') || '20:00';
-  });
-
-  const handleDidYouKnowToggle = async () => {
-    const newVal = !didYouKnowEnabled;
-    if (newVal) {
-      const success = await initDidYouKnowNotifications();
-      if (success) {
-        setDidYouKnowEnabled(true);
-        localStorage.setItem('quran_did_you_know_enabled', 'true');
-        await scheduleWeeklyDidYouKnow();
-      } else {
-        alert('يرجى تمكين صلاحية الإشعارات لتتمكن من تشغيل إشعارات هل تعلم.');
-      }
-    } else {
-      setDidYouKnowEnabled(false);
-      localStorage.setItem('quran_did_you_know_enabled', 'false');
-      await cancelDidYouKnowNotifications();
-    }
-  };
-
-  const handleDidYouKnowTimeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = e.target.value;
-    setDidYouKnowTime(newTime);
-    localStorage.setItem('quran_did_you_know_time', newTime);
-    if (didYouKnowEnabled) {
-      await scheduleWeeklyDidYouKnow();
-    }
+  const handleCalcMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newVal = e.target.value;
+    setCalcMethod(newVal);
+    localStorage.setItem('quran_prayer_calc_method', newVal);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -134,9 +48,7 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
     }
   };
 
-  const toggleDarkMode = () => {
-    setState(prev => ({ ...prev, darkMode: !prev.darkMode }));
-  };
+
 
   const setDailyVerse = (verse: DailyVerse | undefined) => {
     setState(prev => ({ ...prev, dailyVerse: verse }));
@@ -154,96 +66,62 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
       <header className="flex items-center gap-6">
         <button 
           onClick={onBack} 
-          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
+          role="button"
+          aria-label="الرجوع للقائمة الرئيسية"
+          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-95 border border-white/5 cursor-pointer"
         >
-          <ArrowLeft size={24} className="rotate-180" />
+          <ArrowLeft size={24} className="rotate-180" aria-hidden="true" />
         </button>
         <div>
           <h2 className="text-4xl font-bold tracking-tight mb-1">الإعدادات</h2>
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">تخصيص تجربتك الروحية</p>
+          <p className="text-white/40 text-xs font-black uppercase tracking-[0.2em]">تخصيص تجربتك الروحية</p>
         </div>
       </header>
 
       <div className="space-y-10">
-        {/* Appearance */}
-        <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">المظهر العام</h3>
-          <div className="glass-card overflow-hidden">
-            <div className="p-8 flex justify-between items-center bg-white/[0.02]">
-              <div className="flex items-center gap-5">
-                <div className={cn(
-                  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
-                  state.darkMode ? "bg-indigo-500/10 text-indigo-400" : "bg-amber-500/10 text-amber-500"
-                )}>
-                  {state.darkMode ? <Moon size={24} /> : <Sun size={24} />}
-                </div>
-                <div>
-                  <p className="font-bold text-lg">الوضع الليلي</p>
-                  <p className="text-[10px] text-white/30 uppercase font-black tracking-widest mt-0.5">راحة للعين أثناء الليل</p>
-                </div>
-              </div>
-              <button 
-                onClick={toggleDarkMode}
-                className={cn(
-                  "w-14 h-8 rounded-full relative transition-all duration-300 p-1",
-                  state.darkMode ? "bg-amber-500/20" : "bg-white/10"
-                )}
-              >
-                <motion.div 
-                  animate={{ x: state.darkMode ? -24 : 0 }}
-                  className={cn(
-                    "w-6 h-6 rounded-full shadow-lg transition-colors",
-                    state.darkMode ? "bg-amber-500" : "bg-white/40"
-                  )}
-                />
-              </button>
-            </div>
-          </div>
-        </section>
 
         {/* Daily Verse Settings */}
         <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">آية اليوم المختارة</h3>
-          <div className="glass-card divide-y divide-white/5 overflow-hidden">
-            {PRESET_VERSES.map((verse, idx) => (
-              <button 
-                key={idx}
-                onClick={() => setDailyVerse(verse)}
-                className={cn(
-                  "w-full p-6 flex flex-col gap-2 hover:bg-white/5 transition-all text-right",
-                  state.dailyVerse?.text === verse.text ? "bg-gold-accent/[0.03]" : ""
-                )}
-              >
+          <h3 className="text-gold-accent text-xs uppercase font-black tracking-[0.3em] ml-2 opacity-50">آية اليوم المختارة</h3>
+          <div className="glass-card p-6 space-y-4 text-right">
+            {state.dailyVerse ? (
+              <div className="space-y-3">
                 <div className="flex justify-between items-center w-full">
-                  <div className="flex items-center gap-2">
-                    {state.dailyVerse?.text === verse.text && (
-                       <Star size={14} className="text-gold-accent fill-gold-accent" />
-                    )}
-                    <span className="text-[10px] font-bold text-white/40">سورة {verse.surahName}</span>
-                  </div>
-                  <span className="text-[10px] font-bold text-gold-accent/60 uppercase tracking-widest">{verse.reference}</span>
+                  <span className="text-xs font-bold text-white/40">سورة {state.dailyVerse.surahName}</span>
+                  <span className="text-xs font-bold text-gold-accent/60 uppercase tracking-widest">{state.dailyVerse.reference}</span>
                 </div>
-                <p className={cn(
-                  "arabic-text text-lg leading-relaxed transition-colors",
-                  state.dailyVerse?.text === verse.text ? "text-gold-accent" : "text-white/80"
-                )}>
-                  {verse.text}
+                <p className="quran-font text-lg leading-relaxed text-gold-accent">
+                  {normalizeArabicText(state.dailyVerse.text)}
                 </p>
+              </div>
+            ) : (
+              <p className="text-xs text-white/40">لا توجد آية مخصصة محددة حالياً. يتم اختيار آية عشوائية تلقائياً عند فتح التطبيق.</p>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={onChooseDailyVerse}
+                className="flex-1 py-3 rounded-xl bg-gold-accent text-[#031B10] font-black text-xs hover:bg-gold-bright transition-all cursor-pointer text-center"
+              >
+                اختر آية اليوم 📖
               </button>
-            ))}
-            <button 
-              onClick={() => setDailyVerse(undefined)}
-              className="w-full p-4 text-[10px] font-black uppercase tracking-[0.2em] text-white/20 hover:text-white transition-colors"
-            >
-              استخدام الآية الافتراضية
-            </button>
+              {state.dailyVerse && (
+                <button
+                  onClick={() => setDailyVerse(undefined)}
+                  className="px-4 py-3 rounded-xl bg-white/5 hover:bg-red-500/10 text-white/40 hover:text-red-400 border border-white/5 hover:border-red-500/20 transition-all cursor-pointer text-xs font-bold"
+                  title="حذف الآية المخصصة والعودة للعشوائي"
+                >
+                  حذف
+                </button>
+              )}
+            </div>
           </div>
         </section>
 
         {/* PWA offline app installation support */}
         {isInstallable && (
           <section className="space-y-4">
-            <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">تطبيق الهاتف</h3>
+            <h3 className="text-gold-accent text-xs uppercase font-black tracking-[0.3em] ml-2 opacity-50">تطبيق الهاتف</h3>
             <div className="glass-card p-6 bg-gradient-to-br from-gold-accent/10 to-transparent border border-gold-accent/20">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -269,276 +147,12 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
           </section>
         )}
 
-        {/* Azan Alarm Settings */}
-        <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">تنبيهات الصلاة</h3>
-          <div className="glass-card overflow-hidden">
-            <div className="p-8 flex justify-between items-center bg-white/[0.02]">
-              <div className="flex items-center gap-5">
-                <div className={cn(
-                  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
-                  azanEnabled ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-white/30"
-                )}>
-                  <Volume2 size={24} />
-                </div>
-                <div>
-                  <p className="font-bold text-lg">تشغيل الأذان تلقائياً</p>
-                  <p className="text-[10px] text-white/30 uppercase font-black tracking-widest mt-0.5">تشغيل الأذان وإرسال إشعار عند دخول وقت الصلاة</p>
-                </div>
-              </div>
-              <button 
-                onClick={handleAzanToggle}
-                className={cn(
-                  "w-14 h-8 rounded-full relative transition-all duration-300 p-1 shrink-0 cursor-pointer",
-                  azanEnabled ? "bg-emerald-500/20" : "bg-white/10"
-                )}
-              >
-                <motion.div 
-                  animate={{ x: azanEnabled ? -24 : 0 }}
-                  className={cn(
-                    "w-6 h-6 rounded-full shadow-lg transition-colors",
-                    azanEnabled ? "bg-emerald-500" : "bg-white/40"
-                  )}
-                />
-              </button>
-            </div>
 
-            {/* Quick Settings Direct Launch Buttons */}
-            <div className="p-6 bg-white/[0.02] border-t border-white/5 space-y-3">
-              <span className="text-[10px] font-black text-white/30 uppercase tracking-wider block text-right">أزرار الوصول السريع للنظام</span>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => DiagnosticsService.openAppSettings()}
-                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
-                >
-                  ⚙️ إعدادات التطبيق
-                </button>
-                <button
-                  onClick={() => DiagnosticsService.openNotificationSettings()}
-                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
-                >
-                  🔔 إذن الإشعارات
-                </button>
-                <button
-                  onClick={() => DiagnosticsService.openBatterySettings()}
-                  className="py-3 px-2 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
-                >
-                  🔋 تحسين البطارية
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                <button
-                  onClick={() => DiagnosticsService.openAutoStartSettings()}
-                  className="py-3 px-2 bg-gold-accent/10 hover:bg-gold-accent/20 text-gold-accent border border-gold-accent/10 rounded-xl font-bold text-[10px] text-center active:scale-95 transition-all cursor-pointer"
-                >
-                  🚀 إعداد التشغيل التلقائي
-                </button>
-                <button
-                  onClick={runDiagnostics}
-                  disabled={isRunningDiagnostics}
-                  className="py-3 px-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/10 rounded-xl font-black text-[10px] text-center active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
-                >
-                  {isRunningDiagnostics ? (
-                    <div className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span>🔍 فحص الأذان والرسائل</span>
-                  )}
-                </button>
-              </div>
-            </div>
 
-            {/* Diagnostics Results Panel */}
-            <AnimatePresence>
-              {diagnostics && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="p-6 bg-white/[0.03] border-t border-white/5 space-y-4 text-right overflow-hidden"
-                >
-                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                    <button 
-                      onClick={() => setDiagnostics(null)}
-                      className="text-[10px] font-bold text-white/40 hover:text-white"
-                    >
-                      إغلاق الفحص
-                    </button>
-                    <span className="text-[10px] font-black text-gold-accent uppercase tracking-wider">نتائج فحص نظام الأذان</span>
-                  </div>
-
-                  <div className="space-y-3">
-                    {/* 1. Notification Permission */}
-                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
-                      {!diagnostics.hasNotificationPermission ? (
-                        <button
-                          onClick={() => DiagnosticsService.openNotificationSettings()}
-                          className="px-3 py-1.5 bg-rose-500 text-white font-bold text-[9px] rounded-lg active:scale-95 transition-all"
-                        >
-                          فتح الإعدادات
-                        </button>
-                      ) : (
-                        <span className="text-[10px] text-emerald-400 font-bold">نشط وسليم ✅</span>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">إذن الإشعارات العامة</span>
-                        <span className="text-white/30">•</span>
-                        <span>{diagnostics.hasNotificationPermission ? '✅' : '❌'}</span>
-                      </div>
-                    </div>
-
-                    {/* 2. Battery Optimization */}
-                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
-                      {!diagnostics.isIgnoringBatteryOptimizations ? (
-                        <button
-                          onClick={() => DiagnosticsService.requestIgnoreBatteryOptimizations()}
-                          className="px-3 py-1.5 bg-amber-500 text-neutral-950 font-bold text-[9px] rounded-lg active:scale-95 transition-all"
-                        >
-                          إصلاح الآن
-                        </button>
-                      ) : (
-                        <span className="text-[10px] text-emerald-400 font-bold">غير مقيّد (سليم) ✅</span>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">تحسين استهلاك البطارية</span>
-                        <span className="text-white/30">•</span>
-                        <span>{diagnostics.isIgnoringBatteryOptimizations ? '✅' : '❌'}</span>
-                      </div>
-                    </div>
-
-                    {/* 3. Exact Alarms */}
-                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
-                      {!diagnostics.canScheduleExactAlarms ? (
-                        <button
-                          onClick={() => DiagnosticsService.openAppSettings()}
-                          className="px-3 py-1.5 bg-rose-500 text-white font-bold text-[9px] rounded-lg active:scale-95 transition-all"
-                        >
-                          منح الإذن
-                        </button>
-                      ) : (
-                        <span className="text-[10px] text-emerald-400 font-bold">مسموح ومفعّل ✅</span>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">جدولة التنبيهات الدقيقة (Exact Alarm)</span>
-                        <span className="text-white/30">•</span>
-                        <span>{diagnostics.canScheduleExactAlarms ? '✅' : '❌'}</span>
-                      </div>
-                    </div>
-
-                    {/* 4. Alarm Volume Level */}
-                    <div className="flex items-center justify-between p-3 bg-white/[0.01] border border-white/5 rounded-xl">
-                      {diagnostics.alarmVolume === 0 ? (
-                        <span className="text-[9px] text-rose-400 font-bold animate-pulse">⚠️ يرجى رفع صوت المنبه بالهاتف!</span>
-                      ) : (
-                        <span className="text-[10px] text-emerald-400 font-bold">مسموع ({diagnostics.alarmVolume}/{diagnostics.maxAlarmVolume}) ✅</span>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">مستوى صوت منبه الأذان</span>
-                        <span className="text-white/30">•</span>
-                        <span>{diagnostics.alarmVolume > 0 ? '✅' : '⚠️'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Background Performance Guide (Xiaomi/Huawei/Oppo/Realme etc.) */}
-            <div className="p-6 bg-white/[0.01] border-t border-white/5 space-y-4 no-toggle">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
-                  <Info size={16} />
-                </div>
-                <div className="space-y-1 text-right">
-                  <h4 className="font-bold text-sm text-white">تحسين تشغيل الأذان بالخلفية (هام جداً)</h4>
-                  <p className="text-[10px] text-white/50 leading-relaxed">
-                    تقوم بعض هواتف أندرويد (مثل شاومي، هواوي، أوبو، ريلمي، فيفو) بإغلاق التطبيقات النشطة بالخلفية لتوفير طاقة البطارية. لضمان وصول الأذان والرسائل في موعدها بالثانية، يرجى ضبط الخيارات التالية بهاتفك:
-                  </p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 gap-2 pt-2 border-t border-white/5 text-[10px] text-right">
-                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
-                  <span className="font-bold text-gold-accent block">🚀 1. التشغيل التلقائي (Autostart)</span>
-                  <p className="text-white/60">انتقل لإعدادات الهاتف &gt; التطبيقات &gt; إدارة التطبيقات &gt; حقيبة المسلم &gt; قم بتفعيل خيار **التشغيل التلقائي**.</p>
-                </div>
-                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
-                  <span className="font-bold text-gold-accent block">🔋 2. تحسين البطارية (Battery Saver)</span>
-                  <p className="text-white/60">داخل نفس صفحة إعدادات التطبيق &gt; موفر البطارية &gt; حدد خيار **لا توجد قيود (No restrictions)**.</p>
-                </div>
-                <div className="p-3 bg-white/[0.02] rounded-xl space-y-1 border border-white/5">
-                  <span className="font-bold text-gold-accent block">🔒 3. قفل التطبيق بالخلفية (App Lock)</span>
-                  <p className="text-white/60">افتح قائمة التطبيقات النشطة مؤخراً &gt; اضغط مطولاً على نافذة \"حقيبة المسلم\" &gt; اضغط على **أيقونة القفل** لضمان بقائه حياً.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Did You Know Daily Notification Settings */}
-        <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">إشعار هل تعلم اليومي</h3>
-          <div className="glass-card overflow-hidden">
-            <div className="p-8 space-y-6 bg-white/[0.02]">
-              {/* Toggle Switch */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-5">
-                  <div className={cn(
-                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
-                    didYouKnowEnabled ? "bg-amber-500/10 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.15)]" : "bg-white/5 text-white/30"
-                  )}>
-                    <HelpCircle size={24} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-lg">إشعار "هل تعلم؟" اليومي</p>
-                    <p className="text-[10px] text-white/30 uppercase font-black tracking-widest mt-0.5">تلقي معلومة إسلامية مفيدة يومياً تلقائياً</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={handleDidYouKnowToggle}
-                  className={cn(
-                    "w-14 h-8 rounded-full relative transition-all duration-300 p-1 shrink-0",
-                    didYouKnowEnabled ? "bg-amber-500/20" : "bg-white/10"
-                  )}
-                >
-                  <motion.div 
-                    animate={{ x: didYouKnowEnabled ? -24 : 0 }}
-                    className={cn(
-                      "w-6 h-6 rounded-full shadow-lg transition-colors",
-                      didYouKnowEnabled ? "bg-amber-500" : "bg-white/40"
-                    )}
-                  />
-                </button>
-              </div>
-
-              {/* Time Picker (Only visible when toggle is enabled) */}
-              <AnimatePresence>
-                {didYouKnowEnabled && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden border-t border-white/5 pt-6 flex justify-between items-center"
-                  >
-                    <div>
-                      <p className="font-bold text-sm text-white/70">وقت التنبيه اليومي</p>
-                      <p className="text-[10px] text-white/35 font-black uppercase tracking-wider mt-0.5">اختر وقت إرسال الإشعار اليومي</p>
-                    </div>
-                    <input
-                      type="time"
-                      value={didYouKnowTime}
-                      onChange={handleDidYouKnowTimeChange}
-                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white font-bold text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </section>
 
         {/* Calculation Method Selection */}
         <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">طريقة الحساب الفلكي</h3>
+          <h3 className="text-gold-accent text-xs uppercase font-black tracking-[0.3em] ml-2 opacity-50">طريقة الحساب الفلكي</h3>
           <div className="glass-card overflow-hidden">
             <div className="p-8 space-y-4 bg-white/[0.02] text-right">
               <div className="flex items-center gap-5">
@@ -547,7 +161,7 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
                 </div>
                 <div>
                   <p className="font-bold text-lg">طريقة تحديد مواقيت الصلاة</p>
-                  <p className="text-[10px] text-white/30 uppercase font-black tracking-widest mt-0.5">اختر المرجعية الفقهية والفلكية لحساب الأوقات</p>
+                  <p className="text-xs text-white/30 uppercase font-black tracking-widest mt-0.5">اختر المرجعية الفقهية والفلكية لحساب الأوقات</p>
                 </div>
               </div>
 
@@ -571,9 +185,9 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
 
 
 
-        {/* About */}
+        {/* About Card */}
         <section className="space-y-4">
-          <h3 className="text-gold-accent text-[10px] uppercase font-black tracking-[0.3em] ml-2 opacity-50">حول التطبيق</h3>
+          <h3 className="text-gold-accent text-xs uppercase font-black tracking-[0.3em] ml-2 opacity-50">حول التطبيق</h3>
           <div className="glass-card p-8 border border-white/5 relative overflow-hidden bg-white/[0.01]">
             <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
               <Info size={120} className="text-gold-accent" />
@@ -583,16 +197,26 @@ export default function SettingsSection({ state, setState, onBack }: SettingsPro
                  <Info size={28} className="text-gold-accent" />
               </div>
               <div>
-                <p className="font-bold text-xl mb-1">القرأن الكريم v1.0.0</p>
-                <p className="text-[10px] text-white/40 uppercase font-black leading-relaxed tracking-wider">
+                <p className="font-bold text-xl mb-1">حقيبة المسلم v1.0.0</p>
+                <p className="text-xs text-white/40 uppercase font-black leading-relaxed tracking-wider">
                   صُمم لراحة الروح والسكينة.<br/>شكر خاص 
                   للخطاط ثروت عماره.
                 </p>
-                
               </div>
             </div>
           </div>
         </section>
+
+        {/* Footer link: حول عن */}
+        <div className="pt-2 pb-6 text-center">
+          <button 
+            onClick={onOpenAbout}
+            className="text-xs text-white/50 hover:text-gold-accent font-bold tracking-wide transition-colors cursor-pointer inline-flex items-center gap-1.5 underline underline-offset-4 decoration-white/20 hover:decoration-gold-accent"
+          >
+            <Info size={13} />
+            <span>حول عن</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ import {
   ChevronLeft, 
   RotateCcw
 } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, normalizeArabicText } from '../lib/utils';
 
 // Definition of an Adhkar item
 interface DhikrItem {
@@ -534,6 +534,9 @@ export default function DuasSection() {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setToastMessage('تم نسخ الذكر إلى الحافظة بنجاح!');
+    if ('vibrate' in navigator) {
+      navigator.vibrate(65);
+    }
     setTimeout(() => {
       setCopiedId(null);
     }, 2000);
@@ -547,7 +550,7 @@ export default function DuasSection() {
       try {
         await navigator.share({
           title,
-          text: `${title}\n\n${text}\n\nتمت المشاركة من تطبيق نور الهداية`,
+          text: `${title}\n\n${text}\n\nتمت المشاركة من تطبيق حقيبة المسلم`,
         });
       } catch {
         handleCopy(title, text);
@@ -560,19 +563,26 @@ export default function DuasSection() {
   const incrementCount = (item: DhikrItem) => {
     const current = counts[item.id] || 0;
     if (current >= item.count) {
-      // already completed, allow reset / or just stop
       const updated = { ...counts, [item.id]: 0 };
       setCounts(updated);
       localStorage.setItem('quran_adhkar_interactive_counts', JSON.stringify(updated));
+      if ('vibrate' in navigator) {
+        navigator.vibrate(30);
+      }
       return;
     }
-    const updated = { ...counts, [item.id]: current + 1 };
+    const nextVal = current + 1;
+    const isDone = nextVal >= item.count;
+    const updated = { ...counts, [item.id]: nextVal };
     setCounts(updated);
     localStorage.setItem('quran_adhkar_interactive_counts', JSON.stringify(updated));
 
-    // Simple haptic feedback simulation if supported
     if ('vibrate' in navigator) {
-      navigator.vibrate(40);
+      if (isDone) {
+        navigator.vibrate([100, 50, 100]); // double vibrate on completion
+      } else {
+        navigator.vibrate(40);
+      }
     }
   };
 
@@ -584,6 +594,9 @@ export default function DuasSection() {
     });
     setCounts(updated);
     localStorage.setItem('quran_adhkar_interactive_counts', JSON.stringify(updated));
+    if ('vibrate' in navigator) {
+      navigator.vibrate(80);
+    }
   };
 
   return (
@@ -604,8 +617,8 @@ export default function DuasSection() {
               <p className="text-xs text-gold-accent font-black mt-1">حصن المسلم اليومي الشامل والأدعية المباركة</p>
             </div>
 
-            {/* Grid of 16 categories - 2 Columns */}
-            <div className="grid grid-cols-2 gap-3.5">
+            {/* Grid of 16 categories - Fluid Responsive Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5" role="list">
               {ADHKAR_DATA.map((cat, idx) => {
                 const CatIcon = cat.icon;
                 return (
@@ -617,8 +630,10 @@ export default function DuasSection() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setSelectedCategory(cat)}
+                    role="listitem"
+                    aria-label={`${cat.title} - ${cat.subtitle}`}
                     className={cn(
-                      "flex flex-col items-center justify-center text-center p-5 rounded-3xl cursor-pointer bg-white/[0.03] border border-white/5 transition-all text-right group",
+                      "flex flex-col items-center justify-center text-center p-5 rounded-3xl cursor-pointer bg-white/[0.03] shadow-md shadow-black/10 transition-all text-right group",
                       cat.borderColor
                     )}
                   >
@@ -627,13 +642,13 @@ export default function DuasSection() {
                       "w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-inner mb-3",
                       cat.iconBg
                     )}>
-                      <CatIcon size={24} />
+                      <CatIcon size={24} aria-hidden="true" />
                     </div>
                     
                     <h3 className="font-extrabold text-sm text-white group-hover:text-gold-accent transition-colors">
                       {cat.title}
                     </h3>
-                    <p className="text-[9px] text-white/30 line-clamp-1 mt-1 px-1">
+                    <p className="text-xs text-white/30 line-clamp-1 mt-1 px-1">
                       {cat.subtitle}
                     </p>
                   </motion.button>
@@ -651,23 +666,27 @@ export default function DuasSection() {
             className="space-y-6"
           >
             {/* Navigation and Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-between items-center bg-white/5 border border-white/10 p-4 rounded-3xl backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row gap-3 justify-between items-center bg-white/5 shadow-lg shadow-black/10 p-4 rounded-3xl backdrop-blur-md">
               <button
                 onClick={() => setSelectedCategory(null)}
-                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+                role="button"
+                aria-label="الرجوع لقائمة الأذكار الرئيسية"
+                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 text-xs text-white/75 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
-                <ChevronLeft size={14} className="rotate-180" />
+                <ChevronLeft size={14} className="rotate-180" aria-hidden="true" />
                 رجوع للأقسام
               </button>
 
-              <div className="flex items-center gap-2 bg-black/40 border border-white/5 p-1 rounded-xl w-full sm:w-auto justify-between sm:justify-start">
-                <span className="text-[10px] text-white/40 font-bold px-2">حجم خط الأذكار:</span>
+              <div className="flex items-center gap-2 bg-black/40 p-1 rounded-xl w-full sm:w-auto justify-between sm:justify-start" aria-label="تحكم حجم الخط">
+                <span className="text-xs text-white/40 font-bold px-2">حجم خط الأذكار:</span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={decreaseFontSize}
                     disabled={textScale === 'lg'}
+                    role="button"
+                    aria-label="تصغير خط القراءة"
                     className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs select-none transition-all",
+                      "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs select-none transition-all cursor-pointer",
                       textScale === 'lg' 
                         ? "text-white/20 cursor-not-allowed" 
                         : "bg-white/5 text-white/80 hover:bg-white/10"
@@ -676,14 +695,16 @@ export default function DuasSection() {
                   >
                     أ-
                   </button>
-                  <span className="text-xs font-black font-mono text-gold-accent w-8 text-center uppercase">
+                  <span className="text-xs font-black font-mono text-gold-accent w-8 text-center uppercase" aria-live="polite">
                     {textScale}
                   </span>
                   <button
                     onClick={increaseFontSize}
                     disabled={textScale === '4xl'}
+                    role="button"
+                    aria-label="تكبير خط القراءة"
                     className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs select-none transition-all",
+                      "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs select-none transition-all cursor-pointer",
                       textScale === '4xl' 
                         ? "text-white/20 cursor-not-allowed" 
                         : "bg-white/5 text-white/80 hover:bg-white/10"
@@ -697,31 +718,33 @@ export default function DuasSection() {
 
               <button
                 onClick={resetCategoryCounts}
-                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-rose-500/10 border border-rose-500/10 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 transition-colors"
+                role="button"
+                aria-label="تصفير جميع عدادات هذا القسم"
+                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-rose-500/10 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer"
                 title="تصفير جميع العدادات في هذا القسم"
               >
-                <RotateCcw size={12} />
+                <RotateCcw size={12} aria-hidden="true" />
                 تصفير القسم
               </button>
             </div>
 
             {/* Category Banner Title */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 text-center space-y-2 relative overflow-hidden">
+            <div className="bg-white/[0.02] rounded-3xl p-6 text-center space-y-2 relative overflow-hidden shadow-inner">
               <div className="absolute top-0 right-1/2 translate-x-1/2 w-48 h-48 bg-gold-accent/5 blur-3xl rounded-full pointer-events-none" />
-              <div className="inline-flex w-14 h-14 rounded-2xl bg-gold-accent/10 items-center justify-center text-gold-accent mb-1 border border-gold-accent/10">
+              <div className="inline-flex w-14 h-14 rounded-2xl bg-gold-accent/10 items-center justify-center text-gold-accent mb-1">
                 {(() => {
                   const CatIco = selectedCategory.icon;
-                  return <CatIco size={24} />;
+                  return <CatIco size={24} aria-hidden="true" />;
                 })()}
               </div>
-              <h2 className="text-xl font-black text-white">{selectedCategory.title}</h2>
-              <p className="text-[11px] text-white/50 max-w-xs mx-auto leading-relaxed">
+              <h2 className={cn("text-xl font-black drop-shadow-md", selectedCategory.textColor)}>{selectedCategory.title}</h2>
+              <p className="text-xs text-white/70 max-w-xs mx-auto leading-relaxed">
                 {selectedCategory.subtitle}
               </p>
             </div>
 
             {/* List of Dhikr items */}
-            <div className="space-y-4 text-right">
+            <div className="space-y-4 text-right" role="list">
               {selectedCategory.items.map((item, idx) => {
                 const currentCount = counts[item.id] || 0;
                 const isCompleted = currentCount >= item.count;
@@ -732,42 +755,54 @@ export default function DuasSection() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
+                    role="listitem"
                     className={cn(
-                      "p-6 rounded-[2rem] border transition-all relative overflow-hidden flex flex-col gap-5",
+                      "p-6 rounded-[2rem] transition-all relative overflow-hidden flex flex-col gap-5 shadow-xl border-2",
                       isCompleted 
-                        ? "bg-emerald-950/10 border-emerald-500/20" 
-                        : "bg-white/[0.02] border-white/5"
+                        ? "bg-emerald-950/40 border-emerald-500/60 shadow-emerald-950/40" 
+                        : "bg-gradient-to-br from-[#011B0D]/95 to-[#022814]/90 border-gold-accent/40 hover:border-emerald-400/70 shadow-[0_8px_25px_rgba(0,0,0,0.5)]"
                     )}
                   >
                     {/* Top action header for item */}
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] bg-white/5 border border-white/5 px-2.5 py-1 rounded-xl text-white/40 font-bold block">
+                      <span className={cn(
+                        "text-xs px-3 py-1 rounded-xl font-bold block border border-white/10",
+                        selectedCategory.iconBg
+                      )}>
                         {item.note || `الذكر ${idx + 1}`}
                       </span>
 
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => handleShare(selectedCategory.title, item.text)}
-                          className="p-1.5 rounded-lg bg-white/5 border border-white/5 text-white/40 hover:text-white transition-colors"
+                          role="button"
+                          aria-label="مشاركة نص الذكر"
+                          className="p-1.5 rounded-lg bg-white/5 text-gold-accent/70 hover:text-gold-accent hover:bg-gold-accent/10 transition-colors cursor-pointer"
                           title="مشاركة"
                         >
-                          <Share2 size={13} />
+                          <Share2 size={14} aria-hidden="true" />
                         </button>
                         <button
                           onClick={() => handleCopy(item.id, item.text)}
-                          className="p-1.5 rounded-lg bg-white/5 border border-white/5 text-white/40 hover:text-white transition-colors"
+                          role="button"
+                          aria-label="نسخ نص الذكر للحافظة"
+                          className="p-1.5 rounded-lg bg-white/5 text-gold-accent/70 hover:text-gold-accent hover:bg-gold-accent/10 transition-colors cursor-pointer"
                           title="نسخ"
                         >
-                          {copiedId === item.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                          {copiedId === item.id ? <Check size={14} className="text-emerald-400" aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
                         </button>
                       </div>
                     </div>
 
-                    {/* Sup Arabic Calligraphic text with adjustable class for super legibility */}
-                    <p className={cn(
-                      "font-bold text-[#f5f5f7] text-center font-sans tracking-wide leading-relaxed",
-                      scaleClasses[textScale]
-                    )}>
+                    {/* Sup Arabic Calligraphic text with Hafs font and vibrant gold/emerald text styling */}
+                    <p 
+                      className={cn(
+                        "adhkar-font font-normal text-center tracking-normal drop-shadow-sm transition-colors duration-300",
+                        isCompleted ? "text-emerald-300" : "text-gold-accent",
+                        scaleClasses[textScale]
+                      )}
+                      style={{ lineHeight: 1.8, fontSynthesis: 'none', fontWeight: 'normal' }}
+                    >
                       {item.text}
                     </p>
 
@@ -776,16 +811,18 @@ export default function DuasSection() {
                       <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => incrementCount(item)}
+                        role="button"
+                        aria-label={`اضغط لعد التكرار. المكتمل هو ${currentCount} من أصل ${item.count}`}
                         className={cn(
-                          "w-full py-4 rounded-2xl border flex items-center justify-center gap-2 font-black text-xs transition-all tracking-wider font-mono",
+                          "w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-black text-xs transition-all tracking-wider font-mono cursor-pointer shadow-md",
                           isCompleted
-                            ? "bg-emerald-500 text-black border-emerald-400 shadow-lg shadow-emerald-500/10"
-                            : "bg-gold-accent/10 border-gold-accent/20 text-gold-accent hover:bg-gold-accent/20"
+                            ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20 font-extrabold"
+                            : "bg-gradient-to-r from-gold-accent/20 to-amber-500/10 text-gold-accent border border-gold-accent/30 hover:bg-gold-accent/30"
                         )}
                       >
                         {isCompleted ? (
                           <>
-                            <Check size={14} className="stroke-[3]" />
+                            <Check size={15} className="stroke-[3]" aria-hidden="true" />
                             تم التكرار بنجاح ({currentCount} / {item.count})
                           </>
                         ) : (
@@ -810,10 +847,12 @@ export default function DuasSection() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            role="status"
+            aria-live="polite"
             className="fixed bottom-28 left-4 right-4 max-w-sm mx-auto z-[100] bg-emerald-950/95 border border-gold-accent/40 backdrop-blur-md px-6 py-4 rounded-2xl flex items-center gap-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] text-center justify-center"
           >
             <div className="w-6 h-6 rounded-full bg-gold-accent/10 flex items-center justify-center text-gold-accent shrink-0">
-              <Check size={14} />
+              <Check size={14} aria-hidden="true" />
             </div>
             <p className="text-xs font-bold text-white tracking-wide">{toastMessage}</p>
           </motion.div>

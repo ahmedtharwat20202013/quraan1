@@ -2,38 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Book, 
-  Heart, 
-  CircleDot, 
-  ChevronRight, 
   ArrowLeft, 
-  BookOpen, 
   Smartphone, 
   ShieldCheck, 
-  Trophy, 
-  Volume2, 
-  HandHeart,
   CalendarDays,
   Settings,
-  BellRing,
   MapPin
 } from 'lucide-react';
 import { AppState } from '../types';
 import { Capacitor } from '@capacitor/core';
-import { cn } from '../lib/utils';
+import { cn, normalizeArabicText } from '../lib/utils';
 import { isAppInstallable, installPWA } from '../registerSW';
 import surahsData from '../data/surahs.json';
 
 interface HomeProps {
   state: AppState;
   onNavigate: (screen: any) => void;
-  onPageClick: (pageNumber: number) => void;
+  onSurahClick: (surahId: number, pageInSurah: number) => void;
   downloadProgress: number | null;
   isDownloaded: boolean;
 }
 
-export default function Home({ state, onNavigate, onPageClick, downloadProgress, isDownloaded }: HomeProps) {
-  const savedPage = state.lastRead ? state.lastRead.pageNumber : 1;
-  const lastReadSurah = surahsData.find(s => savedPage >= s.startPage && savedPage <= s.endPage) || null;
+export default function Home({ state, onNavigate, onSurahClick, downloadProgress, isDownloaded }: HomeProps) {
+  let savedSurahId = 1;
+  let savedPageNumber = 1;
+  if (state.lastRead) {
+    if (state.lastRead.pageNumber) {
+      savedPageNumber = state.lastRead.pageNumber;
+      savedSurahId = state.lastRead.surahId || 1;
+    } else if (state.lastRead.surahId) {
+      savedSurahId = state.lastRead.surahId;
+      savedPageNumber = state.lastRead.pageInSurah || 1;
+    }
+  }
+  const lastReadSurah = surahsData.find(s => s.id === savedSurahId) || null;
 
   const [isInstallable, setIsInstallable] = useState(false);
   const [isDismissed, setIsDismissed] = useState(() => {
@@ -65,24 +67,12 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
 
   useEffect(() => {
     const hasCoords = localStorage.getItem('quran_gps_coords') !== null;
-    const currentNotifPerm = 'Notification' in window ? Notification.permission : 'granted';
-    setShowPermissionBanner(!hasCoords || currentNotifPerm === 'default');
+    setShowPermissionBanner(!hasCoords);
   }, []);
 
   const handleActivatePermissions = async () => {
-    // 1. Request notification permission
-    if ('Notification' in window) {
-      try {
-        await Notification.requestPermission();
-      } catch (err) {
-        console.warn('Notification permission request failed', err);
-      }
-    }
-
-    // 2. Request Geolocation permission
+    // Request Geolocation permission
     if ('geolocation' in navigator) {
-
-
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const coords = {
@@ -121,12 +111,10 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
           }
 
           setShowPermissionBanner(false);
-          window.location.reload(); // Refresh to trigger Azan schedules
         },
         (err) => {
           console.warn('Location permission request failed', err);
           setShowPermissionBanner(false);
-          window.location.reload();
         },
         {
           enableHighAccuracy: true,
@@ -165,7 +153,7 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
         </button>
       </header>
 
-      {/* Geolocation & Notification Permission Request Banner */}
+      {/* Geolocation Permission Request Banner */}
       <AnimatePresence>
         {showPermissionBanner && (
           <motion.div
@@ -181,12 +169,12 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
               <div className="flex items-start justify-between gap-3">
                 <div className="flex gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-gold-accent/15 flex items-center justify-center text-gold-accent shrink-0 border border-gold-accent/20">
-                    <BellRing size={20} className="animate-pulse" />
+                    <MapPin size={20} className="animate-pulse" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-white">تفعيل تنبيهات الأذان والموقع</h4>
+                    <h4 className="font-bold text-sm text-white">تحديد موقعك الجغرافي</h4>
                     <p className="text-[11px] text-white/70 mt-1 leading-relaxed text-right">
-                      يرجى السماح بصلاحيات الموقع الجغرافي والإشعارات لكي يتمكن التطبيق من حساب مواقيت الصلاة بدقة وإرسال نداء الأذان ورسائل هل تعلم اليومية في مواعيدها.
+                      يرجى السماح بصلاحية الموقع الجغرافي لكي يتمكن التطبيق من حساب مواقيت الصلاة بدقة فائقة وتحديد اتجاه القبلة والبحث عن المساجد القريبة منك.
                     </p>
                   </div>
                 </div>
@@ -203,7 +191,7 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
                   className="px-5 py-2.5 bg-gradient-to-r from-gold-bright to-gold-accent text-islamic-dark font-black text-[10px] rounded-xl tracking-wide hover:brightness-110 transition-all active:scale-95 flex items-center gap-1 shadow-lg shadow-gold-accent/10"
                 >
                   <MapPin size={12} />
-                  تفعيل الصلاحيات الآن
+                  تفعيل الموقع الآن
                 </button>
               </div>
             </div>
@@ -256,7 +244,7 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
       {/* Continue Reading Card */}
       <motion.div 
         whileTap={{ scale: 0.98 }}
-        onClick={() => onPageClick(savedPage)}
+        onClick={() => onSurahClick(savedSurahId, savedPageNumber)}
         className="bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 border border-gold-accent/20 rounded-3xl p-6 relative overflow-hidden cursor-pointer shadow-xl group border-l-4 border-l-gold-accent"
       >
         <div className="absolute top-0 left-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -273,8 +261,8 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
                 {lastReadSurah ? lastReadSurah.name : 'سورة الفاتحة'}
               </h2>
               <p className="text-white/60 text-xs">
-                {lastReadSurah 
-                  ? `أخر ما قرأت: صفحة ${savedPage}` 
+                {state.lastRead 
+                  ? `آخر ما قرأت: سورة ${lastReadSurah?.name}، صفحة ${savedPageNumber}` 
                   : 'اقرأ تلاوتك اليومية واحفظ تقدمك في المصحف'}
               </p>
             </div>
@@ -301,19 +289,26 @@ export default function Home({ state, onNavigate, onPageClick, downloadProgress,
       </motion.div>
 
       {/* Verse of the Day Card */}
-      <div className="bg-gradient-to-br from-white/5 to-white/[0.01] border border-white/10 rounded-3xl p-6 relative overflow-hidden shadow-2xl space-y-4">
+      <div dir="rtl" className="bg-gradient-to-br from-[#011B0D]/95 to-[#022814]/90 border-2 border-gold-accent/40 rounded-3xl p-6 relative overflow-hidden shadow-2xl space-y-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-gold-accent animate-ping" />
           <span className="text-gold-accent/80 text-[10px] font-black uppercase tracking-[0.3em]">آية اليوم العطرة</span>
         </div>
         
-        <p className="font-arabic text-xl sm:text-2xl text-white font-extrabold leading-loose text-center drop-shadow-md">
+        <p 
+          className="quran-font text-xl sm:text-2xl text-gold-accent font-normal text-center drop-shadow-md"
+          style={{ lineHeight: 1.8, fontSynthesis: 'none' }}
+        >
           {state.dailyVerse?.text || "يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا وَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا"}
         </p>
 
-        <div className="flex justify-center items-center gap-2 text-gold-accent/60 text-xs font-bold border-t border-white/5 pt-3">
-          <CalendarDays size={14} />
-          <span>{state.dailyVerse ? `سورة ${state.dailyVerse.surahName} • الآية ${state.dailyVerse.reference}` : "سورة الأحزاب • الآية ٤١ - ٤٢"}</span>
+        <div className="flex justify-center items-center gap-2 text-gold-accent text-xs font-black border-t border-gold-accent/20 pt-3">
+          <CalendarDays size={14} className="text-gold-accent" />
+          <span>
+            {state.dailyVerse 
+              ? `سورة ${state.dailyVerse.surahName} • ${state.dailyVerse.reference.startsWith('الآية') ? state.dailyVerse.reference : `الآية ${state.dailyVerse.reference}`}` 
+              : "سورة الأحزاب • الآية ٤١ - ٤٢"}
+          </span>
         </div>
       </div>
 

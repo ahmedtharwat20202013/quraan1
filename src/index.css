@@ -1,80 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Tehaf';
+  src: url('/fonts/TEHAFSProTharwatEmara-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AmiriQuran';
+  src: url('/fonts/AmiriQuran-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AmiriFb';
+  src: url('/fonts/Amiri-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-arabic: "Amiri", serif;
-  --font-arabic-sans: "Noto Sans Arabic", sans-serif;
-  
-  --color-islamic-dark: #002210;
-  --color-islamic-green: #004420;
+  --font-sans: 'Outfit', 'Noto Sans Arabic', system-ui, sans-serif;
+  --font-quran: 'Tehaf', 'AmiriQuran', 'AmiriFb', 'Noto Sans Arabic', serif;
+
   --color-gold-accent: #D4AF37;
-  --color-gold-bright: #E5C76B;
-  --color-text-beige: #F5F5F0;
+  --color-gold-bright: #FFDF00;
+  --color-islamic-dark: #011209;
+  --color-islamic-green: #064e3b;
 }
 
-@layer base {
-  body {
-    @apply bg-islamic-dark text-text-beige font-sans antialiased selection:bg-gold-accent selection:text-islamic-dark;
-    overflow-x: hidden;
-  }
+.quran-font, .adhkar-font, .arabic-font, .arabic-text {
+  font-family: 'Tehaf', 'AmiriFb', 'Noto Sans Arabic', serif;
+  font-weight: normal !important;
+  font-synthesis: none !important;
+  line-height: 1.8;
+  text-rendering: optimizeLegibility;
+  direction: rtl !important;
+  unicode-bidi: embed !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.glass-card {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-lg transition-all duration-300;
+body {
+  font-family: var(--font-sans);
+  background-color: #011209;
+  color: #D4AF37;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-.glass-card-accent {
-  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-[2rem] shadow-xl;
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.btn-gold {
-  @apply bg-gradient-to-br from-gold-bright to-gold-accent text-islamic-dark font-bold py-4 rounded-3xl shadow-lg active:scale-95 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2;
+.glass-panel-gold {
+  background: rgba(20, 25, 35, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
-.arabic-text {
-  font-family: var(--font-arabic);
-}
-
-.arabic-text-sans {
-  font-family: var(--font-arabic-sans);
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-/* Maintain Absolute Color Integrity for PDF Canvas rendering */
-.pdf-page-wrapper {
-  color-scheme: light !important;
-}
-
-.pdf-page-wrapper canvas {
-  color-scheme: light !important;
-  mix-blend-mode: normal !important;
-  filter: none !important;
-  -webkit-filter: none !important;
-  forced-color-adjust: none !important;
-}
-
-/* Custom Scrollbar */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(3, 7, 18, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full;
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gold-accent/40;
+  background: rgba(212, 175, 55, 0.5);
 }

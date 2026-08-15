@@ -6,6 +6,7 @@ export interface Surah {
   numberOfAyahs: number;
   revelationType: string;
   startPage?: number;
+  endPage?: number;
   pdfUrl?: string;
 }
 
@@ -19,9 +20,11 @@ export interface Dua {
 }
 
 export interface Bookmark {
-  pageNumber: number;
+  surahId: number;
+  pageInSurah?: number;
   surahName: string;
   timestamp: number;
+  pageNumber?: number;
 }
 
 export interface DailyVerse {
@@ -59,7 +62,6 @@ export interface AppState {
   lastRead: Bookmark | null;
   bookmarks: Bookmark[];
   favorites: string[]; // Dua IDs
-  darkMode: boolean;
   fontSize: number;
   dailyVerse?: DailyVerse;
 }

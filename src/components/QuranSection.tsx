@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, ChevronLeft, Bookmark as BookmarkIcon, Trash2 } from 'lucide-react';
+import { Search, ChevronLeft, Trash2, Bookmark as BookmarkIcon, BookOpen } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Bookmark } from '../types';
 import surahsData from '../data/surahs.json';
+import EmptyState from './ui/EmptyState';
+import { QuranSearchService, SearchResult } from '../services/quranSearchService';
 
 interface QuranSectionProps {
-  onPageClick: (pageNumber: number) => void;
+  onSurahClick: (surahId: number, pageInSurah: number, targetAyah?: number, targetWordIndex?: number) => void;
   bookmarks: Bookmark[];
-  onRemoveBookmark: (pageNumber: number) => void;
+  onRemoveBookmark: (surahId: number, pageInSurah: number) => void;
   downloadProgress: number | null;
   isDownloaded: boolean;
 }
 
 export default function QuranSection({ 
-  onPageClick, 
-  bookmarks, 
+  onSurahClick, 
+  bookmarks = [], 
   onRemoveBookmark,
   downloadProgress,
   isDownloaded
@@ -23,7 +25,42 @@ export default function QuranSection({
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<'index' | 'bookmarks'>('index');
 
-  // Scroll to top on list/view transition
+  // Global search results
+  const [surahResults, setSurahResults] = useState<any[]>(surahsData);
+  const [ayahResults, setAyahResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  // Initialize search index ONCE
+  useEffect(() => {
+    QuranSearchService.initIndex().catch(err => console.warn('Index init error:', err));
+  }, []);
+
+  // Realtime Debounced Search (150ms)
+  useEffect(() => {
+    if (!search.trim()) {
+      setSurahResults(surahsData);
+      setAyahResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(async () => {
+      const { surahMatches, ayahMatches } = await QuranSearchService.searchGlobal(search);
+      
+      const matchedSurahs = surahsData.filter(s => 
+        surahMatches.some(m => m.id === s.id)
+      );
+
+      setSurahResults(matchedSurahs);
+      setAyahResults(ayahMatches);
+      setIsSearching(false);
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Scroll to top on tab/search change
   useEffect(() => {
     const doScroll = () => {
       const mainEl = document.querySelector('main');
@@ -40,10 +77,6 @@ export default function QuranSection({
     return () => clearTimeout(timer);
   }, [search, activeTab]);
 
-  const filteredSurahs = surahsData.filter(s => 
-    s.name.includes(search)
-  );
-
   return (
     <div className="space-y-6 pb-20">
       <header className="space-y-6">
@@ -54,7 +87,7 @@ export default function QuranSection({
 
         {downloadProgress !== null && !isDownloaded && (
           <div className="p-4 rounded-[1.5rem] bg-gold-accent/10 border border-gold-accent/15 flex flex-col gap-2 no-toggle">
-            <div className="flex justify-between items-center text-[10px] font-black">
+            <div className="flex justify-between items-center text-xs font-black">
               <span className="text-gold-accent">جاري تحميل صفحات المصحف الشريف للأوفلاين...</span>
               <span className="text-gold-accent">{downloadProgress}%</span>
             </div>
@@ -71,6 +104,9 @@ export default function QuranSection({
         <div className="flex gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-2xl">
           <button
             onClick={() => setActiveTab('index')}
+            role="tab"
+            aria-selected={activeTab === 'index'}
+            aria-label="فهرس السور"
             className={cn(
               "flex-1 py-3 text-xs font-black rounded-xl transition-all relative cursor-pointer",
               activeTab === 'index' 
@@ -82,6 +118,9 @@ export default function QuranSection({
           </button>
           <button
             onClick={() => setActiveTab('bookmarks')}
+            role="tab"
+            aria-selected={activeTab === 'bookmarks'}
+            aria-label={`العلامات المرجعية - ${(bookmarks || []).length} علامات`}
             className={cn(
               "flex-1 py-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 relative cursor-pointer",
               activeTab === 'bookmarks' 
@@ -89,19 +128,20 @@ export default function QuranSection({
                 : "text-white/40 hover:text-white"
             )}
           >
-            <BookmarkIcon size={12} />
-            العلامات المرجعية ({bookmarks.length})
+            <BookmarkIcon size={12} aria-hidden="true" />
+            العلامات المرجعية ({(bookmarks || []).length})
           </button>
         </div>
         
         {activeTab === 'index' && (
           <div className="relative group">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold-accent transition-colors" size={20} />
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold-accent transition-colors" size={20} aria-hidden="true" />
             <input 
               type="text" 
-              placeholder="ابحث عن سورة..." 
+              placeholder="🔍 ابحث باسم سورة أو كلمة من آية..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="ابحث باسم سورة أو كلمة من آية"
               className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pr-12 pl-6 focus:outline-none focus:border-gold-accent/50 focus:bg-white/10 transition-all placeholder:text-white/20 text-right font-bold text-sm"
             />
           </div>
@@ -116,35 +156,95 @@ export default function QuranSection({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="space-y-4"
+            role="list"
           >
-            {filteredSurahs.map((surah) => (
-              <motion.div
-                key={surah.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ x: -4 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onPageClick(surah.startPage)}
-                className="glass-card hover:bg-white/10 transition-all p-5 flex items-center justify-between cursor-pointer group"
-              >
-                <div className="flex items-center gap-5">
-                   <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center relative group-hover:bg-gold-accent/10 transition-colors">
-                      <span className="text-xs font-bold opacity-30 group-hover:opacity-100 group-hover:text-gold-accent transition-all">{surah.id}</span>
-                      <div className="absolute inset-0 border border-white/5 group-hover:border-gold-accent/20 rounded-2xl" />
-                   </div>
-                   <div className="text-right">
-                      <h3 className="font-bold text-lg tracking-tight group-hover:text-gold-accent transition-colors">{surah.name}</h3>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] text-white/40 font-bold">الصفحة: {surah.startPage}</span>
-                        <span className="text-[10px] text-white/20 font-bold">•</span>
-                        <span className="text-[10px] text-white/40 font-bold">{surah.endPage - surah.startPage + 1} صفحات</span>
-                      </div>
-                   </div>
-                </div>
-                
-                <ChevronLeft size={18} className="text-white/10 group-hover:text-gold-accent transition-colors rotate-180" />
-              </motion.div>
-            ))}
+            {isSearching ? (
+              <div className="p-8 text-center text-xs font-bold text-gold-accent flex flex-col items-center justify-center gap-2">
+                <div className="w-6 h-6 border-2 border-gold-accent border-t-transparent rounded-full animate-spin" />
+                <span>جاري البحث في المصحف...</span>
+              </div>
+            ) : surahResults.length === 0 && ayahResults.length === 0 ? (
+              <EmptyState 
+                title="لم نعثر على نتائج" 
+                description={`لم نجد أي سورة أو آية تطابق البحث عن "${search}". يرجى تجربة كلمات أخرى.`} 
+              />
+            ) : (
+              <>
+                {/* 1. Surah Name Matches Section */}
+                {surahResults.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {search.trim() && (
+                      <h4 className="col-span-full text-xs font-black text-gold-accent/80 px-1">السور المطابقة ({surahResults.length})</h4>
+                    )}
+                    {surahResults.map((surah) => (
+                      <motion.div
+                        key={surah.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        whileHover={{ x: -4 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => onSurahClick(surah.id, surah.startPage)}
+                        role="listitem"
+                        aria-label={`سورة ${surah.name}، صفحة ${surah.startPage}`}
+                        className="glass-card hover:bg-white/10 transition-all p-5 flex items-center justify-between cursor-pointer group shadow-md shadow-black/5"
+                      >
+                        <div className="flex items-center gap-5">
+                          <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center relative group-hover:bg-gold-accent/10 transition-colors">
+                            <span className="text-xs font-bold opacity-30 group-hover:opacity-100 group-hover:text-gold-accent transition-all">{surah.id}</span>
+                          </div>
+                          <div className="text-right">
+                            <h3 className="font-bold text-lg tracking-tight group-hover:text-gold-accent transition-colors">{surah.name}</h3>
+                            <p className="text-[11px] font-bold text-white/40">صفحة {surah.startPage}</p>
+                          </div>
+                        </div>
+                        
+                        <ChevronLeft size={18} className="text-white/10 group-hover:text-gold-accent transition-colors rotate-180" aria-hidden="true" />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 2. Quranic Ayahs Matches Section */}
+                {ayahResults.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <h4 className="text-xs font-black text-gold-accent/80 px-1">الآيات المطابقة ({ayahResults.length})</h4>
+                    {ayahResults.map((result, idx) => (
+                      <motion.div
+                        key={`ayah_${result.surahId}_${result.ayaIndex}_${idx}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        whileHover={{ x: -4 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => onSurahClick(result.surahId, undefined, result.ayaIndex, result.wordIndexInAyah)}
+                        className="glass-card hover:bg-white/10 transition-all p-4 rounded-2xl cursor-pointer group shadow-md space-y-2 border border-white/5 hover:border-gold-accent/30"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <BookOpen size={14} className="text-gold-accent" />
+                            <span className="text-xs font-black text-gold-accent">سورة {result.surahName}</span>
+                          </div>
+                          <span className="text-[10px] bg-gold-accent/15 text-gold-accent font-bold px-2 py-0.5 rounded-full">
+                            الآية {result.ayaIndex}
+                          </span>
+                        </div>
+                        <p 
+                          className="text-xs font-bold leading-relaxed text-white/80 line-clamp-2 text-right"
+                          style={{ fontFamily: '"Tehaf", "Amiri", serif' }}
+                        >
+                          {result.hasMoreBefore ? '... ' : ''}
+                          {result.beforeText ? `${result.beforeText} ` : ''}
+                          <mark className="bg-gold-accent/35 text-gold-accent font-black rounded px-1">
+                            {result.matchedText}
+                          </mark>
+                          {result.afterText ? ` ${result.afterText}` : ''}
+                          {result.hasMoreAfter ? ' ...' : ''}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </motion.div>
         ) : (
           <motion.div
@@ -153,33 +253,37 @@ export default function QuranSection({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="space-y-4"
+            role="list"
           >
             {bookmarks.length === 0 ? (
-              <div className="text-center p-12 glass-card space-y-4">
-                <BookmarkIcon className="mx-auto text-white/10" size={48} />
-                <p className="text-xs text-white/40 leading-relaxed font-bold">لا توجد علامات مرجعية حالياً.<br />اضغط على زر العلامة أعلى شاشة القراءة لحفظ صفحاتك.</p>
-              </div>
+              <EmptyState 
+                icon={<BookmarkIcon size={32} />}
+                title="لا توجد علامات مرجعية" 
+                description="اضغط على زر العلامة أعلى شاشة قراءة المصحف لحفظ صفحتك الحالية والعودة إليها لاحقاً." 
+              />
             ) : (
               bookmarks.map((bookmark) => (
                 <motion.div
-                  key={bookmark.pageNumber}
+                  key={`${bookmark.surahId}-${bookmark.pageInSurah}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ x: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => onPageClick(bookmark.pageNumber)}
-                  className="glass-card hover:bg-white/10 transition-all p-5 flex items-center justify-between cursor-pointer group"
+                  onClick={() => onSurahClick(bookmark.surahId, bookmark.pageInSurah)}
+                  role="listitem"
+                  aria-label={`الانتقال إلى علامة سورة ${bookmark.surahName}، صفحة ${bookmark.pageInSurah}`}
+                  className="glass-card hover:bg-white/10 transition-all p-5 flex items-center justify-between cursor-pointer group shadow-md shadow-black/5"
                 >
                   <div className="flex items-center gap-5">
                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 relative">
-                        <BookmarkIcon size={18} />
+                        <BookmarkIcon size={18} aria-hidden="true" />
                      </div>
                      <div className="text-right">
                         <h3 className="font-bold text-lg tracking-tight group-hover:text-gold-accent transition-colors">{bookmark.surahName}</h3>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] text-gold-accent font-bold">صفحة {bookmark.pageNumber}</span>
-                          <span className="text-[10px] text-white/20 font-bold">•</span>
-                          <span className="text-[10px] text-white/40 font-bold">
+                          <span className="text-xs text-gold-accent font-bold">صفحة {bookmark.pageInSurah}</span>
+                          <span className="text-xs text-white/20 font-bold">•</span>
+                          <span className="text-xs text-white/40 font-bold">
                             {new Date(bookmark.timestamp).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}
                           </span>
                         </div>
@@ -189,12 +293,14 @@ export default function QuranSection({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onRemoveBookmark(bookmark.pageNumber);
+                      onRemoveBookmark(bookmark.surahId, bookmark.pageInSurah);
                     }}
-                    className="p-3 rounded-full hover:bg-rose-500/10 text-white/25 hover:text-rose-400 transition-all active:scale-90"
+                    role="button"
+                    aria-label={`حذف العلامة المرجعية لسورة ${bookmark.surahName}`}
+                    className="p-3 rounded-full hover:bg-rose-500/10 text-white/25 hover:text-rose-400 transition-all active:scale-90 cursor-pointer"
                     title="حذف العلامة"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={16} aria-hidden="true" />
                   </button>
                 </motion.div>
               ))

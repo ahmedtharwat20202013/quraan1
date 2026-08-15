@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Search, 
   User, 
-  BookOpen, 
   HelpCircle, 
-  Volume2, 
   Play, 
   Pause, 
   Square, 
@@ -14,18 +12,20 @@ import {
   AlertTriangle, 
   RefreshCw,
   Disc,
-  ListRestart,
   Heart,
   Download,
   Trash2,
   Check,
-  Loader2
+  Loader2,
+  BookOpen
 } from 'lucide-react';
 import { Reciter, APISurah, Moshaf } from '../types';
 import { QuranApiService } from '../services/api';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { OfflineAudioService } from '../services/offlineAudio';
 import { cn } from '../lib/utils';
+import Skeleton from './ui/Skeleton';
+import EmptyState from './ui/EmptyState';
 
 export default function RecitationsSection() {
   const [reciters, setReciters] = useState<Reciter[]>([]);
@@ -33,6 +33,7 @@ export default function RecitationsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [surahSearchQuery, setSurahSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   
   // Selection states
@@ -94,12 +95,33 @@ export default function RecitationsSection() {
     return `${baseUrl}${paddedNum}.mp3`;
   }, [selectedMoshaf]);
 
-  // Check if a Surah is available in the currently selected Moshaf's list
-  const isSurahAvailable = useCallback((surahId: number): boolean => {
-    if (!selectedMoshaf || !selectedMoshaf.surah_list) return true; // Fail-safe
-    const availableSuwar = selectedMoshaf.surah_list.split(',').map(s => parseInt(s.trim(), 10));
-    return availableSuwar.includes(surahId);
-  }, [selectedMoshaf]);
+  // Available suwar strictly filtered for the currently selected Sheikh & Moshaf
+  const reciterAvailableSuwar = useMemo(() => {
+    if (!selectedMoshaf || !selectedMoshaf.surah_list) return suwar;
+    const availableIds = new Set(
+      selectedMoshaf.surah_list
+        .split(',')
+        .map(s => parseInt(s.trim(), 10))
+        .filter(id => !isNaN(id))
+    );
+    return suwar.filter(s => availableIds.has(s.id));
+  }, [selectedMoshaf, suwar]);
+
+  // Filter available suwar by local search query inside the Sheikh view
+  const displayedSuwar = useMemo(() => {
+    if (!surahSearchQuery.trim()) return reciterAvailableSuwar;
+    const query = surahSearchQuery.trim().toLowerCase();
+    return reciterAvailableSuwar.filter(s => 
+      s.name.includes(query) || String(s.id).includes(query)
+    );
+  }, [reciterAvailableSuwar, surahSearchQuery]);
+
+  // Feed available suwar list to audio service for seamless auto-advance through existing surahs only
+  useEffect(() => {
+    if (selectedReciter && reciterAvailableSuwar.length > 0) {
+      audioPlayer.setSuwarList(reciterAvailableSuwar);
+    }
+  }, [selectedReciter, reciterAvailableSuwar]);
 
   // Track the total downloaded size on the device for this specific Qari'
   useEffect(() => {
@@ -150,14 +172,13 @@ export default function RecitationsSection() {
     if (!selectedReciter || !selectedMoshaf || batchDownloading) return;
     
     // Filter available suwar that aren't already downloaded
-    const toDownload = suwar.filter(s => {
-      const available = isSurahAvailable(s.id);
+    const toDownload = reciterAvailableSuwar.filter(s => {
       const url = getSurahUrl(s.id);
-      return available && url && !offlineState.downloadedUrls.has(url);
+      return url && !offlineState.downloadedUrls.has(url);
     });
 
     if (toDownload.length === 0) {
-      alert('جميع سور هذا القارئ محملة بالفعل على جهازك!');
+      alert('جميع السور المتاحة لهذا القارئ محملة بالفعل على جهازك!');
       return;
     }
 
@@ -183,9 +204,8 @@ export default function RecitationsSection() {
   const reciterStats = useMemo(() => {
     if (!selectedReciter || !selectedMoshaf) return { total: 0, downloaded: 0, percentage: 0 };
     
-    const availableSuwar = suwar.filter(s => isSurahAvailable(s.id));
-    const total = availableSuwar.length;
-    const downloaded = availableSuwar.filter(s => {
+    const total = reciterAvailableSuwar.length;
+    const downloaded = reciterAvailableSuwar.filter(s => {
       const url = getSurahUrl(s.id);
       return url && offlineState.downloadedUrls.has(url);
     }).length;
@@ -193,14 +213,13 @@ export default function RecitationsSection() {
     const percentage = total > 0 ? Math.round((downloaded / total) * 100) : 0;
     
     return { total, downloaded, percentage };
-  }, [selectedReciter, selectedMoshaf, suwar, offlineState.downloadedUrls, getSurahUrl]);
+  }, [selectedReciter, selectedMoshaf, reciterAvailableSuwar, offlineState.downloadedUrls, getSurahUrl]);
 
   // Calculate remaining size in MB
   const remainingSizeInMB = useMemo(() => {
     if (!selectedReciter || !selectedMoshaf) return 0;
     
-    const availableSuwar = suwar.filter(s => isSurahAvailable(s.id));
-    const toDownload = availableSuwar.filter(s => {
+    const toDownload = reciterAvailableSuwar.filter(s => {
       const url = getSurahUrl(s.id);
       return url && !offlineState.downloadedUrls.has(url);
     });
@@ -211,7 +230,7 @@ export default function RecitationsSection() {
     }, 0);
     
     return sum;
-  }, [selectedReciter, selectedMoshaf, suwar, offlineState.downloadedUrls, getSurahUrl, isSurahAvailable]);
+  }, [selectedReciter, selectedMoshaf, reciterAvailableSuwar, offlineState.downloadedUrls, getSurahUrl]);
 
   const toggleFavoriteReciter = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -318,6 +337,7 @@ export default function RecitationsSection() {
   // Handle Reciter Choice
   const handleSelectReciter = (reciter: Reciter) => {
     setSelectedReciter(reciter);
+    setSurahSearchQuery('');
     // Auto-select standard Hafs recitation if available, or fall back to the first available moshaf
     if (reciter.moshaf && reciter.moshaf.length > 0) {
       const hafsMoshaf = reciter.moshaf.find(m => m.name.includes("حفص") || m.name.includes("Hafs") || m.name.includes("حفص عن عاصم"));
@@ -334,11 +354,6 @@ export default function RecitationsSection() {
     const seconds = Math.floor(secs % 60);
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
-
-  // Progress Bar dynamic width
-  const progressPercent = audioPlayer.duration > 0 
-    ? (audioPlayer.currentTime / audioPlayer.duration) * 100 
-    : 0;
 
   // Handle playing a surah
   const handlePlaySurah = (surah: APISurah) => {
@@ -428,24 +443,25 @@ export default function RecitationsSection() {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-14 h-14 border-4 border-gold-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(212,175,55,0.3)]" />
-          <div className="text-gold-accent font-black text-xs uppercase tracking-[0.2em] animate-pulse">جاري تحميل البث الإسلامي...</div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Skeleton variant="card" count={6} />
         </div>
       )}
 
       {/* Error State */}
       {error && !loading && (
-        <div className="p-8 text-center space-y-6 bg-rose-500/5 rounded-[2rem] border border-rose-500/20 max-w-sm mx-auto">
+        <div className="p-8 text-center space-y-6 bg-rose-500/5 rounded-[2rem] border border-rose-500/20 max-w-sm mx-auto shadow-lg">
           <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto text-rose-500">
-            <AlertTriangle size={32} />
+            <AlertTriangle size={32} aria-hidden="true" />
           </div>
           <p className="text-white/80 text-sm font-bold leading-relaxed">{error}</p>
           <button 
             onClick={loadData}
-            className="px-6 py-3 bg-white text-emerald-950 font-black text-xs rounded-xl flex items-center gap-2 mx-auto shadow-md hover:scale-105 active:scale-95 transition-all"
+            role="button"
+            aria-label="إعادة محاولة تحميل قائمة القراء"
+            className="px-6 py-3 bg-white text-emerald-950 font-black text-xs rounded-xl flex items-center gap-2 mx-auto shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={14} aria-hidden="true" />
             إعادة المحاولة
           </button>
         </div>
@@ -455,27 +471,23 @@ export default function RecitationsSection() {
       {!loading && !error && !selectedReciter && (
         <>
           {filteredReciters.length === 0 ? (
-            <div className="text-center py-16 space-y-4">
-              <div className="text-white/20 w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto">
-                {filterTab === 'favorites' ? <Heart size={32} className="text-rose-500 animate-pulse" /> : <HelpCircle size={32} />}
-              </div>
-              <p className="text-white/50 font-bold max-w-xs mx-auto text-sm leading-relaxed text-center">
-                {filterTab === 'favorites' 
-                  ? "قائمة الشيوخ المفضلة فارغة حالياً. أضف الشيوخ المفضلين لديك بالضغط على أيقونة القلب ❤️ بجوار اسم الشيخ." 
-                  : "لم نجد قارئاً بهذا الاسم، يرجى كتابة اسم آخر"}
-              </p>
-            </div>
+            <EmptyState
+              icon={filterTab === 'favorites' ? <Heart size={32} className="text-rose-500 animate-pulse" aria-hidden="true" /> : <HelpCircle size={32} aria-hidden="true" />}
+              title={filterTab === 'favorites' ? "لا توجد شيوخ مفضلة" : "لم نعثر على نتائج"}
+              description={
+                filterTab === 'favorites' 
+                  ? "قائمة الشيوخ المفضلة فارغة حالياً. أضف الشيوخ المفضلين لديك بالضغط على زر القلب ❤️ بجوار اسم الشيخ." 
+                  : `لم نجد أي قارئ يطابق البحث عن "${searchQuery}". يرجى تجربة اسم قارئ آخر.`
+              }
+            />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="list">
               <AnimatePresence>
                 {filteredReciters.map((reciter) => {
                   const preferredMoshaf = reciter.moshaf && (
                     reciter.moshaf.find(m => m.name.includes("حفص") || m.name.includes("Hafs") || m.name.includes("حفص عن عاصم")) || 
                     reciter.moshaf[0]
                   );
-                  const surahCount = preferredMoshaf?.surah_list 
-                    ? preferredMoshaf.surah_list.split(',').filter(Boolean).length 
-                    : 0;
                   const isFav = favoriteReciterIds.includes(String(reciter.id));
                   return (
                     <motion.div
@@ -485,11 +497,13 @@ export default function RecitationsSection() {
                       whileHover={{ scale: 1.01, y: -1 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectReciter(reciter)}
-                      className="glass-card p-5 flex items-center justify-between cursor-pointer group hover:border-gold-accent/30 transition-all shadow-md relative overflow-hidden"
+                      role="listitem"
+                      aria-label={`القارئ ${reciter.name}. اضغط لتصفح السور المتاحة`}
+                      className="glass-card p-5 flex items-center justify-between cursor-pointer group hover:bg-white/10 transition-all shadow-md relative overflow-hidden"
                     >
                       <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-gold-accent/10 transition-all font-black text-gold-accent shadow-inner border border-white/5">
-                          <User size={18} />
+                        <div className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-gold-accent/10 transition-all font-black text-gold-accent shadow-inner">
+                          <User size={18} aria-hidden="true" />
                         </div>
                         <div className="text-right">
                           <h3 className="font-extrabold text-white text-sm sm:text-base tracking-tight mb-1 group-hover:text-gold-accent transition-colors">
@@ -497,7 +511,7 @@ export default function RecitationsSection() {
                           </h3>
                           <div className="flex items-center gap-2 flex-wrap mt-1">
                             {preferredMoshaf && (
-                              <span className="text-[9px] text-white/50 bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-black">
+                              <span className="text-xs text-white/50 bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-black">
                                 {preferredMoshaf.name.replace("المصحف المرتل", "مرتل")}
                               </span>
                             )}
@@ -507,12 +521,14 @@ export default function RecitationsSection() {
                       <div className="flex items-center gap-2 relative z-20">
                         <button
                           onClick={(e) => toggleFavoriteReciter(reciter.id, e)}
-                          className="p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-rose-500/10 hover:border-rose-500/20 text-white/30 hover:text-rose-400 hover:scale-110 active:scale-95 transition-all"
+                          role="button"
+                          aria-label={isFav ? `إزالة الشيخ ${reciter.name} من المفضلة` : `إضافة الشيخ ${reciter.name} إلى المفضلة`}
+                          className="p-2 rounded-xl bg-white/5 hover:bg-rose-500/10 text-white/30 hover:text-rose-400 hover:scale-110 active:scale-95 transition-all cursor-pointer"
                           title={isFav ? "إزالة من المفضلة" : "إضافة للمفضلة"}
                         >
-                          <Heart size={16} className={cn(isFav ? "fill-rose-500 text-rose-500" : "")} />
+                          <Heart size={16} className={cn(isFav ? "fill-rose-500 text-rose-500" : "")} aria-hidden="true" />
                         </button>
-                        <ChevronLeft size={16} className="text-white/20 group-hover:text-gold-accent transition-all rotate-180" />
+                        <ChevronLeft size={16} className="text-white/20 group-hover:text-gold-accent transition-all rotate-180" aria-hidden="true" />
                       </div>
                     </motion.div>
                   );
@@ -547,13 +563,37 @@ export default function RecitationsSection() {
                 </span>
                 <h3 className="text-2xl font-black text-white">{selectedReciter.name}</h3>
                 
-                <p className="text-xs text-white/50 font-bold flex items-center gap-1.5 pt-1">
-                  <span>المصحف:</span>
-                  <span className="text-gold-accent">{selectedMoshaf?.name || 'حفص عن عاصم'}</span>
-                </p>
+                {/* Multiple Moshafs / Recitations Switcher */}
+                {selectedReciter.moshaf && selectedReciter.moshaf.length > 1 ? (
+                  <div className="pt-2">
+                    <p className="text-xs text-white/50 font-bold mb-2">اختر الرواية / التسجيل:</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {selectedReciter.moshaf.map(m => (
+                        <button
+                          key={m.id}
+                          onClick={() => setSelectedMoshaf(m)}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border",
+                            selectedMoshaf?.id === m.id
+                              ? "bg-gold-accent text-emerald-950 border-gold-accent shadow-md"
+                              : "bg-white/5 text-white/60 border-white/10 hover:border-gold-accent/30 hover:text-white"
+                          )}
+                        >
+                          {m.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-white/50 font-bold flex items-center gap-1.5 pt-1">
+                    <span>المصحف:</span>
+                    <span className="text-gold-accent">{selectedMoshaf?.name || 'حفص عن عاصم'}</span>
+                  </p>
+                )}
               </div>
             </motion.div>
           </div>
+
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -602,8 +642,8 @@ export default function RecitationsSection() {
             <div className="pt-2 border-t border-white/5 flex flex-col gap-3">
               <div className="flex justify-between items-center text-xs font-bold text-white/60">
                 <span className="flex items-center gap-1.5">
-                  <span>الملفات المحملة:</span>
-                  <span className="text-gold-accent">{reciterStats.downloaded} سورة من أصل {reciterStats.total}</span>
+                  <span>السور المحملة أوفلاين:</span>
+                  <span className="text-gold-accent">{reciterStats.downloaded} سورة من أصل {reciterStats.total} سورة متاحة</span>
                 </span>
                 {reciterDownloadedSize > 0 && (
                   <span className="text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full text-[10px] font-black">
@@ -623,69 +663,89 @@ export default function RecitationsSection() {
             </div>
           </motion.div>
 
-          {/* Surah List Title */}
-          <div>
-            <h4 className="font-extrabold text-white text-lg pr-1">تصفح سور القرآن واستمع مباشرة</h4>
-            <p className="text-white/40 text-xs font-bold pr-1 mt-1">
-              اختر سورة للبدء. السور الباهتة قد لا تتوفر بهذا التسجيل لدى هذا القارئ.
-            </p>
+          {/* Surah List Header and Search */}
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-extrabold text-white text-lg pr-1 flex items-center gap-2">
+                  <span>السور المتاحة بصوت الشيخ</span>
+                  <span className="text-xs bg-gold-accent/20 text-gold-accent px-2.5 py-0.5 rounded-full font-black">
+                    {reciterAvailableSuwar.length} سورة
+                  </span>
+                </h4>
+                <p className="text-white/40 text-xs font-bold pr-1 mt-0.5">
+                  تم عرض السور المسجلة المتوفرة فقط بصوت {selectedReciter.name}.
+                </p>
+              </div>
+            </div>
+
+            {/* Local Surah Search Bar */}
+            {reciterAvailableSuwar.length > 5 && (
+              <div className="relative group">
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold-accent transition-colors" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="ابحث باسم السورة أو رقمها لدى القارئ..." 
+                  value={surahSearchQuery}
+                  onChange={(e) => setSurahSearchQuery(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pr-11 pl-4 focus:outline-none focus:border-gold-accent/50 focus:bg-white/10 transition-all placeholder:text-white/20 text-right font-bold text-xs"
+                />
+              </div>
+            )}
           </div>
 
           {/* Surah list */}
-          <div className="space-y-3">
-            {suwar.map((surah) => {
-              const available = isSurahAvailable(surah.id);
-              const isCurrent = audioPlayer.currentSurahNumber === surah.id && 
-                                audioPlayer.currentReciterName === selectedReciter.name;
-              const surahUrl = getSurahUrl(surah.id);
-              const isDownloaded = offlineState.downloadedUrls.has(surahUrl);
-              const downloadProgress = offlineState.downloadProgress.get(surahUrl);
-              
-              return (
-                <motion.div
-                  key={surah.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={cn(
-                    "glass-card p-4 flex items-center justify-between transition-all relative overflow-hidden cursor-pointer",
-                    available ? "group hover:bg-white/10" : "opacity-35",
-                    isCurrent ? "border-gold-accent/40 bg-gold-accent/5" : ""
-                  )}
-                  onClick={() => {
-                    if (available) {
-                      handlePlaySurah(surah);
-                    } else {
-                      setToastMessage("هذه السورة غير متوفرة لهذا القارئ، اختر قارئًا آخر.");
-                      setTimeout(() => setToastMessage(null), 3000);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-4">
-                    {/* Surah ID number layout */}
-                    <div className={cn(
-                      "w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-colors",
-                      isCurrent ? "bg-gold-accent text-emerald-950 shadow-md" : "bg-white/5 text-white/30 group-hover:bg-gold-accent/10 group-hover:text-gold-accent"
-                    )}>
-                      {surah.id}
-                    </div>
-
-                    <div className="text-right">
-                      <h4 className={cn(
-                        "font-extrabold text-base transition-colors",
-                        isCurrent ? "text-gold-accent" : "text-white group-hover:text-gold-accent"
+          {displayedSuwar.length === 0 ? (
+            <EmptyState
+              icon={<BookOpen size={32} aria-hidden="true" />}
+              title="لم نعثر على نتائج"
+              description={`لم نجد أي سورة تطابق البحث عن "${surahSearchQuery}" لدى الشيخ ${selectedReciter.name}.`}
+            />
+          ) : (
+            <div className="space-y-3">
+              {displayedSuwar.map((surah) => {
+                const isCurrent = audioPlayer.currentSurahNumber === surah.id && 
+                                  audioPlayer.currentReciterName === selectedReciter.name;
+                const surahUrl = getSurahUrl(surah.id);
+                const isDownloaded = offlineState.downloadedUrls.has(surahUrl);
+                const downloadProgress = offlineState.downloadProgress.get(surahUrl);
+                
+                return (
+                  <motion.div
+                    key={surah.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "glass-card p-4 flex items-center justify-between transition-all relative overflow-hidden cursor-pointer group hover:bg-white/10",
+                      isCurrent ? "border-gold-accent/40 bg-gold-accent/5" : ""
+                    )}
+                    onClick={() => handlePlaySurah(surah)}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Surah ID number layout */}
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-colors",
+                        isCurrent ? "bg-gold-accent text-emerald-950 shadow-md" : "bg-white/5 text-white/30 group-hover:bg-gold-accent/10 group-hover:text-gold-accent"
                       )}>
-                        سورة {surah.name}
-                      </h4>
-                      <p className="text-[10px] text-white/30 font-bold mt-0.5">
-                        {surah.makkia === 1 ? 'مكية' : 'مدنية'} • صفحة البدء {surah.start_page}
-                      </p>
-                    </div>
-                  </div>
+                        {surah.id}
+                      </div>
 
-                  {/* Actions (Play & Download/Offline States) */}
-                  <div className="flex items-center gap-4 relative z-20">
-                    {/* Offline Cache state indicators */}
-                    {available && (
+                      <div className="text-right">
+                        <h4 className={cn(
+                          "font-extrabold text-base transition-colors",
+                          isCurrent ? "text-gold-accent" : "text-white group-hover:text-gold-accent"
+                        )}>
+                          سورة {surah.name}
+                        </h4>
+                        <p className="text-[10px] text-white/30 font-bold mt-0.5">
+                          {surah.makkia === 1 ? 'مكية' : 'مدنية'} • صفحة البدء {surah.start_page}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Actions (Play & Download/Offline States) */}
+                    <div className="flex items-center gap-4 relative z-20">
+                      {/* Offline Cache state indicators */}
                       <div className="flex items-center gap-2">
                         {downloadProgress?.isDownloading ? (
                           <div className="flex flex-col items-center justify-center min-w-[70px]">
@@ -705,7 +765,7 @@ export default function RecitationsSection() {
                             </span>
                             <button
                               onClick={(e) => handleDeleteDownload(surah.id, e)}
-                              className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 text-white/20 transition-all"
+                              className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 text-white/20 transition-all cursor-pointer"
                               title="حذف السورة من الجهاز"
                             >
                               <Trash2 size={13} />
@@ -714,41 +774,39 @@ export default function RecitationsSection() {
                         ) : (
                           <button
                             onClick={(e) => handleDownloadSurah(surah, e)}
-                            className="p-2 rounded-xl bg-white/5 hover:bg-gold-accent hover:text-emerald-950 text-white/30 transition-all"
+                            className="p-2 rounded-xl bg-white/5 hover:bg-gold-accent hover:text-emerald-950 text-white/30 transition-all cursor-pointer"
                             title="تحميل السورة للتشغيل أوفلاين"
                           >
                             <Download size={14} />
                           </button>
                         )}
                       </div>
-                    )}
 
-                    {/* Play Button State */}
-                    <div>
-                      {isCurrent ? (
-                        audioPlayer.isPlaying ? (
-                          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gold-accent/20 rounded-full text-gold-accent text-[9px] font-black">
-                            <span className="w-2 h-2 rounded-full bg-gold-accent animate-ping" />
-                            <span>جاري التشغيل</span>
-                          </div>
+                      {/* Play Button State */}
+                      <div>
+                        {isCurrent ? (
+                          audioPlayer.isPlaying ? (
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gold-accent/20 rounded-full text-gold-accent text-[9px] font-black">
+                              <span className="w-2 h-2 rounded-full bg-gold-accent animate-ping" />
+                              <span>جاري التشغيل</span>
+                            </div>
+                          ) : (
+                            <div className="text-white/40 group-hover:text-gold-accent">
+                              <Play size={18} fill="currentColor" />
+                            </div>
+                          )
                         ) : (
-                          <div className="text-white/40 group-hover:text-gold-accent">
-                            <Play size={18} fill="currentColor" />
-                          </div>
-                        )
-                      ) : (
-                        available && (
                           <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-gold-accent group-hover:text-emerald-950 transition-all">
                             <Play size={12} fill="currentColor" />
                           </div>
-                        )
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
@@ -792,7 +850,7 @@ export default function RecitationsSection() {
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => audioPlayer.stop()}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-rose-500 transition-all outline-none"
+                    className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-rose-500 transition-all outline-none cursor-pointer"
                     title="إيقاف"
                   >
                     <Square size={12} fill="currentColor" />
@@ -833,7 +891,7 @@ export default function RecitationsSection() {
               <div className="flex justify-center items-center gap-6 mt-4">
                 <button
                   onClick={() => audioPlayer.togglePlay()}
-                  className="w-12 h-12 bg-white text-emerald-950 hover:bg-gold-accent hover:text-emerald-950 transition-all rounded-full flex items-center justify-center shadow-lg active:scale-95"
+                  className="w-12 h-12 bg-white text-emerald-950 hover:bg-gold-accent hover:text-emerald-950 transition-all rounded-full flex items-center justify-center shadow-lg active:scale-95 cursor-pointer"
                 >
                   {audioPlayer.isPlaying ? (
                     <Pause size={20} fill="currentColor" strokeWidth={0} />
@@ -847,7 +905,7 @@ export default function RecitationsSection() {
         )}
       </AnimatePresence>
 
-      {/* Floating toast notification for unavailable surah */}
+      {/* Floating toast notification */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div

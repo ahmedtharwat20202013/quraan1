@@ -1,0 +1,8320 @@
+{
+  "pages": [
+    {
+      "page": 1,
+      "surahs": [
+        {
+          "id": 1,
+          "name": "الفاتحة",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 6,
+          "toAyah": 16,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 17,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 25,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 30,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 38,
+          "toAyah": 48,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 49,
+          "toAyah": 57,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 58,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 62,
+          "toAyah": 69,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 70,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 77,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 84,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 89,
+          "toAyah": 93,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 94,
+          "toAyah": 101,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 102,
+          "toAyah": 105,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 106,
+          "toAyah": 112,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 18,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 113,
+          "toAyah": 119,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 19,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 120,
+          "toAyah": 126,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 20,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 127,
+          "toAyah": 134,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 21,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 135,
+          "toAyah": 141,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 22,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 142,
+          "toAyah": 145,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 23,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 146,
+          "toAyah": 153,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 24,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 154,
+          "toAyah": 163,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 25,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 164,
+          "toAyah": 169,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 26,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 170,
+          "toAyah": 176,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 27,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 177,
+          "toAyah": 181,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 28,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 182,
+          "toAyah": 186,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 29,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 187,
+          "toAyah": 190,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 30,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 191,
+          "toAyah": 196,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 31,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 197,
+          "toAyah": 202,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 32,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 203,
+          "toAyah": 210,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 33,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 211,
+          "toAyah": 215,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 34,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 216,
+          "toAyah": 219,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 35,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 220,
+          "toAyah": 224,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 36,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 225,
+          "toAyah": 230,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 37,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 231,
+          "toAyah": 233,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 38,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 234,
+          "toAyah": 237,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 39,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 238,
+          "toAyah": 245,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 40,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 246,
+          "toAyah": 248,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 41,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 249,
+          "toAyah": 252,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 42,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 253,
+          "toAyah": 256,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 43,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 257,
+          "toAyah": 259,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 44,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 260,
+          "toAyah": 264,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 45,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 265,
+          "toAyah": 269,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 46,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 270,
+          "toAyah": 274,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 47,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 275,
+          "toAyah": 281,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 48,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 282,
+          "toAyah": 282,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 49,
+      "surahs": [
+        {
+          "id": 2,
+          "name": "البقرة",
+          "fromAyah": 283,
+          "toAyah": 286,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 50,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 1,
+          "toAyah": 9,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 51,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 10,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 52,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 16,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 53,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 23,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 54,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 30,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 55,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 38,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 56,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 46,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 57,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 53,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 58,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 62,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 59,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 71,
+          "toAyah": 77,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 60,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 78,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 61,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 84,
+          "toAyah": 91,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 62,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 92,
+          "toAyah": 100,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 63,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 101,
+          "toAyah": 108,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 64,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 109,
+          "toAyah": 115,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 65,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 116,
+          "toAyah": 121,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 66,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 122,
+          "toAyah": 132,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 67,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 133,
+          "toAyah": 140,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 68,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 141,
+          "toAyah": 148,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 69,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 149,
+          "toAyah": 153,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 70,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 154,
+          "toAyah": 157,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 71,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 158,
+          "toAyah": 165,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 72,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 166,
+          "toAyah": 173,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 73,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 174,
+          "toAyah": 180,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 74,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 181,
+          "toAyah": 186,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 75,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 187,
+          "toAyah": 194,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 76,
+      "surahs": [
+        {
+          "id": 3,
+          "name": "آل عمران",
+          "fromAyah": 195,
+          "toAyah": 200,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 77,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 78,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 7,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 79,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 12,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 80,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 15,
+          "toAyah": 19,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 81,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 20,
+          "toAyah": 23,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 82,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 24,
+          "toAyah": 26,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 83,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 27,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 84,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 34,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 85,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 38,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 86,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 45,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 87,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 52,
+          "toAyah": 59,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 88,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 60,
+          "toAyah": 65,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 89,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 66,
+          "toAyah": 74,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 90,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 75,
+          "toAyah": 79,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 91,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 80,
+          "toAyah": 86,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 92,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 87,
+          "toAyah": 91,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 93,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 92,
+          "toAyah": 94,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 94,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 95,
+          "toAyah": 101,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 95,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 102,
+          "toAyah": 105,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 96,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 106,
+          "toAyah": 113,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 97,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 114,
+          "toAyah": 121,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 98,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 122,
+          "toAyah": 127,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 99,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 128,
+          "toAyah": 134,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 100,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 135,
+          "toAyah": 140,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 101,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 141,
+          "toAyah": 147,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 102,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 148,
+          "toAyah": 154,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 103,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 155,
+          "toAyah": 162,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 104,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 163,
+          "toAyah": 170,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 105,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 171,
+          "toAyah": 175,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 106,
+      "surahs": [
+        {
+          "id": 4,
+          "name": "النساء",
+          "fromAyah": 176,
+          "toAyah": 176,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 1,
+          "toAyah": 2,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 107,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 3,
+          "toAyah": 5,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 108,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 6,
+          "toAyah": 9,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 109,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 10,
+          "toAyah": 13,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 110,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 14,
+          "toAyah": 17,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 111,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 18,
+          "toAyah": 23,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 112,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 24,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 113,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 32,
+          "toAyah": 36,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 114,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 37,
+          "toAyah": 41,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 115,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 42,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 116,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 46,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 117,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 51,
+          "toAyah": 57,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 118,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 58,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 119,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 65,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 120,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 71,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 121,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 77,
+          "toAyah": 82,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 122,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 83,
+          "toAyah": 89,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 123,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 90,
+          "toAyah": 95,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 124,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 96,
+          "toAyah": 103,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 125,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 104,
+          "toAyah": 108,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 126,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 109,
+          "toAyah": 113,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 127,
+      "surahs": [
+        {
+          "id": 5,
+          "name": "المائدة",
+          "fromAyah": 114,
+          "toAyah": 120,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 128,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 129,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 9,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 130,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 19,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 131,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 28,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 132,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 36,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 133,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 45,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 134,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 53,
+          "toAyah": 59,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 135,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 60,
+          "toAyah": 68,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 136,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 69,
+          "toAyah": 73,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 137,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 74,
+          "toAyah": 81,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 138,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 82,
+          "toAyah": 90,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 139,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 91,
+          "toAyah": 94,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 140,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 95,
+          "toAyah": 101,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 141,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 102,
+          "toAyah": 110,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 142,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 111,
+          "toAyah": 118,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 143,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 119,
+          "toAyah": 124,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 144,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 125,
+          "toAyah": 131,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 145,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 132,
+          "toAyah": 137,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 146,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 138,
+          "toAyah": 142,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 147,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 143,
+          "toAyah": 146,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 148,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 147,
+          "toAyah": 151,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 149,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 152,
+          "toAyah": 157,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 150,
+      "surahs": [
+        {
+          "id": 6,
+          "name": "الأنعام",
+          "fromAyah": 158,
+          "toAyah": 165,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 151,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 152,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 12,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 153,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 23,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 154,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 31,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 155,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 38,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 156,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 44,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 157,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 52,
+          "toAyah": 57,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 158,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 58,
+          "toAyah": 67,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 159,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 68,
+          "toAyah": 73,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 160,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 74,
+          "toAyah": 81,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 161,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 82,
+          "toAyah": 87,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 162,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 88,
+          "toAyah": 95,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 163,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 96,
+          "toAyah": 104,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 164,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 105,
+          "toAyah": 120,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 165,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 121,
+          "toAyah": 130,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 166,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 131,
+          "toAyah": 137,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 167,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 138,
+          "toAyah": 143,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 168,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 144,
+          "toAyah": 149,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 169,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 150,
+          "toAyah": 155,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 170,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 156,
+          "toAyah": 159,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 171,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 160,
+          "toAyah": 163,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 172,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 164,
+          "toAyah": 170,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 173,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 171,
+          "toAyah": 178,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 174,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 179,
+          "toAyah": 187,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 175,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 188,
+          "toAyah": 195,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 176,
+      "surahs": [
+        {
+          "id": 7,
+          "name": "الأعراف",
+          "fromAyah": 196,
+          "toAyah": 206,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 177,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 178,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 9,
+          "toAyah": 16,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 179,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 17,
+          "toAyah": 25,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 180,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 26,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 181,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 34,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 182,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 41,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 183,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 46,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 184,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 53,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 185,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 62,
+          "toAyah": 69,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 186,
+      "surahs": [
+        {
+          "id": 8,
+          "name": "الأنفال",
+          "fromAyah": 70,
+          "toAyah": 75,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 187,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 188,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 7,
+          "toAyah": 13,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 189,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 14,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 190,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 21,
+          "toAyah": 26,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 191,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 27,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 192,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 32,
+          "toAyah": 36,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 193,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 37,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 194,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 41,
+          "toAyah": 47,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 195,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 48,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 196,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 55,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 197,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 62,
+          "toAyah": 68,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 198,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 69,
+          "toAyah": 72,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 199,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 73,
+          "toAyah": 79,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 200,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 80,
+          "toAyah": 86,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 201,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 87,
+          "toAyah": 93,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 202,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 94,
+          "toAyah": 99,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 203,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 100,
+          "toAyah": 106,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 204,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 107,
+          "toAyah": 111,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 205,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 112,
+          "toAyah": 117,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 206,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 118,
+          "toAyah": 122,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 207,
+      "surahs": [
+        {
+          "id": 9,
+          "name": "التوبة",
+          "fromAyah": 123,
+          "toAyah": 129,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 208,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 209,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 7,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 210,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 15,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 211,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 21,
+          "toAyah": 25,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 212,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 26,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 213,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 34,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 214,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 43,
+          "toAyah": 53,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 215,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 54,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 216,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 62,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 217,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 71,
+          "toAyah": 78,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 218,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 79,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 219,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 89,
+          "toAyah": 97,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 220,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 98,
+          "toAyah": 106,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 221,
+      "surahs": [
+        {
+          "id": 10,
+          "name": "يونس",
+          "fromAyah": 107,
+          "toAyah": 109,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 222,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 6,
+          "toAyah": 12,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 223,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 13,
+          "toAyah": 19,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 224,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 20,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 225,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 29,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 226,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 38,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 227,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 46,
+          "toAyah": 53,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 228,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 54,
+          "toAyah": 62,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 229,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 63,
+          "toAyah": 71,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 230,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 72,
+          "toAyah": 81,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 231,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 82,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 232,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 89,
+          "toAyah": 97,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 233,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 98,
+          "toAyah": 108,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 234,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 109,
+          "toAyah": 117,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 235,
+      "surahs": [
+        {
+          "id": 11,
+          "name": "هود",
+          "fromAyah": 118,
+          "toAyah": 123,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 236,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 5,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 237,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 15,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 238,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 23,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 239,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 31,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 240,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 38,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 241,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 44,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 242,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 53,
+          "toAyah": 63,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 243,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 64,
+          "toAyah": 69,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 244,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 70,
+          "toAyah": 78,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 245,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 79,
+          "toAyah": 86,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 246,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 87,
+          "toAyah": 95,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 247,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 96,
+          "toAyah": 103,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 248,
+      "surahs": [
+        {
+          "id": 12,
+          "name": "يوسف",
+          "fromAyah": 104,
+          "toAyah": 111,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 249,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 250,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 6,
+          "toAyah": 13,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 251,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 14,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 252,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 19,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 253,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 29,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 254,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 35,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 255,
+      "surahs": [
+        {
+          "id": 13,
+          "name": "الرعد",
+          "fromAyah": 43,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 256,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 6,
+          "toAyah": 10,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 257,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 11,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 258,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 19,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 259,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 25,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 260,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 34,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 261,
+      "surahs": [
+        {
+          "id": 14,
+          "name": "إبراهيم",
+          "fromAyah": 43,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 262,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 263,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 16,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 264,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 32,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 265,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 52,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 266,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 71,
+          "toAyah": 90,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 267,
+      "surahs": [
+        {
+          "id": 15,
+          "name": "الحجر",
+          "fromAyah": 91,
+          "toAyah": 99,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 268,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 7,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 269,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 15,
+          "toAyah": 26,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 270,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 27,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 271,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 35,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 272,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 43,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 273,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 55,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 274,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 65,
+          "toAyah": 72,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 275,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 73,
+          "toAyah": 79,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 276,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 80,
+          "toAyah": 87,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 277,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 88,
+          "toAyah": 93,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 278,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 94,
+          "toAyah": 102,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 279,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 103,
+          "toAyah": 110,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 280,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 111,
+          "toAyah": 118,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 281,
+      "surahs": [
+        {
+          "id": 16,
+          "name": "النحل",
+          "fromAyah": 119,
+          "toAyah": 128,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 282,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 283,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 8,
+          "toAyah": 17,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 284,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 18,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 285,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 28,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 286,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 39,
+          "toAyah": 49,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 287,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 50,
+          "toAyah": 58,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 288,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 59,
+          "toAyah": 66,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 289,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 67,
+          "toAyah": 75,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 290,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 76,
+          "toAyah": 86,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 291,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 87,
+          "toAyah": 96,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 292,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 97,
+          "toAyah": 104,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 293,
+      "surahs": [
+        {
+          "id": 17,
+          "name": "الإسراء",
+          "fromAyah": 105,
+          "toAyah": 111,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 294,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 5,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 295,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 16,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 296,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 21,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 297,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 28,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 298,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 35,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 299,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 46,
+          "toAyah": 53,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 300,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 54,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 301,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 62,
+          "toAyah": 74,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 302,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 75,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 303,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 84,
+          "toAyah": 97,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 304,
+      "surahs": [
+        {
+          "id": 18,
+          "name": "الكهف",
+          "fromAyah": 98,
+          "toAyah": 110,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 305,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 306,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 12,
+          "toAyah": 25,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 307,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 26,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 308,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 39,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 309,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 52,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 310,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 65,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 311,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 77,
+          "toAyah": 95,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 312,
+      "surahs": [
+        {
+          "id": 19,
+          "name": "مريم",
+          "fromAyah": 96,
+          "toAyah": 98,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 1,
+          "toAyah": 12,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 313,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 13,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 314,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 38,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 315,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 52,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 316,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 65,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 317,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 77,
+          "toAyah": 87,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 318,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 88,
+          "toAyah": 98,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 319,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 99,
+          "toAyah": 113,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 320,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 114,
+          "toAyah": 125,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 321,
+      "surahs": [
+        {
+          "id": 20,
+          "name": "طه",
+          "fromAyah": 126,
+          "toAyah": 135,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 322,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 323,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 11,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 324,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 25,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 325,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 36,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 326,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 45,
+          "toAyah": 57,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 327,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 58,
+          "toAyah": 72,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 328,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 73,
+          "toAyah": 81,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 329,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 82,
+          "toAyah": 90,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 330,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 91,
+          "toAyah": 101,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 331,
+      "surahs": [
+        {
+          "id": 21,
+          "name": "الأنبياء",
+          "fromAyah": 102,
+          "toAyah": 112,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 332,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 333,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 6,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 334,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 16,
+          "toAyah": 23,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 335,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 24,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 336,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 31,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 337,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 39,
+          "toAyah": 46,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 338,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 47,
+          "toAyah": 55,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 339,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 56,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 340,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 65,
+          "toAyah": 72,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 341,
+      "surahs": [
+        {
+          "id": 22,
+          "name": "الحج",
+          "fromAyah": 73,
+          "toAyah": 78,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 342,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 1,
+          "toAyah": 17,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 343,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 18,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 344,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 28,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 345,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 43,
+          "toAyah": 59,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 346,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 60,
+          "toAyah": 74,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 347,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 75,
+          "toAyah": 89,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 348,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 90,
+          "toAyah": 104,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 349,
+      "surahs": [
+        {
+          "id": 23,
+          "name": "المؤمنون",
+          "fromAyah": 105,
+          "toAyah": 118,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 350,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 351,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 11,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 352,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 21,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 353,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 28,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 354,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 32,
+          "toAyah": 36,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 355,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 37,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 356,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 44,
+          "toAyah": 53,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 357,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 54,
+          "toAyah": 58,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 358,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 59,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 359,
+      "surahs": [
+        {
+          "id": 24,
+          "name": "النور",
+          "fromAyah": 62,
+          "toAyah": 64,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 1,
+          "toAyah": 2,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 360,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 3,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 361,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 12,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 362,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 21,
+          "toAyah": 32,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 363,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 33,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 364,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 44,
+          "toAyah": 55,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 365,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 56,
+          "toAyah": 67,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 366,
+      "surahs": [
+        {
+          "id": 25,
+          "name": "الفرقان",
+          "fromAyah": 68,
+          "toAyah": 77,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 367,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 368,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 20,
+          "toAyah": 39,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 369,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 40,
+          "toAyah": 60,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 370,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 61,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 371,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 84,
+          "toAyah": 111,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 372,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 112,
+          "toAyah": 136,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 373,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 137,
+          "toAyah": 159,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 374,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 160,
+          "toAyah": 183,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 375,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 184,
+          "toAyah": 206,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 376,
+      "surahs": [
+        {
+          "id": 26,
+          "name": "الشعراء",
+          "fromAyah": 207,
+          "toAyah": 227,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 377,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 1,
+          "toAyah": 13,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 378,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 14,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 379,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 23,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 380,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 36,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 381,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 45,
+          "toAyah": 55,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 382,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 56,
+          "toAyah": 63,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 383,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 64,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 384,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 77,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 385,
+      "surahs": [
+        {
+          "id": 27,
+          "name": "النمل",
+          "fromAyah": 89,
+          "toAyah": 93,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 386,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 6,
+          "toAyah": 13,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 387,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 14,
+          "toAyah": 21,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 388,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 22,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 389,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 29,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 390,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 36,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 391,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 44,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 392,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 51,
+          "toAyah": 59,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 393,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 60,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 394,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 71,
+          "toAyah": 77,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 395,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 78,
+          "toAyah": 84,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 396,
+      "surahs": [
+        {
+          "id": 28,
+          "name": "القصص",
+          "fromAyah": 85,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 397,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 7,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 398,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 15,
+          "toAyah": 23,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 399,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 24,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 400,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 31,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 401,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 39,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 402,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 46,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 403,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 53,
+          "toAyah": 63,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 404,
+      "surahs": [
+        {
+          "id": 29,
+          "name": "العنكبوت",
+          "fromAyah": 64,
+          "toAyah": 69,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 405,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 6,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 406,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 16,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 407,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 25,
+          "toAyah": 32,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 408,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 33,
+          "toAyah": 41,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 409,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 42,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 410,
+      "surahs": [
+        {
+          "id": 30,
+          "name": "الروم",
+          "fromAyah": 51,
+          "toAyah": 60,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 411,
+      "surahs": [
+        {
+          "id": 31,
+          "name": "لقمان",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 412,
+      "surahs": [
+        {
+          "id": 31,
+          "name": "لقمان",
+          "fromAyah": 12,
+          "toAyah": 19,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 413,
+      "surahs": [
+        {
+          "id": 31,
+          "name": "لقمان",
+          "fromAyah": 20,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 414,
+      "surahs": [
+        {
+          "id": 31,
+          "name": "لقمان",
+          "fromAyah": 29,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 415,
+      "surahs": [
+        {
+          "id": 32,
+          "name": "السجدة",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 416,
+      "surahs": [
+        {
+          "id": 32,
+          "name": "السجدة",
+          "fromAyah": 12,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 417,
+      "surahs": [
+        {
+          "id": 32,
+          "name": "السجدة",
+          "fromAyah": 21,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 418,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 419,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 7,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 420,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 16,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 421,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 23,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 422,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 31,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 423,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 36,
+          "toAyah": 43,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 424,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 44,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 425,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 51,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 426,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 55,
+          "toAyah": 62,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 427,
+      "surahs": [
+        {
+          "id": 33,
+          "name": "الأحزاب",
+          "fromAyah": 63,
+          "toAyah": 73,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 428,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 429,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 8,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 430,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 15,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 431,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 23,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 432,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 32,
+          "toAyah": 39,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 433,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 40,
+          "toAyah": 48,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 434,
+      "surahs": [
+        {
+          "id": 34,
+          "name": "سبأ",
+          "fromAyah": 49,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 435,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 4,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 436,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 12,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 437,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 19,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 438,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 31,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 439,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 39,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 440,
+      "surahs": [
+        {
+          "id": 35,
+          "name": "فاطر",
+          "fromAyah": 45,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 1,
+          "toAyah": 12,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 441,
+      "surahs": [
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 13,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 442,
+      "surahs": [
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 28,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 443,
+      "surahs": [
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 41,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 444,
+      "surahs": [
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 55,
+          "toAyah": 70,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 445,
+      "surahs": [
+        {
+          "id": 36,
+          "name": "يس",
+          "fromAyah": 71,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 446,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 1,
+          "toAyah": 24,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 447,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 25,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 448,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 52,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 449,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 77,
+          "toAyah": 102,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 450,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 103,
+          "toAyah": 126,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 451,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 127,
+          "toAyah": 153,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 452,
+      "surahs": [
+        {
+          "id": 37,
+          "name": "الصافات",
+          "fromAyah": 154,
+          "toAyah": 182,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 453,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 1,
+          "toAyah": 16,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 454,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 17,
+          "toAyah": 26,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 455,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 27,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 456,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 43,
+          "toAyah": 61,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 457,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 62,
+          "toAyah": 83,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 458,
+      "surahs": [
+        {
+          "id": 38,
+          "name": "ص",
+          "fromAyah": 84,
+          "toAyah": 88,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 459,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 6,
+          "toAyah": 10,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 460,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 11,
+          "toAyah": 21,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 461,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 22,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 462,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 32,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 463,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 41,
+          "toAyah": 47,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 464,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 48,
+          "toAyah": 56,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 465,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 57,
+          "toAyah": 67,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 466,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 68,
+          "toAyah": 74,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 467,
+      "surahs": [
+        {
+          "id": 39,
+          "name": "الزمر",
+          "fromAyah": 75,
+          "toAyah": 75,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 468,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 8,
+          "toAyah": 16,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 469,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 17,
+          "toAyah": 25,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 470,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 26,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 471,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 34,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 472,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 41,
+          "toAyah": 49,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 473,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 50,
+          "toAyah": 58,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 474,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 59,
+          "toAyah": 66,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 475,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 67,
+          "toAyah": 77,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 476,
+      "surahs": [
+        {
+          "id": 40,
+          "name": "غافر",
+          "fromAyah": 78,
+          "toAyah": 85,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 477,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 478,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 12,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 479,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 21,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 480,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 30,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 481,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 39,
+          "toAyah": 46,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 482,
+      "surahs": [
+        {
+          "id": 41,
+          "name": "فصلت",
+          "fromAyah": 47,
+          "toAyah": 54,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 483,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 484,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 11,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 485,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 16,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 486,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 23,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 487,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 32,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 488,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 45,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 489,
+      "surahs": [
+        {
+          "id": 42,
+          "name": "الشورى",
+          "fromAyah": 52,
+          "toAyah": 53,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 490,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 11,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 491,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 23,
+          "toAyah": 33,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 492,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 34,
+          "toAyah": 47,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 493,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 48,
+          "toAyah": 60,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 494,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 61,
+          "toAyah": 73,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 495,
+      "surahs": [
+        {
+          "id": 43,
+          "name": "الزخرف",
+          "fromAyah": 74,
+          "toAyah": 89,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 496,
+      "surahs": [
+        {
+          "id": 44,
+          "name": "الدخان",
+          "fromAyah": 1,
+          "toAyah": 18,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 497,
+      "surahs": [
+        {
+          "id": 44,
+          "name": "الدخان",
+          "fromAyah": 19,
+          "toAyah": 39,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 498,
+      "surahs": [
+        {
+          "id": 44,
+          "name": "الدخان",
+          "fromAyah": 40,
+          "toAyah": 59,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 499,
+      "surahs": [
+        {
+          "id": 45,
+          "name": "الجاثية",
+          "fromAyah": 1,
+          "toAyah": 13,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 500,
+      "surahs": [
+        {
+          "id": 45,
+          "name": "الجاثية",
+          "fromAyah": 14,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 501,
+      "surahs": [
+        {
+          "id": 45,
+          "name": "الجاثية",
+          "fromAyah": 23,
+          "toAyah": 32,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 502,
+      "surahs": [
+        {
+          "id": 45,
+          "name": "الجاثية",
+          "fromAyah": 33,
+          "toAyah": 37,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 46,
+          "name": "الأحقاف",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 503,
+      "surahs": [
+        {
+          "id": 46,
+          "name": "الأحقاف",
+          "fromAyah": 6,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 504,
+      "surahs": [
+        {
+          "id": 46,
+          "name": "الأحقاف",
+          "fromAyah": 15,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 505,
+      "surahs": [
+        {
+          "id": 46,
+          "name": "الأحقاف",
+          "fromAyah": 21,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 506,
+      "surahs": [
+        {
+          "id": 46,
+          "name": "الأحقاف",
+          "fromAyah": 29,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 507,
+      "surahs": [
+        {
+          "id": 47,
+          "name": "محمد",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 508,
+      "surahs": [
+        {
+          "id": 47,
+          "name": "محمد",
+          "fromAyah": 12,
+          "toAyah": 19,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 509,
+      "surahs": [
+        {
+          "id": 47,
+          "name": "محمد",
+          "fromAyah": 20,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 510,
+      "surahs": [
+        {
+          "id": 47,
+          "name": "محمد",
+          "fromAyah": 30,
+          "toAyah": 38,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 511,
+      "surahs": [
+        {
+          "id": 48,
+          "name": "الفتح",
+          "fromAyah": 1,
+          "toAyah": 9,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 512,
+      "surahs": [
+        {
+          "id": 48,
+          "name": "الفتح",
+          "fromAyah": 10,
+          "toAyah": 15,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 513,
+      "surahs": [
+        {
+          "id": 48,
+          "name": "الفتح",
+          "fromAyah": 16,
+          "toAyah": 23,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 514,
+      "surahs": [
+        {
+          "id": 48,
+          "name": "الفتح",
+          "fromAyah": 24,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 515,
+      "surahs": [
+        {
+          "id": 48,
+          "name": "الفتح",
+          "fromAyah": 29,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 49,
+          "name": "الحجرات",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 516,
+      "surahs": [
+        {
+          "id": 49,
+          "name": "الحجرات",
+          "fromAyah": 5,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 517,
+      "surahs": [
+        {
+          "id": 49,
+          "name": "الحجرات",
+          "fromAyah": 12,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 518,
+      "surahs": [
+        {
+          "id": 50,
+          "name": "ق",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 519,
+      "surahs": [
+        {
+          "id": 50,
+          "name": "ق",
+          "fromAyah": 16,
+          "toAyah": 35,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 520,
+      "surahs": [
+        {
+          "id": 50,
+          "name": "ق",
+          "fromAyah": 36,
+          "toAyah": 45,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 51,
+          "name": "الذاريات",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 521,
+      "surahs": [
+        {
+          "id": 51,
+          "name": "الذاريات",
+          "fromAyah": 7,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 522,
+      "surahs": [
+        {
+          "id": 51,
+          "name": "الذاريات",
+          "fromAyah": 31,
+          "toAyah": 51,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 523,
+      "surahs": [
+        {
+          "id": 51,
+          "name": "الذاريات",
+          "fromAyah": 52,
+          "toAyah": 60,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 52,
+          "name": "الطور",
+          "fromAyah": 1,
+          "toAyah": 14,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 524,
+      "surahs": [
+        {
+          "id": 52,
+          "name": "الطور",
+          "fromAyah": 15,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 525,
+      "surahs": [
+        {
+          "id": 52,
+          "name": "الطور",
+          "fromAyah": 32,
+          "toAyah": 49,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 526,
+      "surahs": [
+        {
+          "id": 53,
+          "name": "النجم",
+          "fromAyah": 1,
+          "toAyah": 26,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 527,
+      "surahs": [
+        {
+          "id": 53,
+          "name": "النجم",
+          "fromAyah": 27,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 528,
+      "surahs": [
+        {
+          "id": 53,
+          "name": "النجم",
+          "fromAyah": 45,
+          "toAyah": 62,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 54,
+          "name": "القمر",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 529,
+      "surahs": [
+        {
+          "id": 54,
+          "name": "القمر",
+          "fromAyah": 7,
+          "toAyah": 27,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 530,
+      "surahs": [
+        {
+          "id": 54,
+          "name": "القمر",
+          "fromAyah": 28,
+          "toAyah": 49,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 531,
+      "surahs": [
+        {
+          "id": 54,
+          "name": "القمر",
+          "fromAyah": 50,
+          "toAyah": 55,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 55,
+          "name": "الرحمن",
+          "fromAyah": 1,
+          "toAyah": 16,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 532,
+      "surahs": [
+        {
+          "id": 55,
+          "name": "الرحمن",
+          "fromAyah": 17,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 533,
+      "surahs": [
+        {
+          "id": 55,
+          "name": "الرحمن",
+          "fromAyah": 41,
+          "toAyah": 67,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 534,
+      "surahs": [
+        {
+          "id": 55,
+          "name": "الرحمن",
+          "fromAyah": 68,
+          "toAyah": 78,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 56,
+          "name": "الواقعة",
+          "fromAyah": 1,
+          "toAyah": 16,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 535,
+      "surahs": [
+        {
+          "id": 56,
+          "name": "الواقعة",
+          "fromAyah": 17,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 536,
+      "surahs": [
+        {
+          "id": 56,
+          "name": "الواقعة",
+          "fromAyah": 51,
+          "toAyah": 76,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 537,
+      "surahs": [
+        {
+          "id": 56,
+          "name": "الواقعة",
+          "fromAyah": 77,
+          "toAyah": 96,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 57,
+          "name": "الحديد",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 538,
+      "surahs": [
+        {
+          "id": 57,
+          "name": "الحديد",
+          "fromAyah": 4,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 539,
+      "surahs": [
+        {
+          "id": 57,
+          "name": "الحديد",
+          "fromAyah": 12,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 540,
+      "surahs": [
+        {
+          "id": 57,
+          "name": "الحديد",
+          "fromAyah": 19,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 541,
+      "surahs": [
+        {
+          "id": 57,
+          "name": "الحديد",
+          "fromAyah": 25,
+          "toAyah": 29,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 542,
+      "surahs": [
+        {
+          "id": 58,
+          "name": "المجادلة",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 543,
+      "surahs": [
+        {
+          "id": 58,
+          "name": "المجادلة",
+          "fromAyah": 7,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 544,
+      "surahs": [
+        {
+          "id": 58,
+          "name": "المجادلة",
+          "fromAyah": 12,
+          "toAyah": 21,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 545,
+      "surahs": [
+        {
+          "id": 58,
+          "name": "المجادلة",
+          "fromAyah": 22,
+          "toAyah": 22,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 59,
+          "name": "الحشر",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 546,
+      "surahs": [
+        {
+          "id": 59,
+          "name": "الحشر",
+          "fromAyah": 4,
+          "toAyah": 9,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 547,
+      "surahs": [
+        {
+          "id": 59,
+          "name": "الحشر",
+          "fromAyah": 10,
+          "toAyah": 16,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 548,
+      "surahs": [
+        {
+          "id": 59,
+          "name": "الحشر",
+          "fromAyah": 17,
+          "toAyah": 24,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 549,
+      "surahs": [
+        {
+          "id": 60,
+          "name": "الممتحنة",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 550,
+      "surahs": [
+        {
+          "id": 60,
+          "name": "الممتحنة",
+          "fromAyah": 6,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 551,
+      "surahs": [
+        {
+          "id": 60,
+          "name": "الممتحنة",
+          "fromAyah": 12,
+          "toAyah": 13,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 61,
+          "name": "الصف",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 552,
+      "surahs": [
+        {
+          "id": 61,
+          "name": "الصف",
+          "fromAyah": 6,
+          "toAyah": 14,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 553,
+      "surahs": [
+        {
+          "id": 62,
+          "name": "الجمعة",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 554,
+      "surahs": [
+        {
+          "id": 62,
+          "name": "الجمعة",
+          "fromAyah": 9,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 63,
+          "name": "المنافقون",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 555,
+      "surahs": [
+        {
+          "id": 63,
+          "name": "المنافقون",
+          "fromAyah": 5,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 556,
+      "surahs": [
+        {
+          "id": 64,
+          "name": "التغابن",
+          "fromAyah": 1,
+          "toAyah": 9,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 557,
+      "surahs": [
+        {
+          "id": 64,
+          "name": "التغابن",
+          "fromAyah": 10,
+          "toAyah": 18,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 558,
+      "surahs": [
+        {
+          "id": 65,
+          "name": "الطلاق",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 559,
+      "surahs": [
+        {
+          "id": 65,
+          "name": "الطلاق",
+          "fromAyah": 6,
+          "toAyah": 12,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 560,
+      "surahs": [
+        {
+          "id": 66,
+          "name": "التحريم",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 561,
+      "surahs": [
+        {
+          "id": 66,
+          "name": "التحريم",
+          "fromAyah": 8,
+          "toAyah": 12,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 562,
+      "surahs": [
+        {
+          "id": 67,
+          "name": "الملك",
+          "fromAyah": 1,
+          "toAyah": 12,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 563,
+      "surahs": [
+        {
+          "id": 67,
+          "name": "الملك",
+          "fromAyah": 13,
+          "toAyah": 26,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 564,
+      "surahs": [
+        {
+          "id": 67,
+          "name": "الملك",
+          "fromAyah": 27,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 68,
+          "name": "القلم",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 565,
+      "surahs": [
+        {
+          "id": 68,
+          "name": "القلم",
+          "fromAyah": 16,
+          "toAyah": 42,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 566,
+      "surahs": [
+        {
+          "id": 68,
+          "name": "القلم",
+          "fromAyah": 43,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 69,
+          "name": "الحاقة",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 567,
+      "surahs": [
+        {
+          "id": 69,
+          "name": "الحاقة",
+          "fromAyah": 9,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 568,
+      "surahs": [
+        {
+          "id": 69,
+          "name": "الحاقة",
+          "fromAyah": 35,
+          "toAyah": 52,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 70,
+          "name": "المعارج",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 569,
+      "surahs": [
+        {
+          "id": 70,
+          "name": "المعارج",
+          "fromAyah": 11,
+          "toAyah": 39,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 570,
+      "surahs": [
+        {
+          "id": 70,
+          "name": "المعارج",
+          "fromAyah": 40,
+          "toAyah": 44,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 71,
+          "name": "نوح",
+          "fromAyah": 1,
+          "toAyah": 10,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 571,
+      "surahs": [
+        {
+          "id": 71,
+          "name": "نوح",
+          "fromAyah": 11,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 572,
+      "surahs": [
+        {
+          "id": 72,
+          "name": "الجن",
+          "fromAyah": 1,
+          "toAyah": 13,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 573,
+      "surahs": [
+        {
+          "id": 72,
+          "name": "الجن",
+          "fromAyah": 14,
+          "toAyah": 28,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 574,
+      "surahs": [
+        {
+          "id": 73,
+          "name": "المزمل",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 575,
+      "surahs": [
+        {
+          "id": 73,
+          "name": "المزمل",
+          "fromAyah": 20,
+          "toAyah": 20,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 74,
+          "name": "المدثر",
+          "fromAyah": 1,
+          "toAyah": 17,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 576,
+      "surahs": [
+        {
+          "id": 74,
+          "name": "المدثر",
+          "fromAyah": 18,
+          "toAyah": 47,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 577,
+      "surahs": [
+        {
+          "id": 74,
+          "name": "المدثر",
+          "fromAyah": 48,
+          "toAyah": 56,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 75,
+          "name": "القيامة",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 578,
+      "surahs": [
+        {
+          "id": 75,
+          "name": "القيامة",
+          "fromAyah": 20,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 76,
+          "name": "الإنسان",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 579,
+      "surahs": [
+        {
+          "id": 76,
+          "name": "الإنسان",
+          "fromAyah": 6,
+          "toAyah": 25,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 580,
+      "surahs": [
+        {
+          "id": 76,
+          "name": "الإنسان",
+          "fromAyah": 26,
+          "toAyah": 31,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 77,
+          "name": "المرسلات",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 581,
+      "surahs": [
+        {
+          "id": 77,
+          "name": "المرسلات",
+          "fromAyah": 20,
+          "toAyah": 50,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 582,
+      "surahs": [
+        {
+          "id": 78,
+          "name": "النبأ",
+          "fromAyah": 1,
+          "toAyah": 30,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 583,
+      "surahs": [
+        {
+          "id": 78,
+          "name": "النبأ",
+          "fromAyah": 31,
+          "toAyah": 40,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 79,
+          "name": "النازعات",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 584,
+      "surahs": [
+        {
+          "id": 79,
+          "name": "النازعات",
+          "fromAyah": 16,
+          "toAyah": 46,
+          "startsHere": false,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 585,
+      "surahs": [
+        {
+          "id": 80,
+          "name": "عبس",
+          "fromAyah": 1,
+          "toAyah": 42,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 586,
+      "surahs": [
+        {
+          "id": 81,
+          "name": "التكوير",
+          "fromAyah": 1,
+          "toAyah": 29,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 587,
+      "surahs": [
+        {
+          "id": 82,
+          "name": "الانفطار",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 83,
+          "name": "المطففين",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 588,
+      "surahs": [
+        {
+          "id": 83,
+          "name": "المطففين",
+          "fromAyah": 7,
+          "toAyah": 34,
+          "startsHere": false,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 589,
+      "surahs": [
+        {
+          "id": 83,
+          "name": "المطففين",
+          "fromAyah": 35,
+          "toAyah": 36,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 84,
+          "name": "الانشقاق",
+          "fromAyah": 1,
+          "toAyah": 25,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 590,
+      "surahs": [
+        {
+          "id": 85,
+          "name": "البروج",
+          "fromAyah": 1,
+          "toAyah": 22,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 591,
+      "surahs": [
+        {
+          "id": 86,
+          "name": "الطارق",
+          "fromAyah": 1,
+          "toAyah": 17,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 87,
+          "name": "الأعلى",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 592,
+      "surahs": [
+        {
+          "id": 87,
+          "name": "الأعلى",
+          "fromAyah": 16,
+          "toAyah": 19,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 88,
+          "name": "الغاشية",
+          "fromAyah": 1,
+          "toAyah": 26,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 593,
+      "surahs": [
+        {
+          "id": 89,
+          "name": "الفجر",
+          "fromAyah": 1,
+          "toAyah": 23,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 594,
+      "surahs": [
+        {
+          "id": 89,
+          "name": "الفجر",
+          "fromAyah": 24,
+          "toAyah": 30,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 90,
+          "name": "البلد",
+          "fromAyah": 1,
+          "toAyah": 20,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 595,
+      "surahs": [
+        {
+          "id": 91,
+          "name": "الشمس",
+          "fromAyah": 1,
+          "toAyah": 15,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 92,
+          "name": "الليل",
+          "fromAyah": 1,
+          "toAyah": 14,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 596,
+      "surahs": [
+        {
+          "id": 92,
+          "name": "الليل",
+          "fromAyah": 15,
+          "toAyah": 21,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 93,
+          "name": "الضحى",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 94,
+          "name": "الشرح",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 597,
+      "surahs": [
+        {
+          "id": 95,
+          "name": "التين",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 96,
+          "name": "العلق",
+          "fromAyah": 1,
+          "toAyah": 19,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 598,
+      "surahs": [
+        {
+          "id": 97,
+          "name": "القدر",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 98,
+          "name": "البينة",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 599,
+      "surahs": [
+        {
+          "id": 98,
+          "name": "البينة",
+          "fromAyah": 8,
+          "toAyah": 8,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 99,
+          "name": "الزلزلة",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 100,
+          "name": "العاديات",
+          "fromAyah": 1,
+          "toAyah": 9,
+          "startsHere": true,
+          "endsHere": false
+        }
+      ]
+    },
+    {
+      "page": 600,
+      "surahs": [
+        {
+          "id": 100,
+          "name": "العاديات",
+          "fromAyah": 10,
+          "toAyah": 11,
+          "startsHere": false,
+          "endsHere": true
+        },
+        {
+          "id": 101,
+          "name": "القارعة",
+          "fromAyah": 1,
+          "toAyah": 11,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 102,
+          "name": "التكاثر",
+          "fromAyah": 1,
+          "toAyah": 8,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 601,
+      "surahs": [
+        {
+          "id": 103,
+          "name": "العصر",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 104,
+          "name": "الهمزة",
+          "fromAyah": 1,
+          "toAyah": 9,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 105,
+          "name": "الفيل",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 602,
+      "surahs": [
+        {
+          "id": 106,
+          "name": "قريش",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 107,
+          "name": "الماعون",
+          "fromAyah": 1,
+          "toAyah": 7,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 108,
+          "name": "الكوثر",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 603,
+      "surahs": [
+        {
+          "id": 109,
+          "name": "الكافرون",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 110,
+          "name": "النصر",
+          "fromAyah": 1,
+          "toAyah": 3,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 111,
+          "name": "المسد",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    },
+    {
+      "page": 604,
+      "surahs": [
+        {
+          "id": 112,
+          "name": "الإخلاص",
+          "fromAyah": 1,
+          "toAyah": 4,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 113,
+          "name": "الفلق",
+          "fromAyah": 1,
+          "toAyah": 5,
+          "startsHere": true,
+          "endsHere": true
+        },
+        {
+          "id": 114,
+          "name": "الناس",
+          "fromAyah": 1,
+          "toAyah": 6,
+          "startsHere": true,
+          "endsHere": true
+        }
+      ]
+    }
+  ]
+}

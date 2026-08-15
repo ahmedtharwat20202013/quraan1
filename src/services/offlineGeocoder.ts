@@ -95,7 +95,34 @@ export const OFFLINE_CITIES: OfflineCity[] = [
   { name: 'مومباي، الهند', lat: 19.0760, lon: 72.8777 },
   { name: 'موسكو، روسيا', lat: 55.7558, lon: 37.6173 },
   { name: 'كيب تاون، جنوب أفريقيا', lat: -33.9249, lon: 18.4241 },
-  { name: 'لاغوس، نيجيريا', lat: 6.5244, lon: 3.3792 }
+  { name: 'لاغوس، نيجيريا', lat: 6.5244, lon: 3.3792 },
+  
+  // Additional Global Cities (Europe, Americas, Asia, Africa)
+  { name: 'برلين، ألمانيا', lat: 52.5200, lon: 13.4050 },
+  { name: 'فرانكفورت، ألمانيا', lat: 50.1109, lon: 8.6821 },
+  { name: 'باريس، فرنسا', lat: 48.8566, lon: 2.3522 },
+  { name: 'مارسيليا، فرنسا', lat: 43.2965, lon: 5.3698 },
+  { name: 'أمستردام، هولندا', lat: 52.3676, lon: 4.9041 },
+  { name: 'بروكسل، بلجيكا', lat: 50.8503, lon: 4.3517 },
+  { name: 'مدريد، إسبانيا', lat: 40.4168, lon: -3.7038 },
+  { name: 'روما، إيطاليا', lat: 41.9028, lon: 12.4964 },
+  { name: 'فيينا، النمسا', lat: 48.2082, lon: 16.3738 },
+  { name: 'دبلن، أيرلندا', lat: 53.3498, lon: -6.2603 },
+  { name: 'شيكاغو، الولايات المتحدة', lat: 41.8781, lon: -87.6298 },
+  { name: 'لوس أنجلوس، الولايات المتحدة', lat: 34.0522, lon: -118.2437 },
+  { name: 'هيوستن، الولايات المتحدة', lat: 29.7604, lon: -95.3698 },
+  { name: 'واشنطن، الولايات المتحدة', lat: 38.9072, lon: -77.0369 },
+  { name: 'مونتريال، كندا', lat: 45.5017, lon: -73.5673 },
+  { name: 'فانكوفر، كندا', lat: 49.2827, lon: -123.1207 },
+  { name: 'ملبورن، أستراليا', lat: -37.8136, lon: 144.9631 },
+  { name: 'طوكيو، اليابان', lat: 35.6762, lon: 139.6503 },
+  { name: 'سيول، كوريا الجنوبية', lat: 37.5665, lon: 126.9780 },
+  { name: 'بكين، الصين', lat: 39.9042, lon: 116.4074 },
+  { name: 'سنغافورة، سنغافورة', lat: 1.3521, lon: 103.8198 },
+  { name: 'مانيلا، الفلبين', lat: 14.5995, lon: 120.9842 },
+  { name: 'تاشقند، أوزبكستان', lat: 41.2995, lon: 69.2401 },
+  { name: 'نيروبي، كينيا', lat: -1.2921, lon: 36.8219 },
+  { name: 'جوهانسبرغ، جنوب أفريقيا', lat: -26.2041, lon: 28.0473 }
 ];
 
 // Haversine distance formula (in km)
@@ -125,9 +152,13 @@ export function getOfflineAddress(lat: number, lon: number): string | null {
     }
   }
 
-  // If the closest city is within 60 km, return its offline address name!
-  if (closestCity && minDistance <= 60) {
-    return closestCity.name;
+  if (closestCity) {
+    if (minDistance <= 100) {
+      return closestCity.name;
+    } else {
+      // Return regional approximation for far coordinates rather than returning null
+      return `بالقرب من ${closestCity.name.split('،')[0]} (تقريبي)`;
+    }
   }
 
   return null;
