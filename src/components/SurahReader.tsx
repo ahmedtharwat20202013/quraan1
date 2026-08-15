@@ -28,48 +28,58 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-// 3 Fixed Layout Preset Configurations (Floor: 26px, Zero Scroll, 100dvh)
-export const PAGE_LAYOUTS = [
-  { name: 'spacious', fontSize: 30, lineHeight: 1.78, headerGap: 8, sectionGap: 6 },
-  { name: 'standard', fontSize: 28, lineHeight: 1.66, headerGap: 6, sectionGap: 4 },
-  { name: 'dense', fontSize: 26, lineHeight: 1.54, headerGap: 3, sectionGap: 2 },
-] as const;
+// Reading Padding Constants
+export const READING_TOP_PADDING = 6;
+export const READING_BOTTOM_PADDING = 8;
+export const READING_SIDE_PADDING = 12;
 
-export type PageLayoutConfig = typeof PAGE_LAYOUTS[number];
+// Font Policy Constants (32px Standard / 30px Dense Floor)
+export const QURAN_READER_FONT_SIZE = 32;
+export const QURAN_READER_LINE_HEIGHT = 1.68;
+
+export const DENSE_PAGE_FONT_SIZE = 30;
+export const DENSE_PAGE_LINE_HEIGHT = 1.60;
 
 interface MushafPageContentProps {
   pageData: ProcessedPageData;
-  layout: PageLayoutConfig;
+  fontSize: number;
+  lineHeight: number;
   theme: 'paper' | 'dark';
   highlightedWord?: { verseIndex: number; wordIndex: number; isFading?: boolean } | null;
-  compactSpacing?: boolean;
+  currentPageNumber: number;
 }
 
 export function MushafPageContent({
   pageData,
-  layout,
+  fontSize,
+  lineHeight,
   theme,
   highlightedWord,
-  compactSpacing = false
+  currentPageNumber
 }: MushafPageContentProps) {
-  const headerPy = compactSpacing ? 'py-0.5 my-0.5' : 'py-1.5 my-1';
-  const bismillahMy = compactSpacing ? 'my-0.5' : 'my-1.5';
-  const sectionSpace = compactSpacing ? 'space-y-1' : (layout.name === 'dense' ? 'space-y-1' : 'space-y-2');
-
   return (
-    <div className={cn("w-full flex flex-col justify-center items-center my-auto", sectionSpace)}>
+    <div className="w-full flex flex-col justify-center items-center my-auto space-y-1">
+      {/* 1. Mushaf Page Context Header */}
+      <div 
+        className="mushaf-page-context shrink-0 w-full flex items-center justify-center gap-2 mb-1 py-0.5 text-[0.92rem] font-bold text-gold-accent border-b border-gold-accent/25 select-none"
+        style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', minHeight: '30px' }}
+        dir="rtl"
+      >
+        <span>سورة {pageData.primarySurahName}</span>
+        <span className="opacity-60">•</span>
+        <span>صفحة {toArabicDigits(currentPageNumber)}</span>
+      </div>
+
+      {/* 2. Surah Sections & Ayahs */}
       {pageData.sections.map((section, secIdx) => {
         const showHeader = section.startsHere;
         const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
 
         return (
           <div key={`section_${section.id}_${secIdx}`} className="w-full flex flex-col justify-start space-y-1">
-            {/* Surah Header Frame */}
+            {/* Official Surah Header Frame when startsHere === true */}
             {showHeader && (
-              <div className={cn(
-                "w-full rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0 px-3",
-                headerPy
-              )}>
+              <div className="w-full rounded-xl bg-gradient-to-r from-gold-accent/15 via-gold-accent/35 to-gold-accent/15 border border-gold-accent/60 text-center shadow-md relative overflow-hidden flex items-center justify-between shrink-0 px-3 py-1 my-0.5">
                 <div className="text-gold-accent/90 text-xs font-bold select-none flex items-center gap-1">
                   <span>❖</span>
                   <span className="hidden sm:inline">━━</span>
@@ -87,11 +97,8 @@ export function MushafPageContent({
             {/* Bismillah */}
             {showBismillah && (
               <div 
-                className={cn(
-                  "text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0",
-                  bismillahMy
-                )}
-                style={{ fontFamily: '"Tehaf", "AmiriQuran", serif' }}
+                className="text-center font-normal select-none text-gold-accent text-sm sm:text-base opacity-95 shrink-0 my-1"
+                style={{ fontFamily: '"Tehaf", "AmiriQuran", serif', marginBlock: '0.25rem' }}
               >
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </div>
@@ -104,8 +111,8 @@ export function MushafPageContent({
                 theme === 'paper' ? "text-[#0b2419]" : "text-[#f0faf5]"
               )}
               style={{ 
-                fontSize: `${layout.fontSize}px`,
-                lineHeight: layout.lineHeight,
+                fontSize: `${fontSize}px`,
+                lineHeight: lineHeight,
                 fontFamily: '"Tehaf", "AmiriQuran", serif',
                 direction: 'rtl',
                 unicodeBidi: 'embed',
@@ -148,7 +155,7 @@ export function MushafPageContent({
 
             {/* Fine Separator between multiple surahs on same page */}
             {secIdx < pageData.sections.length - 1 && (
-              <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0">
+              <div className="my-1 flex items-center justify-center gap-3 w-4/5 mx-auto shrink-0" style={{ marginBlock: '0.35rem' }}>
                 <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
                 <div className="w-1.5 h-1.5 rounded-full bg-gold-accent/60" />
                 <div className="h-[1px] bg-gradient-to-r from-transparent via-gold-accent/50 to-transparent flex-1" />
