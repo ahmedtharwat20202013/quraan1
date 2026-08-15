@@ -623,14 +623,6 @@ export default function SurahReader({
               )}
 
               <button
-                onClick={(e) => { e.stopPropagation(); setShowDebugPanel(prev => !prev); }}
-                className="p-2 rounded-xl text-gold-accent hover:bg-gold-accent/10 active:scale-95 transition-all text-xs font-mono font-bold"
-                title="لوحة المراقبة البرمجية"
-              >
-                ⚙️
-              </button>
-
-              <button
                 onClick={toggleTheme}
                 className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
                 title={theme === 'paper' ? "الوضع الليلي" : "الوضع الورقي"}
@@ -666,20 +658,6 @@ export default function SurahReader({
             textRendering: 'optimizeLegibility'
           }}
         />
-      )}
-
-      {/* Development Reading Mode Debug Panel */}
-      {showDebugPanel && (
-        <div className="fixed top-16 left-4 z-50 p-4 rounded-2xl bg-black/95 text-amber-300 font-mono text-[11px] border border-gold-accent/40 shadow-2xl space-y-1 dir-ltr max-w-sm pointer-events-auto">
-          <div className="font-bold text-white border-b border-white/20 pb-1 mb-1">📐 Page Composition Fitting Debug Info</div>
-          <div>Mode: <span className="text-emerald-400 font-bold">Single-Screen Page Fitting (بلا تمرير)</span></div>
-          <div>Preset: <span className="text-emerald-400 font-bold">{composition.presetName} ({composition.fontSize}px)</span></div>
-          <div>Line-Height: <span className="text-white font-bold">{composition.lineHeight} ({Math.round(composition.fontSize * composition.lineHeight)}px)</span></div>
-          <div>Container Width: <span className="text-white font-bold">{containerWidth}px</span></div>
-          <div>Viewport: <span className="text-white font-bold">{typeof window !== 'undefined' ? `${window.innerWidth} × ${window.innerHeight}` : 'N/A'}</span></div>
-          <div>Font Family: <span className="text-white font-bold">Tehaf, AmiriQuran, serif</span></div>
-          <div>Page: <span className="text-white font-bold">{currentPageNumber} / 604</span></div>
-        </div>
       )}
 
       {/* Main Full-Screen Display Container (Single Screen, Zero Scroll) */}
