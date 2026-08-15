@@ -680,8 +680,6 @@ export default function SurahReader({
                           wordSpacing: 'normal' 
                         }}
                       >
-                        style={{ letterSpacing: 'normal', wordSpacing: 'normal' }}
-                      >
                         {section.ayas.map(aya => {
                           const words = aya.text.split(/\s+/).filter(w => w.length > 0);
                           const isHighlighted = highlightedWord?.verseIndex === aya.index;
