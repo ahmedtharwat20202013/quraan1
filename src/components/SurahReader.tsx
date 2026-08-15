@@ -28,78 +28,10 @@ interface SurahReaderProps {
   onPageChange?: (surahId: number, pageNumber: number) => void;
 }
 
-// Natural Arabic Typography Constants (Zero Browser Justification Stretch, Clean Centered Alignment)
-export const NATURAL_PAGE_FONT_SIZE = 25;
-export const NATURAL_PAGE_LINE_HEIGHT = 1.66;
-
-export const DENSE_PAGE_FONT_SIZE = 24;
-export const DENSE_PAGE_LINE_HEIGHT = 1.60;
-
-export const NATURAL_PAGE_HORIZONTAL_PADDING = 12;
-export const PAGE_SAFE_TOP_PX = 10;
-export const PAGE_SAFE_BOTTOM_PX = 14;
-
-export interface PageCompositionConfig {
-  fontSize: number; // 25 or 24 ONLY
-  lineHeight: number; // 1.66 or 1.60 ONLY
-  presetName: 'Natural' | 'Dense';
-  spaceClass: string;
-  headerMarginClass: string;
-  bismillahMarginClass: string;
-}
-
-export function getNaturalPreset(): PageCompositionConfig {
-  return {
-    fontSize: NATURAL_PAGE_FONT_SIZE, // 25px
-    lineHeight: NATURAL_PAGE_LINE_HEIGHT, // 1.66
-    presetName: 'Natural',
-    spaceClass: 'space-y-2 sm:space-y-2.5',
-    headerMarginClass: 'my-1 py-1.5 px-3',
-    bismillahMarginClass: 'my-1.5'
-  };
-}
-
-export function getDensePreset(): PageCompositionConfig {
-  return {
-    fontSize: DENSE_PAGE_FONT_SIZE, // 24px
-    lineHeight: DENSE_PAGE_LINE_HEIGHT, // 1.60
-    presetName: 'Dense',
-    spaceClass: 'space-y-1 sm:space-y-1.5',
-    headerMarginClass: 'my-0.5 py-1 px-2.5',
-    bismillahMarginClass: 'my-0.5'
-  };
-}
-
-// In-memory cache for page composition fit per (pageNumber:viewportWidth:viewportHeight)
-const pageCompositionCache = new Map<string, PageCompositionConfig>();
-
-function renderMeasuringHtml(pageData: ProcessedPageData, config: PageCompositionConfig): string {
-  const sectionsHtml = pageData.sections.map((section, secIdx) => {
-    const showHeader = section.startsHere;
-    const showBismillah = section.startsHere && section.id !== 9 && section.id !== 1;
-
-    const headerHtml = showHeader ? `
-      <div style="font-family:'Tehaf','AmiriQuran',serif;" class="w-full ${config.headerMarginClass} rounded-xl text-center flex items-center justify-between shrink-0">
-        <h3 style="font-size: 1.05em; font-weight: bold;">سورة ${section.name}</h3>
-      </div>` : '';
-
-    const bismillahHtml = showBismillah ? `
-      <div style="font-family:'Tehaf','AmiriQuran',serif; margin-block: 6px;" class="text-center font-normal select-none shrink-0 opacity-95">
-        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-      </div>` : '';
-
-    const ayasText = section.ayas.map(a => `${a.text} ${toArabicDigits(a.index)} `).join('');
-
-    const ayasHtml = `
-      <div style="font-size:${config.fontSize}px; line-height:${config.lineHeight}; font-family:'Tehaf','AmiriQuran',serif; text-align:center; direction:rtl; unicode-bidi:embed; word-spacing:normal; letter-spacing:normal; white-space:normal;">
-        ${ayasText}
-      </div>`;
-
-    return `<div class="w-full flex flex-col justify-start space-y-1">${headerHtml}${bismillahHtml}${ayasHtml}</div>`;
-  }).join('');
-
-  return `<div class="w-full flex flex-col justify-start ${config.spaceClass}">${sectionsHtml}</div>`;
-}
+// Fixed Single-Policy Reading Constants (30px Font Size & 1.82 Line Height)
+export const QURAN_READER_FONT_SIZE = 30;
+export const QURAN_READER_LINE_HEIGHT = 1.82;
+export const QURAN_READER_HORIZONTAL_PADDING_PX = 14;
 
 /**
  * Developer Invariant Verification Function for Quran Page Data:
@@ -210,77 +142,6 @@ export default function SurahReader({
   const touchEndX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
-
-  // PAGE COMPOSITION FITTING ENGINE (Single-Screen, Zero Scroll)
-  const pageContainerRef = useRef<HTMLDivElement>(null);
-  const measuringContainerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(0);
-
-  useEffect(() => {
-    if (!pageContainerRef.current) return;
-    const observer = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const w = Math.round(entry.contentRect.width);
-        if (w > 0) {
-          setContainerWidth(w);
-        }
-      }
-    });
-    observer.observe(pageContainerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // Natural Arabic Page Fitting (Natural 25px / 1.66 vs Dense 24px / 1.60)
-  const [composition, setComposition] = useState<PageCompositionConfig>(() => getNaturalPreset());
-
-  useEffect(() => {
-    if (!fontLoaded || loading || !pageData || !measuringContainerRef.current) {
-      return;
-    }
-
-    const availableW = containerWidth > 0 ? containerWidth : (pageContainerRef.current?.clientWidth || 360);
-    const viewportH = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const topBarH = 56;
-    const bottomNavH = 60;
-    const availablePageH = Math.max(250, viewportH - topBarH - bottomNavH - PAGE_SAFE_TOP_PX - PAGE_SAFE_BOTTOM_PX);
-
-    const cacheKey = `${currentPageNumber}:${availableW}:${viewportH}`;
-    if (pageCompositionCache.has(cacheKey)) {
-      setComposition(pageCompositionCache.get(cacheKey)!);
-      return;
-    }
-
-    const measurerEl = measuringContainerRef.current;
-    measurerEl.style.width = `${availableW}px`;
-
-    // 1. Measure at Natural Preset (25px / 1.66)
-    const naturalPreset = getNaturalPreset();
-    measurerEl.innerHTML = renderMeasuringHtml(pageData, naturalPreset);
-    const naturalHeight = measurerEl.scrollHeight;
-
-    let finalConfig = naturalPreset;
-
-    // 2. If Natural Preset overflows available height, switch to Dense Preset (24px / 1.60)
-    if (naturalHeight > availablePageH) {
-      const densePreset = getDensePreset();
-      measurerEl.innerHTML = renderMeasuringHtml(pageData, densePreset);
-      finalConfig = densePreset;
-    }
-
-    pageCompositionCache.set(cacheKey, finalConfig);
-    setComposition(finalConfig);
-  }, [currentPageNumber, pageData, fontLoaded, loading, containerWidth]);
-
-  // Dev mode verification: Check scrollHeight <= clientHeight without masking
-  useEffect(() => {
-    if (pageContainerRef.current) {
-      const el = pageContainerRef.current;
-      if (el.scrollHeight > el.clientHeight) {
-        const overflowPx = el.scrollHeight - el.clientHeight;
-        console.warn(`[Quran Page Overflow Warning] Page ${currentPageNumber} overflows by ${overflowPx}px (scrollHeight: ${el.scrollHeight}px, clientHeight: ${el.clientHeight}px).`);
-      }
-    }
-  }, [currentPageNumber, composition]);
 
   // Ensure font is loaded
   useEffect(() => {
