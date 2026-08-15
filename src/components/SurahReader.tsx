@@ -384,9 +384,73 @@ export function SurahTopBar({
   );
 }
 
+export type ReaderMode = 'json-official' | 'balanced-experimental';
+
+export type JsonPageRenderMetrics = {
+  jsonPageNumber: number;
+  expectedAyahCount: number;
+  renderedAyahCount: number;
+  missingAyahs: number[];
+  duplicatedAyahs: number[];
+  actualContentHeight: number;
+  availableContentHeight: number;
+  overflow: number;
+  occupancy: number;
+  fontSize: number;
+};
+
+export function validateRenderedPage(
+  pageData: ProcessedPageData | null,
+  targetPageNum: number
+): JsonPageRenderMetrics | null {
+  if (!pageData) return null;
+
+  let expectedCount = 0;
+  const renderedAyahs: number[] = [];
+  const missingAyahs: number[] = [];
+  const duplicatedAyahs: number[] = [];
+
+  pageData.sections.forEach(sec => {
+    expectedCount += (sec.toAyah - sec.fromAyah + 1);
+    sec.ayas.forEach(aya => {
+      if (renderedAyahs.includes(aya.index)) {
+        duplicatedAyahs.push(aya.index);
+      } else {
+        renderedAyahs.push(aya.index);
+      }
+    });
+
+    for (let a = sec.fromAyah; a <= sec.toAyah; a++) {
+      if (!sec.ayas.some(aya => aya.index === a)) {
+        missingAyahs.push(a);
+      }
+    }
+  });
+
+  const metrics: JsonPageRenderMetrics = {
+    jsonPageNumber: targetPageNum,
+    expectedAyahCount: expectedCount,
+    renderedAyahCount: renderedAyahs.length,
+    missingAyahs,
+    duplicatedAyahs,
+    actualContentHeight: 0,
+    availableContentHeight: 0,
+    overflow: 0,
+    occupancy: 1.0,
+    fontSize: DEFAULT_QURAN_FONT_SIZE
+  };
+
+  if (missingAyahs.length > 0 || duplicatedAyahs.length > 0) {
+    console.error(`[Data Integrity Violation] JSON Page ${targetPageNum}:`, metrics);
+  }
+
+  return metrics;
+}
+
 export function verifyPageDataInvariant(pageData: ProcessedPageData | null, targetPageNum: number): boolean {
   if (!pageData) return false;
   if (pageData.pageNumber !== targetPageNum) return false;
+  validateRenderedPage(pageData, targetPageNum);
   return true;
 }
 

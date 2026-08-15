@@ -105,6 +105,17 @@ async function runEngineValidationTests() {
   });
   console.log('[Test 6] Sparse pages top-alignment invariant verified ✅');
 
+  // 7. Assert Official JSON Page Membership Contract
+  const page1Data = await QuranDataLoader.getMushafPage(1);
+  if (!page1Data || page1Data.sections.length === 0) {
+    throw new Error('[Test Failed] Official JSON Page 1 failed to load!');
+  }
+  const page1Ayahs = page1Data.sections.flatMap(s => s.ayas.map(a => a.index));
+  if (page1Ayahs.length !== 7 || page1Ayahs[0] !== 1 || page1Ayahs[6] !== 7) {
+    throw new Error('[Test Failed] Official JSON Page 1 membership mismatch!');
+  }
+  console.log('[Test 7] Official JSON Page membership contract verified (quran_pages_v3.json immutable source of truth) ✅');
+
   console.log('✅ ALL 15 AUTOMATED INTEGRITY & LAYOUT TESTS PASSED PERFECTLY!');
 }
 
